@@ -1,0 +1,534 @@
+/* NSL Design System — generated from tokens.json */
+:root, [data-theme="primary"] {
+  --primary-50: #fdf2f7; /* Primary (pink) brand ramp. Primitive: components never use it directly, only through brand-* and other semantic tokens. */
+  --primary-100: #fce7f1; /* Primary (pink) brand ramp. Primitive: components never use it directly, only through brand-* and other semantic tokens. */
+  --primary-200: #f9cfe3; /* Primary (pink) brand ramp. Primitive: components never use it directly, only through brand-* and other semantic tokens. */
+  --primary-300: #f77fb8; /* Primary (pink) brand ramp. Primitive: components never use it directly, only through brand-* and other semantic tokens. */
+  --primary-400: #db1f79; /* Primary (pink) brand ramp. Primitive: components never use it directly, only through brand-* and other semantic tokens. */
+  --primary-500: #b91f69; /* Primary (pink) brand ramp. Primitive: components never use it directly, only through brand-* and other semantic tokens. */
+  --primary-600: #9b1a58; /* Primary (pink) brand ramp. Primitive: components never use it directly, only through brand-* and other semantic tokens. */
+  --primary-700: #7d1547; /* Primary (pink) brand ramp. Primitive: components never use it directly, only through brand-* and other semantic tokens. */
+  --primary-900: #4a0d2a; /* Primary (pink) brand ramp. Primitive: components never use it directly, only through brand-* and other semantic tokens. */
+  --secondary-50: #f0f7ff; /* Secondary (blue) ramp. Primitive: reach it through secondary-*, text-link, icon-secondary, price text. */
+  --secondary-100: #e1efff; /* Secondary (blue) ramp. Primitive: reach it through secondary-*, text-link, icon-secondary, price text. */
+  --secondary-200: #b9daff; /* Secondary (blue) ramp. Primitive: reach it through secondary-*, text-link, icon-secondary, price text. */
+  --secondary-400: #2f88e6; /* Secondary (blue) ramp. Primitive: reach it through secondary-*, text-link, icon-secondary, price text. */
+  --secondary-500: #1d6cbe; /* Secondary (blue) ramp. Primitive: reach it through secondary-*, text-link, icon-secondary, price text. */
+  --secondary-600: #18599e; /* Secondary (blue) ramp. Primitive: reach it through secondary-*, text-link, icon-secondary, price text. */
+  --secondary-700: #13467d; /* Secondary (blue) ramp. Primitive: reach it through secondary-*, text-link, icon-secondary, price text. */
+  --secondary-900: #0c2d51; /* Secondary (blue) ramp. Primitive: reach it through secondary-*, text-link, icon-secondary, price text. */
+  --neutral-white: #ffffff; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --neutral-50: #f9fafb; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --neutral-100: #f3f4f6; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --neutral-200: #e5e7eb; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --neutral-300: #d1d5db; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --neutral-400: #9ca3af; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --neutral-500: #6b7280; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --neutral-600: #374151; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --neutral-700: #18304c; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --neutral-900: #111827; /* Neutral ramp (navy-tinted at 700). Primitive: reach it through text-*, bg-*, border-*. */
+  --status-success: #10b981; /* Loud status color: icons, filled tags, error borders. Fails 4.5:1 as text on white, so never set body text in it. */
+  --status-error: #dc2626; /* Loud status color: icons, filled tags, error borders. Fails 4.5:1 as text on white, so never set body text in it. */
+  --status-warning: #f59e0b; /* Loud status color: icons, filled tags, error borders. Fails 4.5:1 as text on white, so never set body text in it. */
+  --red-50: #fee2e2; /* Red tint/shade for error tags and notifications. Primitive. */
+  --red-700: #b91c1c; /* Red tint/shade for error tags and notifications. Primitive. */
+  --green-50: #ecfdf5; /* Green tint/shade for success and in-stock. Primitive. */
+  --green-100: #d1fae5; /* Green tint/shade for success and in-stock. Primitive. */
+  --green-600: #15803d; /* Green tint/shade for success and in-stock. Primitive. */
+  --green-700: #047857; /* Green tint/shade for success and in-stock. Primitive. */
+  --amber-50: #fffbeb; /* Amber tint/shade for warning and star rating. Primitive. */
+  --amber-400: #fbbf24; /* Amber tint/shade for warning and star rating. Primitive. */
+  --amber-700: #b45309; /* Amber tint/shade for warning and star rating. Primitive. */
+  --white-alpha-100: #ffffff; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-90: #ffffffe5; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-80: #ffffffcc; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-70: #ffffffb2; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-60: #ffffff99; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-50: #ffffff80; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-40: #ffffff66; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-30: #ffffff4d; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-20: #ffffff33; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-10: #ffffff1a; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --white-alpha-5: #ffffff0d; /* White at reduced opacity: text and hairlines on dark or gradient surfaces (Surface=Dark). */
+  --black-alpha-100: #000000; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-90: #000000e5; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-80: #000000cc; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-70: #000000b2; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-60: #00000099; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-50: #00000080; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-40: #00000066; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-30: #0000004d; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-20: #00000033; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-10: #0000001a; /* Black at reduced opacity: scrims and shadows. */
+  --black-alpha-5: #0000000d; /* Black at reduced opacity: scrims and shadows. */
+  --gradient-blue: #2e67b1; /* Brand gradient stop 1 (0%). Header top bar, footer, logo. */
+  --gradient-sky: #558fcb; /* Brand gradient stop 2 (25%). */
+  --gradient-violet: #92278e; /* Brand gradient stop 3 (75%). */
+  --gradient-magenta: #cb1c68; /* Brand gradient stop 4 (100%). */
+  --brand-default: var(--primary-500); /* THE call-to-action color. Filled primary button, active tab/page, checked controls, focus border. At most one filled brand-default button per view (see README, One CTA). White text on it: 6.0:1 (pink) / 5.2:1 (blue). */
+  --brand-hover: var(--primary-400); /* Hover state of brand-default fills and brand icons. White label on this fill: 4.7:1 (pink theme). */
+  --brand-active: var(--primary-600); /* Pressed state of brand-default fills. */
+  --brand-subtle: var(--primary-50); /* Faint brand tint: active pill tab, control hover background, ghost button hover. */
+  --brand-disabled: var(--primary-200); /* Disabled brand fill (rarely used; buttons use bg-disabled). */
+  --brand-focused: var(--primary-300); /* Focus ring color (3px outside). Not for text. */
+  --secondary-default: var(--secondary-500); /* Fixed blue that does NOT follow the theme. Secondary button, info accents. */
+  --secondary-hover: var(--secondary-400); /* Hover of secondary-default fills. White label on this hover fill is 3.6:1, under 4.5:1 for 14-16px button text: kept exact from Figma, flagged. */
+  --secondary-active: var(--secondary-600); /* Pressed secondary-default fill. */
+  --secondary-subtle: var(--secondary-50); /* Faint blue background. */
+  --secondary-disabled: var(--secondary-200); /* Disabled blue fill. */
+  --secondary-focused: var(--secondary-200); /* Focus ring around secondary-default controls. */
+  --text-primary: var(--neutral-700); /* Body copy and headings on bg-default, bg-subtle, bg-muted (13.5:1 on white). */
+  --text-secondary: var(--neutral-500); /* Meta text, placeholders, captions on bg-default and bg-subtle (4.8:1 on white). */
+  --text-disabled: var(--neutral-400); /* Disabled labels only; below 4.5:1 by design. */
+  --text-on-brand: var(--neutral-white); /* Text and icons on brand-default, secondary-default and status fills. */
+  --text-link: var(--secondary-500); /* Inline links in running text on bg-default. */
+  --bg-default: var(--neutral-white); /* Page and card background. */
+  --bg-subtle: var(--neutral-50); /* Section bands, image wells, on-request badge. */
+  --bg-muted: var(--neutral-100); /* Quiet fills: neutral notification, chips. */
+  --bg-disabled: var(--neutral-300); /* Disabled filled buttons. */
+  --border-default: var(--neutral-200); /* Hairlines, card and input borders. */
+  --border-strong: var(--neutral-500); /* Emphasised dividers and hovered control borders. */
+  --border-brand: var(--primary-500); /* Brand outline: ghost button border, model card bottom rule. */
+  --border-secondary: var(--secondary-500); /* Blue outline. */
+  --border-brand-subtle: var(--primary-100); /* Subtle-button border (primary-subtle), e.g. product card Add to Cart. */
+  --border-secondary-subtle: var(--secondary-100); /* Subtle-button border (secondary-subtle). */
+  --brand-inverted-bg: var(--neutral-white); /* Inverted/ghost brand button: inverted bg. */
+  --brand-inverted-text: var(--brand-default); /* Inverted/ghost brand button: inverted text. */
+  --brand-inverted-border: var(--neutral-white); /* Inverted/ghost brand button: inverted border. */
+  --brand-inverted-hover: var(--primary-50); /* Inverted/ghost brand button: inverted hover. */
+  --brand-inverted-active: var(--primary-100); /* Inverted/ghost brand button: inverted active. */
+  --brand-ghost-inverted-border: var(--neutral-white); /* Inverted/ghost brand button: ghost inverted border. */
+  --brand-ghost-inverted-text: var(--neutral-white); /* Inverted/ghost brand button: ghost inverted text. */
+  --brand-ghost-inverted-hover-bg: var(--primary-50); /* Inverted/ghost brand button: ghost inverted hover bg. */
+  --brand-ghost-inverted-active-bg: var(--primary-100); /* Inverted/ghost brand button: ghost inverted active bg. */
+  --secondary-inverted-bg: var(--neutral-white); /* Inverted/ghost secondary button: inverted bg. */
+  --secondary-inverted-text: var(--secondary-500); /* Inverted/ghost secondary button: inverted text. */
+  --secondary-inverted-border: var(--neutral-white); /* Inverted/ghost secondary button: inverted border. */
+  --secondary-inverted-hover: var(--secondary-50); /* Inverted/ghost secondary button: inverted hover. */
+  --secondary-inverted-active: var(--secondary-100); /* Inverted/ghost secondary button: inverted active. */
+  --secondary-ghost-inverted-hover-bg: var(--secondary-50); /* Inverted/ghost secondary button: ghost inverted hover bg. */
+  --secondary-ghost-inverted-active-bg: var(--secondary-100); /* Inverted/ghost secondary button: ghost inverted active bg. */
+  --input-bg: var(--neutral-white); /* Text input: bg. */
+  --input-bg-disabled: var(--neutral-50); /* Text input: bg disabled. */
+  --input-border-default: var(--neutral-200); /* Text input: border default. */
+  --input-border-focus: var(--brand-default); /* Text input: border focus. */
+  --input-border-error: var(--status-error); /* Text input: border error. */
+  --input-border-disabled: var(--neutral-300); /* Text input: border disabled. */
+  --input-text-value: var(--text-primary); /* Text input: text value. */
+  --input-text-placeholder: var(--text-secondary); /* Text input: text placeholder. */
+  --input-text-disabled: var(--neutral-400); /* Text input: text disabled. */
+  --input-icon-default: var(--text-secondary); /* Text input: icon default. */
+  --input-icon-focus: var(--brand-default); /* Text input: icon focus. */
+  --input-icon-error: var(--status-error); /* Text input: icon error. */
+  --label-default: var(--text-primary); /* Field label: default. */
+  --helper-default: var(--text-secondary); /* Helper text under a field: default. */
+  --helper-error: var(--status-error); /* Helper text under a field: error. */
+  --control-border-default: var(--neutral-300); /* Checkbox/radio/toggle: border default. */
+  --control-border-hover: var(--neutral-500); /* Checkbox/radio/toggle: border hover. */
+  --control-border-focused: var(--primary-500); /* Checkbox/radio/toggle: border focused. */
+  --control-border-error: var(--status-error); /* Checkbox/radio/toggle: border error. */
+  --control-border-disabled: var(--neutral-200); /* Checkbox/radio/toggle: border disabled. */
+  --control-border-checked: var(--brand-default); /* Checkbox/radio/toggle: border checked. */
+  --control-bg-default: var(--neutral-white); /* Checkbox/radio/toggle: bg default. */
+  --control-bg-hover: var(--brand-subtle); /* Checkbox/radio/toggle: bg hover. */
+  --control-bg-checked: var(--brand-default); /* Checkbox/radio/toggle: bg checked. */
+  --control-bg-error: var(--status-error); /* Checkbox/radio/toggle: bg error. */
+  --control-bg-disabled: var(--neutral-100); /* Checkbox/radio/toggle: bg disabled. */
+  --control-icon-checked: var(--neutral-white); /* Checkbox/radio/toggle: icon checked. */
+  --control-icon-indeterminate: var(--neutral-white); /* Checkbox/radio/toggle: icon indeterminate. */
+  --control-icon-disabled: var(--neutral-400); /* Checkbox/radio/toggle: icon disabled. */
+  --control-label-default: var(--text-primary); /* Checkbox/radio/toggle: label default. */
+  --control-label-disabled: var(--text-disabled); /* Checkbox/radio/toggle: label disabled. */
+  --control-label-error: var(--status-error); /* Checkbox/radio/toggle: label error. */
+  --control-focus-ring: var(--brand-focused); /* Checkbox/radio/toggle: focus ring. */
+  --control-track-active: var(--brand-default); /* Checkbox/radio/toggle: track active. */
+  --control-track-inactive: var(--neutral-200); /* Checkbox/radio/toggle: track inactive. */
+  --control-track-hover: var(--neutral-300); /* Checkbox/radio/toggle: track hover. */
+  --control-thumb-bg: var(--neutral-white); /* Checkbox/radio/toggle: thumb bg. */
+  --control-thumb-border: var(--brand-default); /* Checkbox/radio/toggle: thumb border. */
+  --slider-track: var(--neutral-200); /* Slider: track. */
+  --slider-fill: var(--brand-default); /* Slider: fill. */
+  --slider-outline: var(--brand-active); /* Slider: outline. */
+  --slider-thumb-bg: var(--neutral-white); /* Slider: thumb bg. */
+  --slider-thumb-border: var(--brand-default); /* Slider: thumb border. */
+  --slider-thumb-shadow: var(--neutral-500); /* Slider: thumb shadow. */
+  --slider-disabled: var(--neutral-300); /* Slider: disabled. */
+  --tag-success-subtle-bg: var(--green-100); /* Tag/badge/notification: success subtle bg. */
+  --tag-success-text: var(--green-700); /* Tag/badge/notification: success text. */
+  --tag-success-icon-bg: var(--green-600); /* Tag/badge/notification: success icon bg. */
+  --tag-warning-subtle-bg: var(--amber-50); /* Tag/badge/notification: warning subtle bg. */
+  --tag-warning-text: var(--amber-700); /* Tag/badge/notification: warning text. */
+  --tag-error-subtle-bg: var(--red-50); /* Tag/badge/notification: error subtle bg. */
+  --tag-error-text: var(--red-700); /* Tag/badge/notification: error text. */
+  --tag-info-subtle-bg: var(--secondary-200); /* Tag/badge/notification: info subtle bg. */
+  --tag-info-text: var(--secondary-600); /* Tag/badge/notification: info text. */
+  --tag-new-subtle-bg: var(--secondary-200); /* Tag/badge/notification: new subtle bg. */
+  --tag-new-text: var(--secondary-600); /* Tag/badge/notification: new text. */
+  --overlay-scrim: var(--black-alpha-50); /* Modal backdrop. */
+  --icon-brand: var(--brand-default); /* Standalone icon: brand. */
+  --icon-secondary: var(--secondary-500); /* Standalone icon: secondary. */
+  --icon-default: var(--neutral-500); /* Standalone icon: default. */
+  --icon-pale: var(--neutral-300); /* Standalone icon: pale. */
+  --icon-hover: var(--brand-hover); /* Standalone icon: hover. */
+  --icon-disabled: var(--neutral-100); /* Standalone icon: disabled. */
+  --rating-star: var(--amber-400); /* Filled star in StarRating. */
+  --on-surface-primary: var(--label-default); /* Surface-aware text: strong. Resolves to text-primary on light surfaces and white on dark/gradient ones (.nsl-on-dark). */
+  --on-dark-primary: var(--white-alpha-100); /* Dark-surface value of on-surface-primary (Surface=Dark in Figma). Applied automatically inside .nsl-on-dark. */
+  --on-surface-secondary: var(--label-default); /* Surface-aware text: medium (breadcrumb links, nav meta). */
+  --on-dark-secondary: var(--white-alpha-70); /* Dark-surface value of on-surface-secondary (Surface=Dark in Figma). Applied automatically inside .nsl-on-dark. */
+  --on-surface-tertiary: var(--text-secondary); /* Surface-aware text: quiet (separators, hints). */
+  --on-dark-tertiary: var(--white-alpha-50); /* Dark-surface value of on-surface-tertiary (Surface=Dark in Figma). Applied automatically inside .nsl-on-dark. */
+  --nav-text-default: var(--on-surface-primary); /* Top-nav item text, surface-aware. */
+  --nav-text-active: var(--on-surface-primary); /* Active top-nav item text (bold weight carries the state). */
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05); /* Number stepper, subtle lift. */
+  --shadow-md: 0 4px 6px 0 rgba(0,0,0,0.07), 0 2px 4px 0 rgba(0,0,0,0.05), 0 -1px 4px 0 rgba(0,0,0,0.05); /* Product card, model card, cart dropdown. */
+  --shadow-lg: 0 10px 15px 0 rgba(0,0,0,0.10), 0 4px 6px 0 rgba(0,0,0,0.05), 0 -1px 4px 0 rgba(0,0,0,0.05); /* Hovered cards, menus, dropdown panels. */
+  --shadow-xl: 0 20px 25px 0 rgba(0,0,0,0.10), 0 10px 10px 0 rgba(0,0,0,0.04); /* Modals. */
+  --shadow-focus: 0 0 0 3px #f77fb8; /* Focus ring on inputs and buttons (brand-focused, 3px). */
+}
+[data-theme="secondary"] {
+  --brand-default: var(--secondary-default);
+  --brand-hover: var(--secondary-hover);
+  --brand-active: var(--secondary-active);
+  --brand-subtle: var(--secondary-subtle);
+  --brand-disabled: var(--secondary-disabled);
+  --brand-focused: var(--secondary-focused);
+  --secondary-default: var(--secondary-500);
+  --secondary-hover: var(--secondary-400);
+  --secondary-active: var(--secondary-600);
+  --secondary-subtle: var(--secondary-50);
+  --secondary-disabled: var(--secondary-200);
+  --secondary-focused: var(--secondary-200);
+  --text-primary: var(--neutral-700);
+  --text-secondary: var(--neutral-500);
+  --text-disabled: var(--neutral-400);
+  --text-on-brand: var(--neutral-white);
+  --text-link: var(--secondary-default);
+  --bg-default: var(--neutral-white);
+  --bg-subtle: var(--neutral-50);
+  --bg-muted: var(--neutral-100);
+  --bg-disabled: var(--neutral-300);
+  --border-default: var(--neutral-200);
+  --border-strong: var(--neutral-500);
+  --border-brand: var(--secondary-default);
+  --border-secondary: var(--secondary-500);
+  --border-brand-subtle: var(--secondary-100);
+  --border-secondary-subtle: var(--secondary-100);
+  --brand-inverted-bg: var(--secondary-inverted-bg);
+  --brand-inverted-text: var(--brand-default);
+  --brand-inverted-border: var(--secondary-inverted-border);
+  --brand-inverted-hover: var(--secondary-inverted-hover);
+  --brand-inverted-active: var(--secondary-inverted-active);
+  --brand-ghost-inverted-border: var(--neutral-white);
+  --brand-ghost-inverted-text: var(--neutral-white);
+  --brand-ghost-inverted-hover-bg: var(--primary-50);
+  --brand-ghost-inverted-active-bg: var(--primary-100);
+  --secondary-inverted-bg: var(--neutral-white);
+  --secondary-inverted-text: var(--secondary-500);
+  --secondary-inverted-border: var(--neutral-white);
+  --secondary-inverted-hover: var(--secondary-50);
+  --secondary-inverted-active: var(--secondary-100);
+  --secondary-ghost-inverted-hover-bg: var(--secondary-50);
+  --secondary-ghost-inverted-active-bg: var(--secondary-100);
+  --input-bg: var(--neutral-white);
+  --input-bg-disabled: var(--neutral-50);
+  --input-border-default: var(--neutral-200);
+  --input-border-focus: var(--secondary-default);
+  --input-border-error: var(--status-error);
+  --input-border-disabled: var(--neutral-300);
+  --input-text-value: var(--text-primary);
+  --input-text-placeholder: var(--text-secondary);
+  --input-text-disabled: var(--neutral-400);
+  --input-icon-default: var(--text-secondary);
+  --input-icon-focus: var(--brand-default);
+  --input-icon-error: var(--status-error);
+  --label-default: var(--text-primary);
+  --helper-default: var(--text-secondary);
+  --helper-error: var(--status-error);
+  --control-border-default: var(--neutral-300);
+  --control-border-hover: var(--neutral-500);
+  --control-border-focused: var(--primary-500);
+  --control-border-error: var(--status-error);
+  --control-border-disabled: var(--neutral-200);
+  --control-border-checked: var(--secondary-default);
+  --control-bg-default: var(--neutral-white);
+  --control-bg-hover: var(--brand-subtle);
+  --control-bg-checked: var(--secondary-default);
+  --control-bg-error: var(--status-error);
+  --control-bg-disabled: var(--neutral-100);
+  --control-icon-checked: var(--neutral-white);
+  --control-icon-indeterminate: var(--neutral-white);
+  --control-icon-disabled: var(--neutral-400);
+  --control-label-default: var(--text-primary);
+  --control-label-disabled: var(--text-disabled);
+  --control-label-error: var(--status-error);
+  --control-focus-ring: var(--secondary-focused);
+  --control-track-active: var(--secondary-default);
+  --control-track-inactive: var(--neutral-200);
+  --control-track-hover: var(--neutral-300);
+  --control-thumb-bg: var(--neutral-white);
+  --control-thumb-border: var(--secondary-default);
+  --slider-track: var(--neutral-200);
+  --slider-fill: var(--secondary-default);
+  --slider-outline: var(--secondary-active);
+  --slider-thumb-bg: var(--neutral-white);
+  --slider-thumb-border: var(--secondary-default);
+  --slider-thumb-shadow: var(--neutral-500);
+  --slider-disabled: var(--neutral-300);
+  --tag-success-subtle-bg: var(--green-100);
+  --tag-success-text: var(--green-700);
+  --tag-success-icon-bg: var(--green-600);
+  --tag-warning-subtle-bg: var(--amber-50);
+  --tag-warning-text: var(--amber-700);
+  --tag-error-subtle-bg: var(--red-50);
+  --tag-error-text: var(--red-700);
+  --tag-info-subtle-bg: var(--secondary-200);
+  --tag-info-text: var(--secondary-600);
+  --tag-new-subtle-bg: var(--secondary-200);
+  --tag-new-text: var(--secondary-600);
+  --overlay-scrim: var(--black-alpha-50);
+  --icon-brand: var(--brand-default);
+  --icon-secondary: var(--secondary-500);
+  --icon-default: var(--neutral-500);
+  --icon-pale: var(--neutral-300);
+  --icon-hover: var(--brand-hover);
+  --icon-disabled: var(--neutral-100);
+  --rating-star: var(--amber-400);
+  --on-surface-primary: var(--label-default);
+  --on-dark-primary: var(--white-alpha-100);
+  --on-surface-secondary: var(--label-default);
+  --on-dark-secondary: var(--white-alpha-70);
+  --on-surface-tertiary: var(--text-secondary);
+  --on-dark-tertiary: var(--white-alpha-50);
+  --nav-text-default: var(--on-surface-primary);
+  --nav-text-active: var(--on-surface-primary);
+  --shadow-focus: 0 0 0 3px #b9daff;
+}
+:root {
+  --space-0: 0px; /* No gap. */
+  --space-4: 4px; /* Icon-to-text in badges and links. */
+  --space-8: 8px; /* Default gap inside buttons, rows, tag lists. */
+  --space-12: 12px; /* Gap between nav items; md input vertical rhythm. */
+  --space-16: 16px; /* Card inner gap; input horizontal padding. */
+  --space-24: 24px; /* Card padding; modal padding; header side padding. */
+  --space-32: 32px; /* Between groups inside a section. */
+  --space-40: 40px; /* Product card top padding; doc spacing. */
+  --space-48: 48px; /* Between page blocks (mobile). */
+  --space-56: 56px; /* Large block gap. */
+  --space-64: 64px; /* Between page sections. */
+  --space-80: 80px; /* Hero spacing. */
+  --space-96: 96px; /* Largest section spacing. */
+  --radius-none: 0px; /* Flush edges: full-bleed bands. */
+  --radius-xs: 2px; /* Product card and model card corners (as in Figma). */
+  --radius-sm: 4px; /* Size sm buttons/inputs, checkbox, count badge. */
+  --radius-md: 8px; /* Buttons, inputs, notifications, pagination items, menus. */
+  --radius-lg: 12px; /* Toggle track, larger panels. */
+  --radius-xl: 16px; /* Modals. */
+  --radius-2xl: 24px; /* Large promo surfaces. */
+  --radius-full: 9999px; /* Tags, badges, pills, avatars. */
+  --container-wide: 1530px; /* Content width at 1680 viewport (12 cols x 100, gutter 30, margin 75). */
+  --container-desktop: 1170px; /* Content width at 1440 viewport (12 cols x 70, gutter 30, margin 135). */
+  --container-tablet: 954px; /* Content width at 1024 viewport (12 cols x 52, gutter 30, margin 35). */
+  --gutter: 30px; /* Column gutter, desktop and tablet. */
+  --gutter-mobile: 16px; /* Column gutter and side margin at 320-767 (4 columns). */
+  --header-height: 112px; /* Desktop header: 40 top bar + 72 main row. */
+  --icon-stroke-1: 1; /* Icon stroke at 14px. */
+  --icon-stroke-1-5: 1.5; /* Default icon stroke at 20-24px. */
+  --icon-stroke-2: 2; /* Bold icons. */
+  --icon-stroke-3: 3; /* Heavy. */
+  --icon-stroke-4: 4; /* Heaviest. */
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text-heading-display: 600 56px/64px var(--font-mono); /* Hero headline. Once per page. */
+  --text-heading-2xl: 600 40px/48px var(--font-mono); /* Page title (H1). */
+  --text-heading-xl: 600 32px/40px var(--font-mono); /* Section title (H2). */
+  --text-heading-lg: 600 24px/32px var(--font-mono); /* Block title, product name on product page. */
+  --text-heading-md: 600 20px/24px var(--font-mono); /* Card title, modal title, product card name. */
+  --text-heading-sm: 600 18px/24px var(--font-mono); /* Small titles, cart title. */
+  --text-heading-xs: 700 14px/20px var(--font-mono); /* Filter group headings, tab labels, spec section labels. */
+  --text-body-lg: 400 24px/32px var(--font-sans); /* Lead paragraph. */
+  --text-body-md: 400 16px/24px var(--font-sans); /* Default body copy and input values. */
+  --text-body-md-medium: 500 16px/24px var(--font-sans); /* Emphasised body (cart item name). */
+  --text-body-md-semibold: 600 16px/24px var(--font-sans); /* Strong body (article card title). */
+  --text-body-sm: 400 14px/20px var(--font-sans); /* Secondary copy, specs, small inputs. */
+  --text-body-xs: 400 12px/16px var(--font-sans); /* Captions, dates, meta. */
+  --text-label-md: 500 14px/20px var(--font-sans); /* Form field labels. */
+  --text-label-sm: 500 12px/16px var(--font-sans); /* Small labels. */
+  --text-label-sm-semibold: 600 12px/16px var(--font-sans); /* Uppercase micro labels (set text-transform: uppercase). */
+  --text-button-xl: 600 20px/32px var(--font-sans); /* Button size xl. */
+  --text-button-lg: 600 16px/24px var(--font-sans); /* Button size lg (default). */
+  --text-button-md: 600 14px/20px var(--font-sans); /* Button size md. */
+  --text-button-sm: 400 14px/16px var(--font-sans); /* Button size sm. */
+  --text-mono-xs: 300 12px/16px var(--font-mono); /* Technical meta in mono (breadcrumb links). */
+  --text-mono-xs-medium: 500 12px/16px var(--font-mono); /* Emphasised mono meta. */
+  --text-mono-2xs: 400 12px/16px var(--font-mono); /* Top-nav items. Uppercase. */
+  --text-mono-2xs-bold: 700 12px/16px var(--font-mono); /* Active top-nav item. Uppercase. */
+}
+.heading-display {
+  font-family: var(--font-mono);
+  font-size: 56px;
+  line-height: 64px;
+  font-weight: 600;
+  letter-spacing: -3.5px;
+}
+.heading-2xl {
+  font-family: var(--font-mono);
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.heading-xl {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.heading-lg {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.heading-md {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.heading-sm {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.heading-xs {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.body-lg {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+}
+.body-md {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.body-md-medium {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.body-md-semibold {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.body-sm {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.body-xs {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.label-md {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.label-sm {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.label-sm-semibold {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.button-xl {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.button-lg {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.button-md {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.button-sm {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.mono-xs {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 300;
+  letter-spacing: 0;
+}
+.mono-xs-medium {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.mono-2xs {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.mono-2xs-bold {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+}

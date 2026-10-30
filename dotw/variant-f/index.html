@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOTW · Variant F — auto-open on first visit</title>
+<meta name="description" content="The banner slides out by itself after 2.5 s, then folds into the tab after 8 s (paused on hover, cancelled when you focus the email field).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../_shared/nsl/tokens.css">
+<link rel="stylesheet" href="../../_shared/nsl/bundle.css">
+<link rel="stylesheet" href="../dotw.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
+<script src="../../_shared/nsl/bundle.js"></script>
+<script src="../dotw.js"></script>
+<script>DOTW.mount(document.getElementById('app'), { auto: true, delay: 2500 });</script>
+</body>
+</html>

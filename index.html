@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NSL Experiments</title>
+<meta name="description" content="UI experiments and prototypes for newserverlife.com, built on NSL Design System.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="_shared/nsl/tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg-subtle); color: var(--text-primary); font-family: var(--font-sans); }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 56px 16px 80px; }
+  h1 { margin: 0 0 8px; font: var(--text-heading-2xl); }
+  .sub { margin: 0 0 40px; color: var(--text-secondary); font: var(--text-body-md); }
+  h2 { margin: 0 0 16px; font: var(--text-heading-md); }
+  .group { margin-bottom: 40px; }
+  .group p { margin: -8px 0 16px; font: var(--text-body-sm); color: var(--text-secondary); }
+  .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  a.card { display: flex; flex-direction: column; gap: 6px; padding: 20px 24px; background: var(--bg-default); border-radius: var(--radius-md); box-shadow: var(--shadow-md); color: inherit; text-decoration: none; transition: box-shadow .15s ease; }
+  a.card:hover { box-shadow: var(--shadow-lg); }
+  a.card:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+  .tag { font: var(--text-mono-2xs-bold); text-transform: uppercase; color: var(--text-secondary); }
+  .title { font: var(--text-heading-sm); }
+  .desc { font: var(--text-body-sm); color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NSL Experiments</h1>
+  <p class="sub">Prototypes for newserverlife.com on NSL Design System. Not production code.</p>
+
+  <section class="group">
+    <h2>Deal of the Week — left-edge banner</h2>
+    <p>Replaces the bottom DOTW banner that collides with the cookie notice.</p>
+    <div class="list">
+      <a class="card" href="dotw/variant-e/">
+        <span class="tag">Variant E</span>
+        <span class="title">Slide-out banner with form</span>
+        <span class="desc">Hidden behind the left edge; the tab slides it out. Email form, success state.</span>
+      </a>
+      <a class="card" href="dotw/variant-f/">
+        <span class="tag">Variant F</span>
+        <span class="title">Auto-open on first visit</span>
+        <span class="desc">Slides out after 2.5 s, folds into the tab after 8 s. Hover pauses, focus cancels.</span>
+      </a>
+    </div>
+  </section>
+</div>
+</body>
+</html>
