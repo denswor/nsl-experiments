@@ -137,7 +137,10 @@
           <div class="dotw__close"><${NSL.CloseButton} label="Hide deal" onClick=${toggle} /></div>
           <div class="dotw__deal dotw__in" style=${{ '--i': 0 }}>DEAL</div>
           <div class="dotw__week dotw__in" style=${{ '--i': 1 }}>of the Week</div>
-          <img class="dotw__img" src=${ASSETS + 'r640-crop.webp'} alt="Dell PowerEdge R640, front panel close-up" />
+          <div class="dotw__img">
+            <img src=${ASSETS + 'r640-crop.webp'} alt="Dell PowerEdge R640, front panel close-up" />
+            <span class="dotw__shine" aria-hidden="true"></span>
+          </div>
           <h2 class="dotw__model dotw__in" style=${{ '--i': 3 }}>DELL PowerEdge R640</h2>
           <p class="dotw__tagline dotw__in" style=${{ '--i': 4 }}>One compact server.<br />Any workload.</p>
           <p class="dotw__uses dotw__in" style=${{ '--i': 5 }}>Virtualization · Databases · Cloud Apps</p>
