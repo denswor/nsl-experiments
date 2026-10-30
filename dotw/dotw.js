@@ -105,7 +105,7 @@
           <div class="dotw__close"><${NSL.CloseButton} label="Hide deal" onClick=${toggle} /></div>
           <div class="dotw__deal">DEAL</div>
           <div class="dotw__week">of the Week</div>
-          <img class="dotw__img" src=${ASSETS + 'r640-angle.webp'} alt="Dell PowerEdge R640, three-quarter view" />
+          <img class="dotw__img" src=${ASSETS + 'r640-crop.webp'} alt="Dell PowerEdge R640, front panel close-up" />
           <h2 class="dotw__model">DELL PowerEdge R640</h2>
           <p class="dotw__tagline">One compact server.<br />Any workload.</p>
           <p class="dotw__uses">Virtualization · Databases · Cloud Apps</p>

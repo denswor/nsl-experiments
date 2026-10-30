@@ -48,7 +48,7 @@ a { color: var(--text-link, #1d6cbe); }
 .dotw__close { position: absolute; right: 16px; top: 16px; z-index: 1; }
 .dotw__deal { font-weight: 700; font-size: 84px; line-height: 76px; letter-spacing: -3px; }
 .dotw__week { font-weight: 600; font-size: 40px; line-height: 48px; letter-spacing: -.5px; }
-.dotw__img { display: block; width: 440px; max-width: none; margin: 16px 0 10px -40px; position: relative; }
+.dotw__img { display: block; width: 460px; max-width: none; margin: 12px 0 8px -32px; position: relative; }
 .dotw__model { margin: 0; font-weight: 700; font-size: 30px; line-height: 36px; }
 .dotw__tagline { margin: 10px 0 0; font-weight: 600; font-size: 22px; line-height: 28px; }
 .dotw__uses { margin: 10px 0 0; font-size: 17px; line-height: 24px; }
@@ -76,7 +76,7 @@ a { color: var(--text-link, #1d6cbe); }
   .dotw__panel { padding-top: 20px; padding-bottom: 24px; }
   .dotw__deal { font-size: 64px; line-height: 60px; }
   .dotw__week { font-size: 32px; line-height: 38px; }
-  .dotw__img { margin: 8px 0 4px -40px; }
+  .dotw__img { margin: 6px 0 4px -32px; }
   .dotw__tagline, .dotw__uses { margin-top: 6px; }
   .dotw__form { margin-top: 16px; }
 }
