@@ -43,6 +43,7 @@ a { color: var(--text-link, #1d6cbe); }
   transition: transform .38s cubic-bezier(.2, .8, .2, 1); }
 .dotw.is-closed { transform: translateX(-100%); }
 .dotw.is-pre { transform: translateX(calc(-100% - 60px)); }
+.dotw.is-gone { transform: translateX(calc(-100% - 60px)); transition: transform .6s cubic-bezier(.6, 0, .8, .35); pointer-events: none; }
 .dotw__panel { position: relative; width: 400px;
   padding: 28px 32px 32px; background: var(--secondary-100); color: var(--text-primary); border-radius: 0 8px 8px 0; display: flex; flex-direction: column; }
 .dotw__close { position: absolute; right: 16px; top: 16px; z-index: 1; }
@@ -62,6 +63,11 @@ a { color: var(--text-link, #1d6cbe); }
 .dotw__uses { margin: 10px 0 0; font-size: 17px; line-height: 24px; }
 .dotw__form { display: flex; flex-direction: column; gap: 10px; margin: 24px 0 0; }
 .dotw__note { font: var(--text-body-xs); color: var(--text-secondary); }
+.dotw__dismiss { align-self: flex-start; margin-top: 6px; padding: 0; border: 0; background: none; font-family: var(--font-sans); cursor: pointer; color: var(--text-secondary); }
+.dotw__dismiss:hover { color: var(--text-primary); }
+.dotw-demo { position: fixed; left: 50%; top: 124px; transform: translateX(-50%); z-index: 60; display: flex; gap: 8px; align-items: center;
+  padding: 8px 14px; border-radius: var(--radius-full); background: var(--bg-default); box-shadow: var(--shadow-md); font: var(--text-body-xs); color: var(--text-secondary); }
+.dotw-demo .nsl-link { padding: 0; border: 0; background: none; font-size: 12px; cursor: pointer; }
 .dotw__done { display: flex; gap: 12px; align-items: flex-start; margin-top: 24px; padding: 16px; background: var(--bg-default); border-radius: var(--radius-md); }
 .dotw__done-icon { color: var(--status-success); display: flex; }
 .dotw__done-title { font: var(--text-label-md); font-weight: 600; }
@@ -113,9 +119,9 @@ a { color: var(--text-link, #1d6cbe); }
 
 /* exit: the panel leaves first, content trails behind it — bottom lines first, each fading as it drifts;
    the server lags on a spring and settles back, so its edge still peeks out next to the tab */
-.dotw.is-closed .dotw__in { animation: dotwOut .34s cubic-bezier(.4, 0, .6, 1) both; animation-delay: calc((6 - var(--i, 0)) * 28ms); }
-.dotw.is-closed .dotw__close { animation: dotwOut .24s cubic-bezier(.4, 0, .6, 1) both; }
-.dotw.is-closed .dotw__img { animation: dotwImgLag .6s cubic-bezier(.3, .6, .4, 1) both; }
+.dotw.is-closed .dotw__in, .dotw.is-gone .dotw__in { animation: dotwOut .34s cubic-bezier(.4, 0, .6, 1) both; animation-delay: calc((6 - var(--i, 0)) * 28ms); }
+.dotw.is-closed .dotw__close, .dotw.is-gone .dotw__close { animation: dotwOut .24s cubic-bezier(.4, 0, .6, 1) both; }
+.dotw.is-closed .dotw__img, .dotw.is-gone .dotw__img { animation: dotwImgLag .6s cubic-bezier(.3, .6, .4, 1) both; }
 @keyframes dotwOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(40px); } }
 @keyframes dotwImgLag { 0% { transform: none; } 35% { transform: translateX(34px); } 70% { transform: translateX(-4px); } 100% { transform: none; } }
 
@@ -128,7 +134,8 @@ a { color: var(--text-link, #1d6cbe); }
 
 @media (prefers-reduced-motion: reduce) {
   .dotw, .dotw.is-open, .dotw.is-closed { transition: none; }
-  .dotw__tab--idle, .dotw.is-closed .dotw__bg, .dotw.is-open .dotw__in, .dotw.is-open .dotw__img, .dotw.is-open .dotw__shine, .dotw.is-closed .dotw__in, .dotw.is-closed .dotw__close, .dotw.is-closed .dotw__img, .flame__tongue { animation: none !important; }
+  .dotw__tab--idle, .dotw.is-closed .dotw__bg, .dotw.is-open .dotw__in, .dotw.is-open .dotw__img, .dotw.is-open .dotw__shine, .dotw.is-closed .dotw__in, .dotw.is-closed .dotw__close, .dotw.is-closed .dotw__img, .dotw.is-gone .dotw__in, .dotw.is-gone .dotw__close, .dotw.is-gone .dotw__img, .flame__tongue { animation: none !important; }
+  .dotw.is-gone { transition: none; }
 }
 
 /* small screens: backdrop stacks; banner keeps its width but never exceeds the viewport */

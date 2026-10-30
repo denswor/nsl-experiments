@@ -71,7 +71,6 @@
   }
 
   /* ---------- The banner ---------- */
-  var TagIcon = html`<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>`;
 
   /* Animated flame. The body morphs between three shapes (SMIL <animate> on "d"),
      the light core morphs on a faster rhythm, and three small tongues break off the tips,
@@ -104,33 +103,51 @@
     </path>
   </svg>`;
 
+  /* "Hide until the next deal": a flag keyed by the deal's id, not by a 7-day timer —
+     when marketing publishes a new Deal of the Week with a new id, the banner comes back by itself. */
+  var STORE_KEY = 'nsl_dotw_hidden';
+  function readHidden() { try { return localStorage.getItem(STORE_KEY); } catch (e) { return null; } }
+  function writeHidden(id) { try { if (id) localStorage.setItem(STORE_KEY, id); else localStorage.removeItem(STORE_KEY); } catch (e) {} }
+  var AUTO_HIDE_MS = 3500;
+
   function DotwBanner(props) {
     var auto = !!props.auto;
     var delay = props.delay || 2500;
+    var dealId = props.dealId || '2026-w44-r640';
+    if (/[?&]reset\b/.test(location.search) && readHidden() === dealId) writeHidden(null);
+    var s0 = useState(readHidden() === dealId); var gone = s0[0], setGone = s0[1];
     var s1 = useState(auto ? false : !!props.startOpen); var open = s1[0], setOpen = s1[1];
     var s2 = useState(!auto); var started = s2[0], setStarted = s2[1];
     var s3 = useState(false); var counting = s3[0], setCounting = s3[1];
     var s4 = useState(false); var sent = s4[0], setSent = s4[1];
     var s5 = useState(''); var email = s5[0], setEmail = s5[1];
     var s6 = useState(''); var err = s6[0], setErr = s6[1];
-    var timer = useRef(null);
+    var timer = useRef(null), hideTimer = useRef(null);
 
     useEffect(function () {
-      if (!auto) return;
+      if (!auto || gone) return;
       timer.current = setTimeout(function () { setStarted(true); setOpen(true); setCounting(true); }, delay);
-      return function () { clearTimeout(timer.current); };
+      return function () { clearTimeout(timer.current); clearTimeout(hideTimer.current); };
     }, []);
 
     function toggle() { clearTimeout(timer.current); setStarted(true); setCounting(false); setOpen(!open); }
+    function hideForWeek() {
+      clearTimeout(timer.current); clearTimeout(hideTimer.current);
+      writeHidden(dealId); setStarted(true); setCounting(false); setOpen(false); setGone(true);
+    }
     function send(e) {
       if (e) e.preventDefault();
       if (!/^\S+@\S+\.\S+$/.test(email)) { setErr('Enter a valid email'); return; }
       setErr(''); setSent(true); setCounting(false);
+      hideTimer.current = setTimeout(hideForWeek, AUTO_HIDE_MS);
     }
-    var state = open ? 'is-open' : (started ? 'is-closed' : 'is-pre');
+    function resetDemo() { writeHidden(null); setSent(false); setEmail(''); setGone(false); setStarted(true); setOpen(false); }
+
+    var state = gone ? 'is-gone' : (open ? 'is-open' : (started ? 'is-closed' : 'is-pre'));
 
     return html`
-      <div class=${'dotw ' + state}>
+      <${React.Fragment}>
+      <div class=${'dotw ' + state} aria-hidden=${gone ? true : undefined}>
         <aside class="dotw__panel" aria-label="Deal of the Week" aria-hidden=${!open} inert=${open ? undefined : ''}
           onFocus=${function () { if (counting) setCounting(false); }}>
           <div class="dotw__bg" aria-hidden="true"></div>
@@ -148,22 +165,28 @@
             ? html`<div class="dotw__done dotw__in" role="status" style=${{ '--i': 6 }}>
                 <span class="dotw__done-icon"><${NSL.Icon} name="check-circle" size=${24} /></span>
                 <div><div class="dotw__done-title">Deal claimed</div>
-                <div class="dotw__done-text">Check your inbox: the R640 offer and spec are on their way.</div></div></div>`
+                <div class="dotw__done-text">Check your inbox: the R640 offer and spec are on their way. We'll tuck this banner away until next week's deal.</div></div></div>`
             : html`<form class="dotw__form dotw__in" style=${{ '--i': 6 }} onSubmit=${send} noValidate>
                 <${NSL.Input} type="email" aria-label="Your email" placeholder="Your email" iconLeft="mail" size="lg"
                   value=${email} onValueChange=${setEmail} error=${err || undefined} />
-                <${NSL.Button} type="submit" variant="primary" size="lg" fullWidth=${true}>${TagIcon} Claim the Deal<//>
+                <${NSL.Button} type="submit" variant="primary" size="lg" fullWidth=${true} iconLeft="tag">Claim the Deal<//>
                 <span class="dotw__note">We'll email you this week's price and the full spec.</span>
+                <button type="button" class="nsl-link nsl-link--dashed dotw__dismiss" onClick=${hideForWeek}>
+                  <span class="nsl-link__label">Not interested this week</span>
+                </button>
               </form>`}
           ${counting && open ? html`<div class="dotw__timer" aria-hidden="true">
               <div class="dotw__timer-bar" onAnimationEnd=${function () { setCounting(false); setOpen(false); }}></div></div>` : null}
         </aside>
         <button type="button" class=${'dotw__tab' + (open ? '' : ' dotw__tab--idle')} aria-expanded=${open}
-          aria-label="Deal of the Week" onClick=${toggle}>
+          aria-label="Deal of the Week" onClick=${toggle} tabIndex=${gone ? -1 : undefined}>
           ${FlameIcon}
           <span class="dotw__tab-label">Deal of the Week</span>
         </button>
-      </div>`;
+      </div>
+      ${gone ? html`<div class="dotw-demo" role="note">Deal of the Week is hidden until the next deal.
+        <button type="button" class="nsl-link nsl-link--dashed" onClick=${resetDemo}><span class="nsl-link__label">Show it again (demo)</span></button></div>` : null}
+      <//>`;
   }
 
   window.DOTW = {
