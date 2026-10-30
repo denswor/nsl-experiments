@@ -689,7 +689,7 @@ span.nsl-tag--filled:hover { background: var(--tc); } span.nsl-tag--subtle:hover
 .nsl-price--text .nsl-price__value { font: 600 18px/24px var(--font-sans); letter-spacing: 0; }
 
 /* Inline components size to their content in any parent, including stretching flex columns */
-.nsl-pbadge, .nsl-count, .nsl-tag, .nsl-status, .nsl-stars, .nsl-link, .nsl-close, .nsl-stepper, .nsl-catalog, .nsl-hcart, .nsl-bgroup, .nsl-check, .nsl-toggle, .nsl-tabs--pill, .nsl-pagination, .nsl-btn:not(.nsl-btn--full) { width: fit-content; max-width: 100%; }
+.nsl-pbadge, .nsl-count, .nsl-tag, .nsl-status, .nsl-stars, .nsl-link, .nsl-stepper, .nsl-catalog, .nsl-hcart, .nsl-bgroup, .nsl-check, .nsl-toggle, .nsl-tabs--pill, .nsl-pagination, .nsl-btn:not(.nsl-btn--full) { width: fit-content; max-width: 100%; }
 .nsl-btn.nsl-btn--icon-only.nsl-btn--xl { width: 80px; } .nsl-btn.nsl-btn--icon-only.nsl-btn--lg { width: 56px; } .nsl-btn.nsl-btn--icon-only.nsl-btn--md { width: 40px; } .nsl-btn.nsl-btn--icon-only.nsl-btn--sm { width: 32px; }
 
 /* ---------- Search ---------- */
