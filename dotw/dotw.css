@@ -79,8 +79,12 @@ a { color: var(--text-link, #1d6cbe); }
 @keyframes dotwCountdown { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 
 .dotw__tab { position: absolute; left: 400px; top: 270px; width: 44px; padding: 24px 0; border: 0; border-radius: 0 12px 12px 0;
-  background: var(--secondary-100); color: var(--brand-default); display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: background .15s ease; }
-.dotw__tab:hover { background: linear-gradient(to left, var(--secondary-200), var(--secondary-100)); }
+  background: var(--secondary-100); color: var(--brand-default); display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; }
+/* hover: a gradient layer fades in over the solid fill (the fill itself never changes, so nothing flashes) */
+.dotw__tab::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(to left, var(--secondary-200), rgba(185, 218, 255, 0)); opacity: 0; transition: opacity .2s ease; }
+.dotw__tab:hover::after { opacity: 1; }
+.dotw__tab > * { position: relative; z-index: 1; }
 .dotw__tab:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
 .dotw__tab-label { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--font-mono); font-weight: 600; font-size: 18px; line-height: 20px; white-space: nowrap; }
 
