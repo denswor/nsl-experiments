@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOTW · Isolated component (vanilla JS)</title>
+<meta name="description" content="nsl-dotw.js — the Deal of the Week banner as a dependency-free, style-isolated component, on a page with deliberately hostile CSS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  /* ---- a plain stand-in for the site page ---- */
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: #18304c; background: #fff; }
+  .bar { height: 40px; background: linear-gradient(90deg, #2e67b1, #558fcb 25%, #92278e 75%, #cb1c68); }
+  .head { height: 72px; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid #e5e7eb; font: 600 22px "IBM Plex Sans", sans-serif; color: #2e67b1; }
+  main { max-width: 1170px; margin: 0 auto; padding: 40px 16px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 30px; align-items: center; }
+  main h1 { font: 600 44px/48px "IBM Plex Mono", monospace; margin: 0 0 16px; }
+  main img { width: 100%; }
+  @media (max-width: 720px) { main { grid-template-columns: 1fr; } main h1 { font-size: 28px; line-height: 34px; } }
+
+  /* ---- demo controls ---- */
+  .demo { position: fixed; right: 16px; top: 128px; z-index: 2000; width: 300px; padding: 14px 16px; background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 8px; box-shadow: 0 10px 15px rgba(0,0,0,.1); font: 13px/18px "IBM Plex Sans", sans-serif; }
+  .demo summary { cursor: pointer; list-style: none; }
+  .demo b { font-family: "IBM Plex Mono", monospace; }
+  .demo[open] summary { margin-bottom: 8px; }
+  .demo label { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
+  .demo .row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .demo .row a { color: #b91f69; }
+  .log { margin-top: 10px; max-height: 160px; overflow: auto; font: 12px/16px "IBM Plex Mono", monospace; color: #6b7280; background: #f9fafb; border-radius: 4px; padding: 6px 8px; }
+  @media (max-width: 720px) { .demo { top: auto; bottom: 8px; right: 8px; width: auto; max-width: calc(100% - 16px); } .log { max-height: 60px; } }
+</style>
+
+<!-- Deliberately hostile "template" CSS: global rules a CMS theme might have. Toggle it in the demo panel. -->
+<style id="hostile">
+  html body * { font-family: Georgia, serif !important; letter-spacing: .08em; }
+  button { background: #ffeb3b !important; color: #000 !important; border: 3px solid #000 !important; border-radius: 0 !important; text-transform: uppercase; }
+  input { border: 3px dashed green !important; height: 20px !important; }
+  h2, p { color: red !important; margin: 40px 0 !important; text-transform: uppercase; }
+  svg { width: 80px !important; height: 80px !important; }
+  aside, div { box-sizing: content-box !important; }
+  img { filter: grayscale(1) !important; }
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<div class="head">NewServerLife</div>
+<main>
+  <section>
+    <h1>Refurbished servers built for value &amp; reliability</h1>
+    <p>Stand-in page for the live site. The global styles above are intentionally aggressive: they restyle every button, input, heading, paragraph and SVG on the page. The banner on the left is not affected.</p>
+  </section>
+  <img src="../assets/hero-offers.webp" alt="Stack of Dell PowerEdge servers">
+</main>
+
+<!-- 1. Container -->
+<div id="nsl-dotw"></div>
+
+<details class="demo" id="demo" open>
+  <summary><b>nsl-dotw.js · demo</b></summary>
+  <label><input type="checkbox" id="hostile-toggle" checked> Hostile site CSS</label>
+  <label><input type="checkbox" id="shadow-toggle" checked> Shadow DOM isolation</label>
+  <label><input type="checkbox" id="auto-toggle"> Auto-open after 2.5 s</label>
+  <div class="row"><a href="#" id="reset">Reset "hidden for this deal"</a></div>
+  <div class="log" id="log" aria-live="polite"></div>
+</details>
+
+<!-- 2. Script -->
+<script src="nsl-dotw.js"></script>
+<!-- 3. Mount -->
+<script>
+  var qs = new URLSearchParams(location.search);
+  var shadow = qs.get('shadow') !== '0', auto = qs.get('auto') === '1', hostile = qs.get('hostile') !== '0';
+  if (qs.has('reset')) NSLDotw.reset();
+  if (matchMedia('(max-width: 720px)').matches) document.getElementById('demo').open = false;
+  document.getElementById('hostile').disabled = !hostile;
+
+  var log = document.getElementById('log');
+  document.getElementById('nsl-dotw').addEventListener('nsl-dotw', function (e) {
+    var line = document.createElement('div');
+    line.textContent = new Date().toLocaleTimeString() + '  ' + e.detail.type + (e.detail.source ? ' (' + e.detail.source + ')' : '') + (e.detail.reason ? ' (' + e.detail.reason + ')' : '');
+    log.prepend(line);
+  });
+
+  NSLDotw.mount('#nsl-dotw', {
+    dealId: '2026-w44-r640',
+    title: 'DELL PowerEdge R640',
+    tagline: ['One compact server.', 'Any workload.'],
+    uses: 'Virtualization · Databases · Cloud Apps',
+    image: { src: '../assets/r640-crop.webp', alt: 'Dell PowerEdge R640, front panel close-up' },
+    endpoint: '',          // demo mode: always succeeds
+    privacyUrl: '#privacy',
+    autoOpen: auto ? 2500 : false,
+    shadow: shadow
+  });
+
+  // demo controls reload the page with the new settings
+  function go(k, v) { qs.set(k, v); qs.delete('reset'); location.search = qs.toString(); }
+  document.getElementById('hostile-toggle').checked = hostile;
+  document.getElementById('shadow-toggle').checked = shadow;
+  document.getElementById('auto-toggle').checked = auto;
+  document.getElementById('hostile-toggle').onchange = function () { go('hostile', this.checked ? '1' : '0'); };
+  document.getElementById('shadow-toggle').onchange = function () { go('shadow', this.checked ? '1' : '0'); };
+  document.getElementById('auto-toggle').onchange = function () { NSLDotw.reset(); go('auto', this.checked ? '1' : '0'); };
+  document.getElementById('reset').onclick = function (e) { e.preventDefault(); NSLDotw.reset(); location.reload(); };
+</script>
+</body>
+</html>
