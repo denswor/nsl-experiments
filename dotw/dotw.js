@@ -6,6 +6,7 @@
   var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
   var NSL = window.NSL;
   var ASSETS = '../assets/';
+  var MOBILE = window.matchMedia && window.matchMedia('(max-width: 720px)').matches;
 
   /* ---------- Page backdrop: newserverlife.com home, first screen ---------- */
   function Site() {
@@ -19,8 +20,10 @@
     };
     return html`
       <div class="site">
-        <${NSL.Header} nav=${nav} active="HARDWARE" online=${true} cartCount=${0}
-          email="sales@newserverlife.com" phone="+1 (786) 755-8181" />
+        ${MOBILE
+          ? html`<${NSL.MobileHeader} cartCount=${0} />`
+          : html`<${NSL.Header} nav=${nav} active="HARDWARE" online=${true} cartCount=${0}
+              email="sales@newserverlife.com" phone="+1 (786) 755-8181" />`}
         <main class="hero">
           <section class="hero__text">
             <div class="chips">
@@ -152,14 +155,16 @@
           onFocus=${function () { if (counting) setCounting(false); }}>
           <div class="dotw__bg" aria-hidden="true"></div>
           <div class="dotw__close"><${NSL.CloseButton} label="Hide deal" onClick=${toggle} /></div>
-          <div class="dotw__deal dotw__in" style=${{ '--i': 0 }}>DEAL</div>
-          <div class="dotw__week dotw__in" style=${{ '--i': 1 }}>of the Week</div>
+          <div class="dotw__title dotw__in" style=${{ '--i': 0 }}>
+            <span class="dotw__deal">DEAL</span>
+            <span class="dotw__week">of the Week</span>
+          </div>
           <div class="dotw__img">
             <img src=${ASSETS + 'r640-crop.webp'} alt="Dell PowerEdge R640, front panel close-up" />
             <span class="dotw__shine" aria-hidden="true"></span>
           </div>
           <h2 class="dotw__model dotw__in" style=${{ '--i': 3 }}>DELL PowerEdge R640</h2>
-          <p class="dotw__tagline dotw__in" style=${{ '--i': 4 }}>One compact server.<br />Any workload.</p>
+          <p class="dotw__tagline dotw__in" style=${{ '--i': 4 }}>One compact server. <br />Any workload.</p>
           <p class="dotw__uses dotw__in" style=${{ '--i': 5 }}>Virtualization · Databases · Cloud Apps</p>
           ${sent
             ? html`<div class="dotw__done dotw__in" role="status" style=${{ '--i': 6 }}>
