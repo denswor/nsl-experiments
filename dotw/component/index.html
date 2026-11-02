@@ -28,6 +28,7 @@
   .demo label { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
   .demo .row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
   .demo .row a { color: #b91f69; }
+  .demo .row a.dl { font-weight: 600; }
   .log { margin-top: 10px; max-height: 160px; overflow: auto; font: 12px/16px "IBM Plex Mono", monospace; color: #6b7280; background: #f9fafb; border-radius: 4px; padding: 6px 8px; }
   @media (max-width: 720px) { .demo { top: auto; bottom: 8px; right: 8px; width: auto; max-width: calc(100% - 16px); } .log { max-height: 60px; } }
 </style>
@@ -63,6 +64,7 @@
   <label><input type="checkbox" id="shadow-toggle" checked> Shadow DOM isolation</label>
   <label><input type="checkbox" id="auto-toggle"> Auto-open after 2.5 s</label>
   <div class="row"><a href="#" id="reset">Reset "hidden for this deal"</a></div>
+  <div class="row"><a class="dl" href="nsl-dotw-1.0.0.zip" download>Download for developers · nsl-dotw-1.0.0.zip</a></div>
   <div class="log" id="log" aria-live="polite"></div>
 </details>
 

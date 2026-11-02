@@ -5,6 +5,9 @@
 
 Демо, в том числе на странице с нарочно «враждебным» CSS: https://denswor.github.io/nsl-experiments/dotw/component/
 
+**Архив для разработчика:** https://denswor.github.io/nsl-experiments/dotw/component/nsl-dotw-1.0.0.zip
+(минифицированный и исходный файлы, примеры, заготовки для Bitrix, README, CHANGELOG)
+
 ## Подключение
 
 ```html
