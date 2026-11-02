@@ -110,6 +110,7 @@ a { color: var(--text-link, #1d6cbe); }
 .dotw__panel { background: transparent; }
 .dotw__bg { position: absolute; inset: 0; background: var(--secondary-100); border-radius: 0 8px 8px 0; z-index: 0; }
 .dotw__panel > :not(.dotw__bg) { z-index: 1; }
+.dotw__panel > .dotw__close { z-index: 2; } /* the title row is later in the DOM and would cover it */
 .dotw__panel > :not(.dotw__bg):not(.dotw__close):not(.dotw__timer) { position: relative; }
 
 /* entrance: the panel lands with a small overshoot, then content follows in a cascade */
@@ -160,7 +161,7 @@ a { color: var(--text-link, #1d6cbe); }
   .dotw__uses { margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--text-secondary); }
   .dotw__form { gap: 8px; margin-top: 16px; }
   .dotw__done { margin-top: 16px; padding: 14px; }
-  .dotw__tab { left: 100%; top: 200px; padding: 18px 0; }
+  .dotw__tab { left: 100%; top: 112px; padding: 18px 0; } /* fixed offset from the panel top: stays put when the success message shortens the panel */
   .dotw__tab-label { font-size: 16px; }
   /* backdrop (prototype only) */
   .hero { width: auto; margin: 0 16px; padding-top: 20px; }
