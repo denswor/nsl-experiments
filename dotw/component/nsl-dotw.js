@@ -1,5 +1,5 @@
 /*!
- * nsl-dotw v1.1.0 — "Deal of the Week" left-edge banner for newserverlife.com
+ * nsl-dotw v1.1.1 — "Deal of the Week" left-edge banner for newserverlife.com
  * No dependencies. ES2017. Styles are isolated in a Shadow DOM attached to a plain container.
  * Built on NSL Design System tokens (values inlined below).
  *
@@ -14,7 +14,7 @@
 (function (global) {
   'use strict';
 
-  var VERSION = '1.1.0';
+  var VERSION = '1.1.1';
   var STORAGE_KEY = 'nsl_dotw_hidden';
 
   var DEFAULTS = {
@@ -110,9 +110,9 @@
   -webkit-mask: var(--nsl-dotw-mask) center / 100% 100% no-repeat; mask: var(--nsl-dotw-mask) center / 100% 100% no-repeat;
   background: linear-gradient(105deg, rgba(255,255,255,0) 42%, rgba(255,255,255,.75) 50%, rgba(255,255,255,0) 58%);
   background-size: 250% 100%; background-position: 100% 0; }
-.nsl-dotw__badge { position: absolute; right: 12px; top: 118px; margin: 0; padding: 10px 20px; border-radius: 999px; background: var(--c-bg); color: var(--c-brand);
+.nsl-dotw__badge { position: absolute; right: 12px; top: 160px; margin: 0; padding: 10px 20px; border-radius: 999px; background: var(--c-bg); color: var(--c-brand);
   font: 700 26px/32px var(--f-mono); letter-spacing: .5px; white-space: nowrap; pointer-events: none;
-  box-shadow: 0 6px 16px rgba(24, 48, 76, .14), 0 1px 3px rgba(24, 48, 76, .08); transform: rotate(-8deg); }
+  box-shadow: 0 6px 16px rgba(24, 48, 76, .14), 0 1px 3px rgba(24, 48, 76, .08); rotate: -8deg; }
 .nsl-dotw__model { margin: 0; font-weight: 700; font-size: 30px; line-height: 36px; }
 .nsl-dotw__tagline { margin: 10px 0 0; font-weight: 600; font-size: 22px; line-height: 28px; }
 .nsl-dotw__uses { margin: 10px 0 0; font-size: 17px; line-height: 24px; }
@@ -180,7 +180,7 @@
 .nsl-dotw__in { --i: 0; }
 .nsl-dotw--open .nsl-dotw__in { animation: nslDotwIn .55s cubic-bezier(.25, 1.25, .5, 1) both; animation-delay: calc(140ms + var(--i) * 55ms); }
 .nsl-dotw--open .nsl-dotw__media { animation: nslDotwImgIn .75s cubic-bezier(.2, 1.35, .4, 1) .22s both; }
-.nsl-dotw--open .nsl-dotw__badge { animation: nslDotwBadgeIn .6s cubic-bezier(.3, 1.6, .5, 1) .55s both, nslDotwBadgeSway 3.6s ease-in-out 1.15s infinite; }
+.nsl-dotw--open .nsl-dotw__badge { animation: nslDotwBadgeIn .6s cubic-bezier(.3, 1.6, .5, 1) .55s both, nslDotwBadgeBob 1.7s cubic-bezier(.37, 0, .63, 1) 1.15s infinite alternate, nslDotwBadgeTilt 2.6s cubic-bezier(.37, 0, .63, 1) 1.15s infinite alternate; }
 .nsl-dotw--closed .nsl-dotw__badge, .nsl-dotw--gone .nsl-dotw__badge { animation: nslDotwOut .2s cubic-bezier(.4, 0, .6, 1) both; }
 .nsl-dotw--open .nsl-dotw__shine { opacity: 1; animation: nslDotwShine 5.5s cubic-bezier(.45, 0, .55, 1) 1.3s infinite; }
 .nsl-dotw--closed .nsl-dotw__in, .nsl-dotw--gone .nsl-dotw__in { animation: nslDotwOut .34s cubic-bezier(.4, 0, .6, 1) both; animation-delay: calc((6 - var(--i)) * 28ms); }
@@ -197,8 +197,10 @@
 @keyframes nslDotwShine { 0% { background-position: 100% 0; } 20%, 100% { background-position: 0% 0; } }
 @keyframes nslDotwPullTab { 0% { transform: translateX(0); } 4.5% { transform: translateX(20px); } 7.5% { transform: translateX(-4px); } 10% { transform: translateX(7px); } 12.5% { transform: translateX(-1.5px); } 15%, 100% { transform: translateX(0); } }
 @keyframes nslDotwPullBg { 0% { transform: translateX(0); } 5% { transform: translateX(13px); } 8.5% { transform: translateX(-2px); } 11% { transform: translateX(3px); } 14%, 100% { transform: translateX(0); } }
-@keyframes nslDotwBadgeIn { from { opacity: 0; transform: translateY(10px) rotate(-30deg) scale(.5); } to { opacity: 1; transform: translateY(0) rotate(-8deg) scale(1); } }
-@keyframes nslDotwBadgeSway { 0%, 100% { transform: translateY(0) rotate(-8deg); } 25% { transform: translateY(-6px) rotate(-14deg); } 50% { transform: translateY(0) rotate(-8deg); } 75% { transform: translateY(-4px) rotate(-2deg); } }
+@keyframes nslDotwBadgeIn { from { opacity: 0; transform: translateY(10px) rotate(-22deg) scale(.5); } to { opacity: 1; transform: none; } }
+/* "on the waves": bob and tilt run on different periods, so the motion never repeats exactly */
+@keyframes nslDotwBadgeBob { from { translate: 0 2px; } to { translate: 0 -5px; } }
+@keyframes nslDotwBadgeTilt { from { rotate: -13deg; } to { rotate: -3deg; } }
 @keyframes nslDotwCountdown { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @keyframes nslDotwTongue1 { 0% { transform: translate(0, 2px) scale(.6); opacity: 0; } 15% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { transform: translate(2.5px, -11px) scale(.15) rotate(18deg); opacity: 0; } }
 @keyframes nslDotwTongue2 { 0% { transform: translate(0, 2px) scale(.5); opacity: 0; } 18% { opacity: .9; transform: translate(0, 0) scale(.9); } 100% { transform: translate(-3px, -10px) scale(.1) rotate(-20deg); opacity: 0; } }
@@ -210,7 +212,7 @@
   .nsl-dotw__panel { padding-top: 20px; padding-bottom: 24px; }
   .nsl-dotw__deal { font-size: 64px; line-height: 60px; }
   .nsl-dotw__week { font-size: 32px; line-height: 38px; }
-  .nsl-dotw__badge { top: 92px; }
+  .nsl-dotw__badge { top: 128px; }
   .nsl-dotw__media { margin: 6px 0 4px -32px; }
   .nsl-dotw__tagline, .nsl-dotw__uses { margin-top: 6px; }
   .nsl-dotw__form { margin-top: 16px; }
@@ -234,7 +236,7 @@
   .nsl-dotw__done { margin-top: 16px; padding: 14px; }
   .nsl-dotw__tab { top: 112px; padding: 18px 0; }
   .nsl-dotw__tab-label { font-size: 16px; }
-  .nsl-dotw__badge { top: 68px; right: 12px; padding: 6px 14px; font-size: 18px; line-height: 24px; }
+  .nsl-dotw__badge { top: 86px; right: 12px; padding: 6px 14px; font-size: 18px; line-height: 24px; }
   .nsl-dotw--closed .nsl-dotw__tab, .nsl-dotw--closed .nsl-dotw__bg { animation-iteration-count: 1; }
 }
 

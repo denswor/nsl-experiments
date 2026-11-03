@@ -93,7 +93,7 @@ a { color: var(--text-link, #1d6cbe); }
   .dotw__panel { padding-top: 20px; padding-bottom: 24px; }
   .dotw__deal { font-size: 64px; line-height: 60px; }
   .dotw__week { font-size: 32px; line-height: 38px; }
-  .dotw__badge { top: 92px; }
+  .dotw__badge { top: 128px; }
   .dotw__img { margin: 6px 0 4px -32px; }
   .dotw__tagline, .dotw__uses { margin-top: 6px; }
   .dotw__form { margin-top: 16px; }
@@ -119,13 +119,15 @@ a { color: var(--text-link, #1d6cbe); }
 .dotw__panel > :not(.dotw__bg):not(.dotw__close):not(.dotw__timer):not(.dotw__badge) { position: relative; }
 .dotw__panel > .dotw__badge { z-index: 3; }
 /* discount badge: pops in after the cascade, then sways gently */
-.dotw__badge { position: absolute; right: 12px; top: 118px; padding: 10px 20px; border-radius: 999px; background: #fff; color: var(--brand-default);
+.dotw__badge { position: absolute; right: 12px; top: 160px; padding: 10px 20px; border-radius: 999px; background: #fff; color: var(--brand-default);
   font: 700 26px/32px var(--font-mono); letter-spacing: .5px; white-space: nowrap; pointer-events: none;
-  box-shadow: 0 6px 16px rgba(24, 48, 76, .14), 0 1px 3px rgba(24, 48, 76, .08); transform: rotate(-8deg); }
-.dotw.is-open .dotw__badge { animation: dotwBadgeIn .6s cubic-bezier(.3, 1.6, .5, 1) .55s both, dotwBadgeSway 3.6s ease-in-out 1.15s infinite; }
+  box-shadow: 0 6px 16px rgba(24, 48, 76, .14), 0 1px 3px rgba(24, 48, 76, .08); rotate: -8deg; }
+.dotw.is-open .dotw__badge { animation: dotwBadgeIn .6s cubic-bezier(.3, 1.6, .5, 1) .55s both, dotwBadgeBob 1.7s cubic-bezier(.37, 0, .63, 1) 1.15s infinite alternate, dotwBadgeTilt 2.6s cubic-bezier(.37, 0, .63, 1) 1.15s infinite alternate; }
 .dotw.is-closed .dotw__badge, .dotw.is-gone .dotw__badge { animation: dotwOut .2s cubic-bezier(.4, 0, .6, 1) both; }
-@keyframes dotwBadgeIn { from { opacity: 0; transform: translateY(10px) rotate(-30deg) scale(.5); } to { opacity: 1; transform: translateY(0) rotate(-8deg) scale(1); } }
-@keyframes dotwBadgeSway { 0%, 100% { transform: translateY(0) rotate(-8deg); } 25% { transform: translateY(-6px) rotate(-14deg); } 50% { transform: translateY(0) rotate(-8deg); } 75% { transform: translateY(-4px) rotate(-2deg); } }
+@keyframes dotwBadgeIn { from { opacity: 0; transform: translateY(10px) rotate(-22deg) scale(.5); } to { opacity: 1; transform: none; } }
+/* "on the waves": bob and tilt run on different periods, so the motion never repeats exactly */
+@keyframes dotwBadgeBob { from { translate: 0 2px; } to { translate: 0 -5px; } }
+@keyframes dotwBadgeTilt { from { rotate: -13deg; } to { rotate: -3deg; } }
 
 /* entrance: the panel lands with a small overshoot, then content follows in a cascade */
 .dotw.is-open .dotw__in { animation: dotwIn .55s cubic-bezier(.25, 1.25, .5, 1) both; animation-delay: calc(140ms + var(--i, 0) * 55ms); }
@@ -177,7 +179,7 @@ a { color: var(--text-link, #1d6cbe); }
   .dotw__done { margin-top: 16px; padding: 14px; }
   .dotw__tab { left: 100%; top: 112px; padding: 18px 0; } /* fixed offset from the panel top: stays put when the success message shortens the panel */
   .dotw__tab-label { font-size: 16px; }
-  .dotw__badge { top: 68px; right: 12px; padding: 6px 14px; font-size: 18px; line-height: 24px; }
+  .dotw__badge { top: 86px; right: 12px; padding: 6px 14px; font-size: 18px; line-height: 24px; }
   /* backdrop (prototype only) */
   .hero { width: auto; margin: 0 16px; padding-top: 20px; }
   .hero h1 { font-size: 28px; line-height: 34px; }
