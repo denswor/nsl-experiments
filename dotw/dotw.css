@@ -74,7 +74,7 @@ a { color: var(--text-link, #1d6cbe); }
 .dotw__done-title { font: var(--text-label-md); font-weight: 600; }
 .dotw__done-text { font: var(--text-body-sm); color: var(--text-secondary); }
 .dotw__timer { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; overflow: hidden; background: var(--secondary-200); border-radius: 0 0 8px 0; }
-.dotw__timer-bar { height: 4px; background: var(--brand-default); transform-origin: left center; animation: dotwCountdown 8s linear forwards; }
+.dotw__timer-bar { height: 4px; background: var(--brand-default); transform-origin: left center; animation: dotwCountdown 16s linear forwards; }
 .dotw__panel:hover .dotw__timer-bar { animation-play-state: paused; }
 @keyframes dotwCountdown { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 

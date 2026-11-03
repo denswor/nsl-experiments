@@ -5,7 +5,7 @@
 
 Демо, в том числе на странице с нарочно «враждебным» CSS: https://denswor.github.io/nsl-experiments/dotw/component/
 
-**Архив для разработчика:** https://denswor.github.io/nsl-experiments/dotw/component/nsl-dotw-1.1.1.zip
+**Архив для разработчика:** https://denswor.github.io/nsl-experiments/dotw/component/nsl-dotw-1.1.2.zip
 (минифицированный и исходный файлы, примеры, заготовки для Bitrix, README, CHANGELOG)
 
 ## Подключение
@@ -47,7 +47,7 @@
 | `submit` | `null` | `async (payload) => {}`. Своя отправка вместо `endpoint`; бросить ошибку — показать ошибку в форме |
 | `privacyUrl` | `''` | Добавляет под кнопкой «By claiming the deal you agree to our Privacy Policy.» |
 | `autoOpen` | `false` | Через сколько мс открыть баннер самому (например, `2500`). Затем он сворачивается в язычок |
-| `autoCollapse` | `8000` | Сколько мс авто-открытый баннер ждёт перед сворачиванием. Ховер — пауза, фокус в поле — отмена |
+| `autoCollapse` | `16000` | Сколько мс авто-открытый баннер ждёт перед сворачиванием. Ховер — пауза, фокус в поле — отмена |
 | `hideAfterClaim` | `3500` | Сколько мс висит «Deal claimed» перед скрытием до следующей сделки |
 | `offsetTop` / `offsetTopMobile` | `136` / `64` | Отступ сверху в px (под шапкой) на десктопе и на телефоне (≤ 480 px) |
 | `zIndex` | `1000` | Над контентом, но под модалками сайта. Cookie-баннер и чат стоит держать выше или ниже по договорённости |

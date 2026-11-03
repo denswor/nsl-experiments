@@ -1,5 +1,5 @@
 /*!
- * nsl-dotw v1.1.1 — "Deal of the Week" left-edge banner for newserverlife.com
+ * nsl-dotw v1.1.2 — "Deal of the Week" left-edge banner for newserverlife.com
  * No dependencies. ES2017. Styles are isolated in a Shadow DOM attached to a plain container.
  * Built on NSL Design System tokens (values inlined below).
  *
@@ -14,7 +14,7 @@
 (function (global) {
   'use strict';
 
-  var VERSION = '1.1.1';
+  var VERSION = '1.1.2';
   var STORAGE_KEY = 'nsl_dotw_hidden';
 
   var DEFAULTS = {
@@ -30,7 +30,7 @@
     submit: null,               // async function (payload) { … } — overrides `endpoint`; throw to show an error
     privacyUrl: '',             // adds "By claiming the deal you agree to our Privacy Policy." under the button
     autoOpen: false,            // false | ms after mount (e.g. 2500). Auto-opens once per deal; then folds into the tab
-    autoCollapse: 8000,         // ms the auto-opened banner stays before folding (paused on hover, cancelled on focus)
+    autoCollapse: 16000,        // ms the auto-opened banner stays before folding (paused on hover, cancelled on focus)
     hideAfterClaim: 3500,       // ms the success message stays before the banner hides until the next deal
     offsetTop: 136,             // px from the viewport top on desktop (below the sticky header)
     offsetTopMobile: 64,        // px on phones (≤ 480px)
@@ -155,7 +155,7 @@
 .nsl-dotw__timer { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; overflow: hidden; background: var(--c-panel-2); border-radius: 0 0 8px 0; display: none; }
 .nsl-dotw--counting .nsl-dotw__timer { display: block; }
 .nsl-dotw__timer-bar { height: 4px; background: var(--c-brand); transform-origin: left center; }
-.nsl-dotw--counting .nsl-dotw__timer-bar { animation: nslDotwCountdown var(--nsl-dotw-autocollapse, 8s) linear forwards; }
+.nsl-dotw--counting .nsl-dotw__timer-bar { animation: nslDotwCountdown var(--nsl-dotw-autocollapse, 16s) linear forwards; }
 .nsl-dotw__panel:hover .nsl-dotw__timer-bar { animation-play-state: paused; }
 
 /* tab */
@@ -243,7 +243,7 @@
 @media (prefers-reduced-motion: reduce) {
   .nsl-dotw, .nsl-dotw--open, .nsl-dotw--closed, .nsl-dotw--gone { transition: none; }
   .nsl-dotw *, .nsl-dotw *::before, .nsl-dotw *::after { animation: none !important; }
-  .nsl-dotw--counting .nsl-dotw__timer-bar { animation: nslDotwCountdown var(--nsl-dotw-autocollapse, 8s) linear forwards !important; }
+  .nsl-dotw--counting .nsl-dotw__timer-bar { animation: nslDotwCountdown var(--nsl-dotw-autocollapse, 16s) linear forwards !important; }
 }
 `;
 
