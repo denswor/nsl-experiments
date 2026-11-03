@@ -5,7 +5,7 @@
 
 Демо, в том числе на странице с нарочно «враждебным» CSS: https://denswor.github.io/nsl-experiments/dotw/component/
 
-**Архив для разработчика:** https://denswor.github.io/nsl-experiments/dotw/component/nsl-dotw-1.0.0.zip
+**Архив для разработчика:** https://denswor.github.io/nsl-experiments/dotw/component/nsl-dotw-1.1.0.zip
 (минифицированный и исходный файлы, примеры, заготовки для Bitrix, README, CHANGELOG)
 
 ## Подключение
@@ -21,6 +21,7 @@
       title: 'DELL PowerEdge R640',
       tagline: ['One compact server.', 'Any workload.'],
       uses: 'Virtualization · Databases · Cloud Apps',
+      badge: '−20% OFF',
       image: { src: '/upload/dotw/r640-crop.webp', alt: 'Dell PowerEdge R640' },
       endpoint: '/ajax/dotw-claim.php',
       extraFields: { sessid: BX.bitrix_sessid() },  // CSRF-токен Bitrix
@@ -38,6 +39,7 @@
 | --- | --- | --- |
 | `dealId` | — (обязательно) | ID сделки. Новый ID — баннер снова показывается всем, кто скрывал предыдущий |
 | `title`, `tagline`, `uses` | | Модель, слоган (строка или массив строк), сценарии использования |
+| `badge` | `''` | Бейдж скидки поверх картинки, например `'−20% OFF'`. Влетает после контента и покачивается; пусто — без бейджа |
 | `image` | `null` | `{ src, alt }`. PNG/WebP с прозрачным фоном **с того же домена**: блик использует картинку как CSS-маску |
 | `endpoint` | `''` | URL для POST. Пусто и нет `submit` — демо-режим, отправка всегда «успешна» |
 | `encoding` | `'form'` | `'form'` (x-www-form-urlencoded) или `'json'` |

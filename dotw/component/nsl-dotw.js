@@ -1,5 +1,5 @@
 /*!
- * nsl-dotw v1.0.0 — "Deal of the Week" left-edge banner for newserverlife.com
+ * nsl-dotw v1.1.0 — "Deal of the Week" left-edge banner for newserverlife.com
  * No dependencies. ES2017. Styles are isolated in a Shadow DOM attached to a plain container.
  * Built on NSL Design System tokens (values inlined below).
  *
@@ -14,7 +14,7 @@
 (function (global) {
   'use strict';
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.1.0';
   var STORAGE_KEY = 'nsl_dotw_hidden';
 
   var DEFAULTS = {
@@ -22,6 +22,7 @@
     title: '',                  // "DELL PowerEdge R640"
     tagline: ['One compact server.', 'Any workload.'], // string or array of lines
     uses: '',                   // "Virtualization · Databases · Cloud Apps" (optional)
+    badge: '',                  // "−20% OFF" (optional): swaying discount badge over the server image
     image: null,                // { src, alt } — transparent PNG/WebP, same origin (the glint uses it as a CSS mask)
     endpoint: '',               // POST URL. Empty + no `submit` = demo mode (always succeeds)
     encoding: 'form',           // 'form' (x-www-form-urlencoded, Bitrix-friendly) or 'json'
@@ -91,7 +92,8 @@
 .nsl-dotw__panel { position: relative; width: var(--w); padding: 28px 32px 32px; display: flex; flex-direction: column; outline: none; }
 .nsl-dotw__bg { position: absolute; inset: 0; background: var(--c-panel); border-radius: 0 8px 8px 0; z-index: 0; }
 .nsl-dotw__panel > :not(.nsl-dotw__bg) { z-index: 1; }
-.nsl-dotw__panel > :not(.nsl-dotw__bg):not(.nsl-dotw__close):not(.nsl-dotw__timer) { position: relative; }
+.nsl-dotw__panel > :not(.nsl-dotw__bg):not(.nsl-dotw__close):not(.nsl-dotw__timer):not(.nsl-dotw__badge) { position: relative; }
+.nsl-dotw__panel > .nsl-dotw__badge { z-index: 3; }
 .nsl-dotw__panel > .nsl-dotw__close { z-index: 2; }
 
 .nsl-dotw__close { position: absolute; right: 16px; top: 16px; width: 32px; height: 32px; padding: 0; border: 0; border-radius: var(--radius);
@@ -108,6 +110,9 @@
   -webkit-mask: var(--nsl-dotw-mask) center / 100% 100% no-repeat; mask: var(--nsl-dotw-mask) center / 100% 100% no-repeat;
   background: linear-gradient(105deg, rgba(255,255,255,0) 42%, rgba(255,255,255,.75) 50%, rgba(255,255,255,0) 58%);
   background-size: 250% 100%; background-position: 100% 0; }
+.nsl-dotw__badge { position: absolute; right: 12px; top: 118px; margin: 0; padding: 10px 20px; border-radius: 999px; background: var(--c-bg); color: var(--c-brand);
+  font: 700 26px/32px var(--f-mono); letter-spacing: .5px; white-space: nowrap; pointer-events: none;
+  box-shadow: 0 6px 16px rgba(24, 48, 76, .14), 0 1px 3px rgba(24, 48, 76, .08); transform: rotate(-8deg); }
 .nsl-dotw__model { margin: 0; font-weight: 700; font-size: 30px; line-height: 36px; }
 .nsl-dotw__tagline { margin: 10px 0 0; font-weight: 600; font-size: 22px; line-height: 28px; }
 .nsl-dotw__uses { margin: 10px 0 0; font-size: 17px; line-height: 24px; }
@@ -175,6 +180,8 @@
 .nsl-dotw__in { --i: 0; }
 .nsl-dotw--open .nsl-dotw__in { animation: nslDotwIn .55s cubic-bezier(.25, 1.25, .5, 1) both; animation-delay: calc(140ms + var(--i) * 55ms); }
 .nsl-dotw--open .nsl-dotw__media { animation: nslDotwImgIn .75s cubic-bezier(.2, 1.35, .4, 1) .22s both; }
+.nsl-dotw--open .nsl-dotw__badge { animation: nslDotwBadgeIn .6s cubic-bezier(.3, 1.6, .5, 1) .55s both, nslDotwBadgeSway 3.6s ease-in-out 1.15s infinite; }
+.nsl-dotw--closed .nsl-dotw__badge, .nsl-dotw--gone .nsl-dotw__badge { animation: nslDotwOut .2s cubic-bezier(.4, 0, .6, 1) both; }
 .nsl-dotw--open .nsl-dotw__shine { opacity: 1; animation: nslDotwShine 5.5s cubic-bezier(.45, 0, .55, 1) 1.3s infinite; }
 .nsl-dotw--closed .nsl-dotw__in, .nsl-dotw--gone .nsl-dotw__in { animation: nslDotwOut .34s cubic-bezier(.4, 0, .6, 1) both; animation-delay: calc((6 - var(--i)) * 28ms); }
 .nsl-dotw--closed .nsl-dotw__close, .nsl-dotw--gone .nsl-dotw__close { animation: nslDotwOut .24s cubic-bezier(.4, 0, .6, 1) both; }
@@ -190,6 +197,8 @@
 @keyframes nslDotwShine { 0% { background-position: 100% 0; } 20%, 100% { background-position: 0% 0; } }
 @keyframes nslDotwPullTab { 0% { transform: translateX(0); } 4.5% { transform: translateX(20px); } 7.5% { transform: translateX(-4px); } 10% { transform: translateX(7px); } 12.5% { transform: translateX(-1.5px); } 15%, 100% { transform: translateX(0); } }
 @keyframes nslDotwPullBg { 0% { transform: translateX(0); } 5% { transform: translateX(13px); } 8.5% { transform: translateX(-2px); } 11% { transform: translateX(3px); } 14%, 100% { transform: translateX(0); } }
+@keyframes nslDotwBadgeIn { from { opacity: 0; transform: translateY(10px) rotate(-30deg) scale(.5); } to { opacity: 1; transform: translateY(0) rotate(-8deg) scale(1); } }
+@keyframes nslDotwBadgeSway { 0%, 100% { transform: translateY(0) rotate(-8deg); } 25% { transform: translateY(-6px) rotate(-14deg); } 50% { transform: translateY(0) rotate(-8deg); } 75% { transform: translateY(-4px) rotate(-2deg); } }
 @keyframes nslDotwCountdown { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 @keyframes nslDotwTongue1 { 0% { transform: translate(0, 2px) scale(.6); opacity: 0; } 15% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { transform: translate(2.5px, -11px) scale(.15) rotate(18deg); opacity: 0; } }
 @keyframes nslDotwTongue2 { 0% { transform: translate(0, 2px) scale(.5); opacity: 0; } 18% { opacity: .9; transform: translate(0, 0) scale(.9); } 100% { transform: translate(-3px, -10px) scale(.1) rotate(-20deg); opacity: 0; } }
@@ -201,6 +210,7 @@
   .nsl-dotw__panel { padding-top: 20px; padding-bottom: 24px; }
   .nsl-dotw__deal { font-size: 64px; line-height: 60px; }
   .nsl-dotw__week { font-size: 32px; line-height: 38px; }
+  .nsl-dotw__badge { top: 92px; }
   .nsl-dotw__media { margin: 6px 0 4px -32px; }
   .nsl-dotw__tagline, .nsl-dotw__uses { margin-top: 6px; }
   .nsl-dotw__form { margin-top: 16px; }
@@ -224,6 +234,7 @@
   .nsl-dotw__done { margin-top: 16px; padding: 14px; }
   .nsl-dotw__tab { top: 112px; padding: 18px 0; }
   .nsl-dotw__tab-label { font-size: 16px; }
+  .nsl-dotw__badge { top: 68px; right: 12px; padding: 6px 14px; font-size: 18px; line-height: 24px; }
   .nsl-dotw--closed .nsl-dotw__tab, .nsl-dotw--closed .nsl-dotw__bg { animation-iteration-count: 1; }
 }
 
@@ -317,6 +328,7 @@
           '<button type="button" class="nsl-dotw__close" aria-label="' + esc(L.close) + '">' + icon(I.x, 20) + '</button>' +
           '<p class="nsl-dotw__title nsl-dotw__in" style="--i:0"><span class="nsl-dotw__deal">' + esc(L.deal) + '</span> <span class="nsl-dotw__week">' + esc(L.ofTheWeek) + '</span></p>' +
           (o.image && o.image.src ? '<div class="nsl-dotw__media"><img class="nsl-dotw__img" src="' + esc(o.image.src) + '" alt="' + esc(o.image.alt || o.title) + '" decoding="async"><span class="nsl-dotw__shine" aria-hidden="true"></span></div>' : '') +
+          (o.badge ? '<p class="nsl-dotw__badge">' + esc(o.badge) + '</p>' : '') +
           (o.title ? '<h2 class="nsl-dotw__model nsl-dotw__in" style="--i:3">' + esc(o.title) + '</h2>' : '') +
           (tagline ? '<p class="nsl-dotw__tagline nsl-dotw__in" style="--i:4">' + tagline + '</p>' : '') +
           (o.uses ? '<p class="nsl-dotw__uses nsl-dotw__in" style="--i:5">' + esc(o.uses) + '</p>' : '') +
