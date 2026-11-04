@@ -12,6 +12,11 @@ dotw/             Deal of the Week — left-edge banner
   dotw.css
   variant-e/      slide-out banner with form
   variant-f/      auto-open on first visit, then folds into the tab
+hero/             Hero kit — first-screen components and the site heroes rebuilt
+  app.js          components + page (React 18 + htm, no build step)
+  hero.css        component styles (container queries: ≥1024, 720–1023, <720)
+  page.css        page chrome
+  assets/         product photos, backgrounds, vendor and review logos
 ```
 
 ## Adding an experiment

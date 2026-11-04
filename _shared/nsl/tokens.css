@@ -172,6 +172,8 @@
   --icon-hover: var(--brand-hover); /* Standalone icon: hover. */
   --icon-disabled: var(--neutral-100); /* Standalone icon: disabled. */
   --rating-star: var(--amber-400); /* Filled star in StarRating. */
+  --layout-grid-fill: #cb1c6814; /* LayoutGrid overlay: column fill. Design aid only, never in production UI. */
+  --layout-grid-line: #cb1c6852; /* LayoutGrid overlay: column edges. */
   --on-surface-primary: var(--label-default); /* Surface-aware text: strong. Resolves to text-primary on light surfaces and white on dark/gradient ones (.nsl-on-dark). */
   --on-dark-primary: var(--white-alpha-100); /* Dark-surface value of on-surface-primary (Surface=Dark in Figma). Applied automatically inside .nsl-on-dark. */
   --on-surface-secondary: var(--label-default); /* Surface-aware text: medium (breadcrumb links, nav meta). */
@@ -328,9 +330,21 @@
   --radius-full: 9999px; /* Tags, badges, pills, avatars. */
   --container-wide: 1530px; /* Content width at 1680 viewport (12 cols x 100, gutter 30, margin 75). */
   --container-desktop: 1170px; /* Content width at 1440 viewport (12 cols x 70, gutter 30, margin 135). */
-  --container-tablet: 954px; /* Content width at 1024 viewport (12 cols x 52, gutter 30, margin 35). */
-  --gutter: 30px; /* Column gutter, desktop and tablet. */
-  --gutter-mobile: 16px; /* Column gutter and side margin at 320-767 (4 columns). */
+  --container-tablet: 954px; /* Content width at 1024 viewport (12 cols x 52, gutter 30, margin 35). The container is fluid from 1024 to 1239, then stops at container-desktop. */
+  --gutter: 30px; /* Column gutter at 1024 and wider (12 columns). */
+  --gutter-mobile: 16px; /* Column gutter and side margin below 720 (4 columns). */
+  --breakpoint-tablet-portrait: 720px; /* Tablet portrait grid starts here (8 columns). Same edge the components use for their mobile step (max-width: 719px). */
+  --breakpoint-tablet: 1024px; /* Tablet grid starts here: 12 columns, fluid container (container-tablet 954 at 1024). */
+  --breakpoint-desktop: 1440px; /* Desktop reference width: the container is container-desktop 1170, margin 135. */
+  --breakpoint-wide: 1680px; /* Wide grid starts here: container-wide 1530. */
+  --grid-columns: 12; /* Columns at 1024 and wider (tablet, desktop, wide). */
+  --grid-columns-tablet-portrait: 8; /* Columns at 720-1023. */
+  --grid-columns-mobile: 4; /* Columns below 720. */
+  --gutter-tablet-portrait: 24px; /* Column gutter at 720-1023 (8 columns). */
+  --grid-margin-wide: 75px; /* Side margin at 1680 and wider (container-wide 1530). */
+  --grid-margin-tablet: 35px; /* Minimum side margin at 1024-1679; from 1240 the container stops at container-desktop 1170 (margin 135 at 1440). */
+  --grid-margin-tablet-portrait: 32px; /* Side margin at 720-1023. */
+  --grid-margin-mobile: 16px; /* Side margin below 720. */
   --header-height: 112px; /* Desktop header: 40 top bar + 72 main row. */
   --icon-stroke-1: 1; /* Icon stroke at 14px. */
   --icon-stroke-1-5: 1.5; /* Default icon stroke at 20-24px. */
