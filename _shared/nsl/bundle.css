@@ -624,8 +624,13 @@ span.nsl-tag--filled:hover { background: var(--tc); } span.nsl-tag--subtle:hover
 .nsl-crow.is-error { background: var(--tag-error-subtle-bg); box-shadow: inset 3px 0 0 var(--status-error); border-bottom-color: transparent; }
 .nsl-crow.is-error .nsl-check__box.is-checked { background: var(--status-error); border-color: var(--status-error); }
 .nsl-crow__warn { color: var(--status-error); }
-.nsl-crow--mobile { flex-direction: column; align-items: stretch; }
-.nsl-crow--mobile .nsl-crow__side { justify-content: flex-end; }
+/* Mobile: one line (the name wraps, the price stays on the right); a row with a quantity stepper
+   moves stepper and price to a second line, the stepper under the name, the price on the right. */
+.nsl-crow--mobile { flex-wrap: wrap; align-items: center; row-gap: var(--space-8); }
+.nsl-crow--mobile .nsl-crow__main { flex: 1 1 0; }
+.nsl-crow--mobile.has-qty .nsl-crow__main { flex-basis: 100%; }
+.nsl-crow--mobile.has-qty .nsl-crow__side { width: 100%; padding-left: 24px; }
+.nsl-crow--mobile.has-qty .nsl-crow__qty { margin-right: auto; }
 /* Row hover: the whole row is clickable, not only the control's label */
 .nsl-crow { cursor: pointer; transition: background-color 0.12s ease; }
 .nsl-crow:hover { background: var(--brand-subtle); }
