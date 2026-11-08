@@ -1,4 +1,15 @@
 /* IBM Plex, from the font files uploaded to this system (fonts/). */
+
+
+
+
+
+
+
+
+
+
+
 /* NSL components. Every color, radius, spacing and shadow comes from tokens.css. */
 .nsl-on-dark { --on-surface-primary: var(--on-dark-primary); --on-surface-secondary: var(--on-dark-secondary); --on-surface-tertiary: var(--on-dark-tertiary); --nav-text-default: var(--on-dark-primary); --nav-text-active: var(--on-dark-primary); color: var(--on-surface-primary); }
 .nsl-gradient { background: linear-gradient(90deg, var(--gradient-blue) 0%, var(--gradient-sky) 25%, var(--gradient-violet) 75%, var(--gradient-magenta) 100%); }
@@ -602,7 +613,7 @@ span.nsl-tag--filled:hover { background: var(--tc); } span.nsl-tag--subtle:hover
 .nsl-crow__side { display: flex; align-items: center; gap: var(--space-8); flex: none; white-space: nowrap; }
 .nsl-crow__qty { display: inline-flex; align-items: center; gap: var(--space-8); }
 .nsl-crow__old { color: var(--text-secondary); font-size: 12px; }
-.nsl-crow__price { font: 600 14px/20px var(--font-sans); }
+.nsl-crow__price { font: 600 14px/20px var(--font-sans); font-variant-numeric: tabular-nums; min-width: 6ch; text-align: right; } /* fits "$9,999": steppers line up across rows */
 .nsl-crow__unit { color: var(--text-secondary); font-size: 10px; }
 .nsl-crow .nsl-tip__trigger { color: inherit; }
 .nsl-crow.is-selected { background: var(--brand-default); color: var(--text-on-brand); border-bottom-color: transparent; }
@@ -615,6 +626,13 @@ span.nsl-tag--filled:hover { background: var(--tc); } span.nsl-tag--subtle:hover
 .nsl-crow__warn { color: var(--status-error); }
 .nsl-crow--mobile { flex-direction: column; align-items: stretch; }
 .nsl-crow--mobile .nsl-crow__side { justify-content: flex-end; }
+/* Row hover: the whole row is clickable, not only the control's label */
+.nsl-crow { cursor: pointer; transition: background-color 0.12s ease; }
+.nsl-crow:hover { background: var(--brand-subtle); }
+.nsl-crow.is-selected:hover { background: var(--brand-hover); }
+.nsl-crow.is-error:hover { background: var(--red-50); }
+@media (hover: none) { .nsl-crow:hover { background: none; } .nsl-crow.is-selected:hover { background: var(--brand-default); } .nsl-crow.is-error:hover { background: var(--tag-error-subtle-bg); } }
+@media (prefers-reduced-motion: reduce) { .nsl-crow { transition: none; } }
 
 .nsl-cline { display: flex; align-items: flex-start; gap: var(--space-12); font: 400 16px/24px var(--font-sans); color: var(--text-primary); }
 .nsl-cline__text { flex: 1; min-width: 0; }

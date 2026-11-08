@@ -17,6 +17,9 @@ hero/             Hero kit — first-screen components and the site heroes rebui
   hero.css        component styles (container queries: ≥1024, 720–1023, <720)
   page.css        page chrome
   assets/         product photos, backgrounds, vendor and review logos
+configurator/     Configure-to-order tab of Dell PowerEdge R760xd2 24LFF + 4LFF
+  index.html      review shell: frame width (Fit / 1440 / 1024 / 375), configurator theme, notes
+  proto.html      the page itself (React 18, NSL bundle, plain createElement, no build step)
 ```
 
 ## Adding an experiment

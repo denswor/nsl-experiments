@@ -763,7 +763,13 @@ function ConfiguratorRow(p) {
   var c = useCtl(p.selected, !!p.defaultSelected, p.onSelect); var qty = useCtl(p.quantity, p.defaultQuantity || 1, p.onQuantityChange);
   var C = p.selector === 'radio' ? Radio : Checkbox;
   var on = c[0];
-  return h('div', { className: cx('nsl-crow', p.mobile && 'nsl-crow--mobile', on && 'is-selected', p.error && 'is-error', p.className) },
+  /* The whole row is the hit area: a click on empty space or the price selects (radio) or toggles (checkbox).
+     Clicks on the control's own label, the stepper, tooltips and other interactive bits keep their own behaviour. */
+  function rowClick(e) {
+    if (e.defaultPrevented || e.target.closest('label, input, button, a, select, textarea, [tabindex], [role="dialog"], .nsl-crow__qty, .nsl-tip, .nsl-pop')) return;
+    c[1](p.selector === 'radio' ? true : !on);
+  }
+  return h('div', { className: cx('nsl-crow', p.mobile && 'nsl-crow--mobile', on && 'is-selected', p.error && 'is-error', p.className), onClick: rowClick },
     h('div', { className: 'nsl-crow__main' },
       h(C, { size: 'sm', checked: on, name: p.name, onChange: function (v) { c[1](p.selector === 'radio' ? true : v); }, label: p.label, error: p.error }),
       p.info && h(Tooltip, { content: p.info }),

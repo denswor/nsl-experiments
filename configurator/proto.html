@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>R760xd2 Configure-to-order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../_shared/nsl/tokens.css">
+<link rel="stylesheet" href="../_shared/nsl/bundle.css">
+<style>
+/* Layout: 12-col page grid; configurator 8 cols + sticky summary 4 cols from 1024px, single column with section chips and a buy bar below. */
+:root {
+  color-scheme: light;
+  --sticky-top: 16px;     /* gap under the viewport edge for the sticky summary */
+  --nav-h: 0px;           /* height of the sticky section chips (mobile) */
+  --bar-h: 0px;           /* height of the mobile buy bar */
+}
+@media (max-width: 1023px) { :root { --sticky-top: 0px; --nav-h: 49px; --bar-h: 68px; } }
+
+html { scroll-behavior: auto; }
+body { margin: 0; background: var(--bg-default); color: var(--text-primary); font: var(--text-body-md); -webkit-font-smoothing: antialiased; }
+*, *::before, *::after { box-sizing: border-box; }
+button { font: inherit; }
+
+/* Page container = DS .nsl-container: 1170 up to 1679px, the wide 1530 container from 1680px, fluid below 1024. */
+
+/* ---------- Product top ---------- */
+.crumbs { padding-block: 20px 16px; }
+/* Title first, then the gallery across the whole block, then specs and price */
+.top { display: flex; flex-direction: column; gap: 24px; }
+.cfg__main { min-width: 0; }
+.top__head { margin-bottom: 24px; }
+@media (max-width: 1023px) { .top__head { margin-bottom: 20px; } }
+.top__head { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.top__info { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 30px; min-width: 0; }
+.top__title { margin: 0; font: var(--text-heading-xl); text-wrap: balance; }
+.top__badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.top .nsl-gallery, .top > :nth-child(2) { width: 100%; }
+@media (max-width: 1023px) { .top { gap: 20px; } .top__title { font: var(--text-heading-lg); } .top__info { flex-direction: column; align-items: flex-start; } }
+.tabs { margin-top: 40px; border-bottom: 1px solid var(--border-default); overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+@media (max-width: 1023px) { .tabs { margin-top: 28px; } }
+
+/* ---------- Two-column configurator ---------- */
+.cfg { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: 30px; align-items: start; padding-block: 0 96px; }
+.tabs + .sec, .tabs ~ div > .sec:first-child { padding-top: 24px; }
+@media (max-width: 1023px) { .cfg { grid-template-columns: 1fr; padding-bottom: calc(48px + var(--bar-h)); } .cfg-aside { display: none !important; } }
+@media (min-width: 1024px) { .chipnav, .buybar { display: none !important; } }
+
+/* ---------- ConfigSection (new) ---------- */
+.sec { position: relative; isolation: isolate; padding-block: 32px; scroll-margin-top: calc(var(--sticky-top) + var(--nav-h) + 8px); }
+.sec:first-child { border-top: 0; }
+.sec:has(.nsl-pop__panel) { z-index: 5; }
+.sec::before { content: ""; position: absolute; inset: 10px -16px; z-index: -1; border-radius: var(--radius-lg); background: var(--bg-default); box-shadow: 0 0 0 2px var(--secondary-200), 0 8px 24px rgba(29, 108, 190, 0.18); opacity: 0; transition: opacity 1s ease-out; pointer-events: none; }
+.sec.is-flash::before { opacity: 1; transition: none; }
+/* a section with an error lands with a red glow instead of the blue one */
+.sec--error::before { box-shadow: 0 0 0 2px color-mix(in srgb, var(--status-error) 45%, transparent), 0 8px 24px color-mix(in srgb, var(--status-error) 20%, transparent); }
+@media (max-width: 719px) { .sec { padding-block: 24px; } .sec::before { inset: 6px -8px; } }
+.sec__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; margin-bottom: 16px; }
+.sec__title { margin: 0; font: var(--text-heading-md); outline: none; display: flex; align-items: center; gap: 10px; }
+.sec__title:focus-visible { box-shadow: var(--shadow-focus); border-radius: var(--radius-sm); }
+.sec__meta { font: var(--text-body-sm); color: var(--text-secondary); }
+.sec__body { display: flex; flex-direction: column; gap: 12px; }
+.sec__lead { margin: 0; font: var(--text-body-sm); color: var(--text-secondary); max-width: 64ch; }
+.sec__lead a, .link { color: var(--text-link); text-decoration: underline; text-underline-offset: 2px; }
+.sec--off .sec__title { color: var(--text-disabled); }
+.sec--off .sec__head { margin-bottom: 0; }
+
+/* Option group label (new) */
+.ogrp { display: flex; align-items: center; gap: 8px; margin-top: 8px; font: var(--text-mono-2xs-bold); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); }
+.ogrp:first-child { margin-top: 0; }
+.rows { display: flex; flex-direction: column; gap: 4px; }
+.rows__more { align-self: flex-start; }
+.opt-meta { display: block; margin-top: 2px; font: var(--text-body-xs); opacity: 0.72; }
+.opt-meta .nsl-tag { vertical-align: middle; margin-left: 6px; }
+
+
+/* CPU details popover inside the option row */
+.cpu-info { display: inline-flex; vertical-align: middle; margin-left: 6px; }
+.cpu-info__btn { display: inline-grid; place-items: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: inherit; opacity: 0.7; cursor: pointer; }
+.cpu-info__btn:hover, .cpu-info__btn[aria-expanded="true"] { opacity: 1; }
+.cpu-info__btn:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.cpu-info .nsl-pop__panel { cursor: default; text-align: left; white-space: normal; }
+.cpu-pop { display: flex; flex-direction: column; gap: 10px; }
+.cpu-pop dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; font: var(--text-body-sm); }
+.cpu-pop dt { color: inherit; opacity: 0.7; }
+.cpu-pop dd { margin: 0; font-weight: 500; font-variant-numeric: tabular-nums; }
+.cpu-pop__note { margin: 0; font: var(--text-body-xs); opacity: 0.8; }
+
+.dc-pop { display: flex; flex-direction: column; gap: 14px; }
+.dc-pop__addr { display: flex; align-items: center; gap: 8px; margin: 0; font: var(--text-mono-xs-medium); color: var(--text-secondary); }
+.dc-pop__sec { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; }
+.dc-pop__ic { color: var(--secondary-default); padding-top: 1px; }
+.dc-pop__h { margin: 0 0 6px; font: 600 14px/20px var(--font-sans); color: var(--secondary-default); }
+.dc-pop__tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.dc-pop__t { margin: 0; font: var(--text-body-sm); }
+.dc-pop__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font: var(--text-body-sm); }
+
+/* UsageMeter (new) */
+.meter { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 6px 14px; padding: 12px 16px; border-radius: var(--radius-md); background: var(--bg-subtle); }
+.meter__k { font: var(--text-mono-2xs-bold); text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); }
+.meter__track { height: 6px; border-radius: var(--radius-full); background: var(--neutral-200); overflow: hidden; }
+.meter__fill { height: 100%; border-radius: inherit; background: var(--secondary-default); transition: width 0.3s ease; }
+.meter__v { font: var(--text-mono-xs-medium); font-variant-numeric: tabular-nums; color: var(--text-primary); white-space: nowrap; }
+.meter--warning .meter__fill { background: var(--status-warning); }
+.meter--error .meter__fill { background: var(--status-error); }
+.meter--error .meter__v { color: var(--tag-error-text); }
+.meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 719px) { .meters { grid-template-columns: 1fr; } .meter { grid-template-columns: 1fr auto; } .meter__track { grid-column: 1 / -1; grid-row: 2; } }
+
+/* InlinePromo (new) */
+.promo { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--border-secondary-subtle); border-radius: var(--radius-md); background: var(--secondary-50); }
+.promo__icon { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--bg-default); color: var(--secondary-default); }
+.promo__t { margin: 0 0 2px; font: var(--text-heading-xs); }
+.promo__d { margin: 0; font: var(--text-body-sm); color: var(--text-secondary); }
+
+/* ---------- ConfigSummary (new) ---------- */
+.cfg-aside { position: sticky; top: var(--sticky-top); max-height: calc(100vh - 2 * var(--sticky-top)); display: flex; flex-direction: column; border: 1px solid var(--border-default); border-radius: var(--radius-lg); background: var(--bg-default); box-shadow: var(--shadow-sm); overflow: hidden; }
+.sum__head { flex: none; padding: 16px 20px 12px; border-bottom: 1px solid var(--border-default); }
+.sum__eyebrow { font: var(--text-mono-2xs-bold); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); }
+.sum__name { margin: 4px 0 0; font: var(--text-body-md-semibold); }
+.sum__progress { margin-top: 8px; display: flex; align-items: center; gap: 8px; font: var(--text-body-xs); color: var(--text-secondary); }
+.sum__progress b { font-weight: 600; color: var(--text-primary); }
+.sum__progress .warn { color: var(--tag-warning-text); font-weight: 600; }
+.sum__list { position: relative; flex: 1 1 auto; min-height: 120px; overflow-y: auto; overscroll-behavior: contain; padding: 6px 0; scrollbar-width: thin; }
+.sum__inner { position: relative; }
+.sum__item { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; width: 100%; padding: 7px 20px; border: 0; background: transparent; text-align: left; color: var(--text-primary); cursor: pointer; }
+.sum__item:hover { background: var(--bg-subtle); }
+.sum__item:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--secondary-200); }
+.sum__item.is-active { background: var(--bg-muted); }
+.sum__item.is-active .sum__k { color: var(--text-primary); }
+.sum__k { display: flex; align-items: center; gap: 6px; font: var(--text-label-sm-semibold); color: var(--text-secondary); }
+.sum__p { font: var(--text-mono-xs-medium); font-variant-numeric: tabular-nums; color: var(--text-primary); text-align: right; white-space: nowrap; }
+.sum__p s { color: var(--text-disabled); margin-right: 4px; font-weight: 400; }
+.sum__v { grid-column: 1 / -1; font: var(--text-body-sm); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sum__item.is-empty .sum__v { color: var(--text-secondary); }
+.sum__item.is-changed { animation: changed 1.1s ease-out; }
+@keyframes changed { 0% { background: var(--secondary-100); } 100% { background: transparent; } }
+.dot { flex: none; width: 8px; height: 8px; border-radius: 50%; }
+.dot--warning { background: var(--status-warning); }
+.dot--error { background: var(--status-error); }
+.sum__item .dot { box-shadow: 0 0 0 2px var(--bg-default); }
+
+.sum__foot { flex: none; display: flex; flex-direction: column; gap: 10px; padding: 14px 20px 16px; border-top: 1px solid var(--border-default); background: var(--bg-default); }
+.total { position: relative; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-inline: -8px; padding: 4px 8px; border-radius: var(--radius-md); }
+.total__k { font: var(--text-heading-xs); }
+.total__v { display: flex; align-items: baseline; gap: 8px; }
+.total__v s { font: var(--text-body-sm); color: var(--text-disabled); }
+.total__v b { font: 700 24px/32px var(--font-mono); color: var(--secondary-default); font-variant-numeric: tabular-nums; }
+.total.is-bump { animation: bump 0.7s ease-out; }
+@keyframes bump { 0% { background: var(--secondary-100); } 100% { background: transparent; } }
+.delta { position: absolute; right: 8px; top: -18px; font: var(--text-mono-2xs-bold); color: var(--secondary-default); animation: delta 1.6s ease-out forwards; pointer-events: none; }
+@keyframes delta { 0% { opacity: 0; transform: translateY(6px); } 15% { opacity: 1; transform: none; } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-4px); } }
+@media (max-height: 820px) { .monthly { display: none; } .sum__foot { gap: 8px; padding-block: 12px; } .sum__head { padding-block: 12px 10px; } }
+.monthly { margin: -6px 0 2px; font: var(--text-body-xs); color: var(--text-secondary); text-align: right; }
+.sum__btns { display: grid; gap: 8px; }
+.sum__help { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 2px; border: 0; background: none; font: var(--text-body-sm); color: var(--text-link); cursor: pointer; }
+.sum__help:hover { text-decoration: underline; }
+.sum__help:focus-visible { outline: none; box-shadow: var(--shadow-focus); border-radius: var(--radius-sm); }
+
+/* ---------- Mobile: section chips (new SectionNav) ---------- */
+.chipnav { position: sticky; top: 0; z-index: 30; height: var(--nav-h); margin-inline: calc((100vw - 100%) / -2); padding-inline: calc((100vw - 100%) / 2); display: flex; align-items: center; gap: 8px; overflow-x: auto; scrollbar-width: none; background: var(--bg-default); border-bottom: 1px solid var(--border-default); }
+.chipnav::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid var(--border-default); border-radius: var(--radius-full); background: var(--bg-default); font: var(--text-label-md); color: var(--text-primary); cursor: pointer; white-space: nowrap; }
+.chip.is-active { border-color: var(--text-primary); background: var(--text-primary); color: var(--text-on-brand); }
+.chip.is-active .dot { box-shadow: 0 0 0 2px var(--text-primary); }
+.chip:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.chipnav__end { flex: none; width: 1px; }
+
+/* ---------- Mobile: StickyBuyBar (new) ---------- */
+.buybar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; align-items: center; gap: 10px; min-height: var(--bar-h); padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: var(--bg-default); border-top: 1px solid var(--border-default); box-shadow: 0 -6px 16px rgba(17, 24, 39, 0.06); }
+.buybar__help { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--border-default); border-radius: var(--radius-md); background: var(--bg-default); color: var(--brand-default); cursor: pointer; }
+.buybar__sum { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 0; padding: 2px 6px; margin-left: -6px; border: 0; border-radius: var(--radius-md); background: transparent; text-align: left; cursor: pointer; color: var(--text-primary); }
+.buybar__k { display: flex; align-items: center; gap: 4px; font: var(--text-label-sm); color: var(--text-secondary); }
+.buybar__v { font: 700 18px/24px var(--font-mono); color: var(--secondary-default); font-variant-numeric: tabular-nums; }
+.buybar__sum .dot { margin-left: 2px; }
+.buybar__sum.is-bump { animation: bump 0.7s ease-out; }
+.buybar__help:focus-visible, .buybar__sum:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.sheet-total { display: flex; align-items: baseline; justify-content: space-between; font: var(--text-heading-xs); }
+.sheet-total b { font: 700 20px/28px var(--font-mono); color: var(--secondary-default); }
+.sheet-sum .sum__item { padding-left: 16px; border-radius: var(--radius-md); }
+.sheet-sum { margin-inline: -8px; }
+
+/* Help form */
+.help { display: flex; flex-direction: column; gap: 16px; }
+.help-note { font: var(--text-body-xs); color: var(--text-secondary); text-align: center; }
+.help-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 419px) { .help-grid { grid-template-columns: 1fr; } }
+
+.foot-gap { height: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .meter__fill { transition: none; }
+  .sec::before { transition: none; }
+  .total.is-bump, .buybar__sum.is-bump, .sum__item.is-changed, .delta { animation: none; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="../_shared/nsl/bundle.js"></script>
+<script>
+(function () {
+var h = React.createElement, N = window.NSL;
+var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef, useLayoutEffect = React.useLayoutEffect, useMemo = React.useMemo, useCallback = React.useCallback;
+
+/* ---------- helpers ---------- */
+function money(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+function useMQ(q) {
+  var s = useState(function () { return window.matchMedia(q).matches; });
+  useEffect(function () { var m = window.matchMedia(q), f = function () { s[1](m.matches); }; m.addEventListener('change', f); f(); return function () { m.removeEventListener('change', f); }; }, [q]);
+  return s[0];
+}
+var reduceMotion = function () { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; };
+
+/* ---------- data (from the live page) ---------- */
+var CHASSIS = [
+  { id: '24lff', label: 'Dell PowerEdge R760xd2 24LFF', short: '24LFF', price: 8499, old: 8999, tag: 'SALE 6%', bays: 24 },
+  { id: '28lff', label: 'Dell PowerEdge R760xd2 24LFF + 4LFF', short: '24LFF + 4LFF', price: 9599, bays: 28 }
+];
+var CPU_RAW = [
+  'Silver|4410Y|2.00|12|3000|150', 'Silver|4416+|2.00|20|4000|165', 'Silver|4510|2.40|12|4000|150', 'Silver|4514Y|2.00|16|4600|150', 'Silver|4516Y+|2.20|24|7000|185',
+  'Gold|5411N|1.90|24|3400|165', 'Gold|5415+|2.90|8|4500|150', 'Gold|5416S|2.00|16|6400|150', 'Gold|5418N|1.80|24|4000|165', 'Gold|5418Y|2.00|24|4600|185', 'Gold|5420+|2.00|28|7600|205', 'Gold|5520+|2.20|28|6000|205',
+  'Gold|6416H|2.20|18|5500|165', 'Gold|6418H|2.10|24|8000|185', 'Gold|6426Y|2.50|16|5000|185', 'Gold|6428N|1.80|32|13000|185', 'Gold|6430|2.10|32|5400|270', 'Gold|6434|3.70|8|10000|195', 'Gold|6438N|2.00|32|7900|205',
+  'Gold|6448Y|2.10|32|9000|225', 'Gold|6454S|2.20|32|5800|270', 'Gold|6458Q|3.10|32|13000|350', 'Gold|6534|3.90|8|12400|195', 'Gold|6542Y|2.90|24|11000|250', 'Gold|6544Y|3.60|16|15200|270',
+  'Platinum|8462Y+|2.80|32|15000|300'
+];
+var CPUS = CPU_RAW.map(function (r) { var a = r.split('|'); return { id: a[1], fam: a[0], model: a[1], ghz: a[2], cores: +a[3], price: +a[4], tdp: +a[5] }; });
+var RAM = [
+  ['4800', 16, 800], ['4800', 32, 1600], ['4800', 64, 2990], ['4800', 128, 4900], ['4800', 256, 11000],
+  ['5600', 16, 980], ['5600', 32, 1990], ['5600', 64, 3200], ['5600', 128, 6000]
+].map(function (r) { return { id: r[1] + '-' + r[0], mhz: r[0], gb: r[1], price: r[2], label: r[1] + 'GB DDR5 ' + (r[0] === '4800' ? 'PC5-38400' : 'PC5-44800') + ' ' + r[0] + 'MHz ECC' }; });
+var RAID = [
+  { id: 'hba355i', label: 'Dell HBA355i Front Host Bus Adapter', price: 140 },
+  { id: 'h355', label: 'Dell PERC H355 Front RAID Controller', price: 590 },
+  { id: 'h755', label: 'Dell PERC H755 Front RAID Controller with 8GB Cache', price: 1390 }
+];
+var DRIVE_RAW = [['4', '6', 75], ['4', '12', 120], ['6', '6', 135], ['6', '12', 145], ['8', '6', 235], ['8', '12', 280], ['10', '6', 265], ['10', '12', 310], ['12', '12', 460], ['16', '12', 620], ['18', '12', 780], ['20', '12', 970], ['22', '12', 1080], ['24', '12', 1450]];
+var DRIVES = [
+  { id: 'tray', group: 'Empty drive tray', label: 'Dell Empty Drive Tray caddy for 3.5" Gen16', price: 25, tags: ['Caddy'], bay: false },
+  { id: 'adapter', group: 'Empty drive tray', label: 'Dell adapter SFF 2.5" to LFF 3.5" (9W8C4)', price: 7, tags: ['Caddy'], bay: false }
+].concat(DRIVE_RAW.map(function (d) { return { id: 'hdd' + d[0] + '-' + d[1], group: 'HDD SAS', label: 'HDD ' + d[0] + 'TB SAS 7.2K 3.5" ' + d[1] + 'Gb/s with Tray caddy', short: d[0] + 'TB SAS ' + d[1] + 'Gb/s', price: d[2], tags: ['HDD', 'SAS'], bay: true }; }));
+var NICS = [
+  ['qlogic', 'QLogic (2x 10Gb RJ-45) OCP 3.0', 120, false], ['b5720', 'Dell Broadcom 5720-T (4 x 1Gb RJ45) OCP 3.0', 210, false], ['b57412', 'Dell Broadcom 57412 (2 x 10Gb SFP+) OCP 3.0', 400, true],
+  ['b57414', 'Dell Broadcom 57414 (2 x 25Gb SFP28) OCP 3.0', 400, true], ['b57416', 'Dell Broadcom 57416 (2 x 10Gb RJ45) OCP 3.0', 450, false], ['b57504', 'Dell Broadcom 57504 (4 x 25Gb SFP28) OCP 3.0', 450, true],
+  ['i350', 'Dell Intel I350 (4 x 1Gb RJ45) OCP 3.0', 210, false], ['x710t2l', 'Dell Intel X710-T2L (2 x 10Gb RJ45) OCP 3.0', 370, false], ['x710t4', 'Dell Intel X710-T4 (4 x 10Gb RJ45) OCP 3.0', 450, false, 670, 'SALE 33%'],
+  ['e810', 'Dell Intel E810-XXV (2 x 25Gb SFP28) OCP 3.0', 300, true], ['x710da2', 'DELL Intel X710-DA2 (2x 10Gb SFP+) OCP 3.0', 200, true], ['x710da4', 'DELL Intel X710-DA4 (4x 10Gb SFP+) OCP 3.0', 500, true],
+  ['cx6', 'Mellanox ConnectX-6 (2x 100GbE QSFP56) OCP 3.0', 1950, true]
+].map(function (n) { return { id: n[0], label: n[1], price: n[2], sfp: n[3], old: n[4], tag: n[5] }; });
+var PCI = [
+  ['Network card', 'Broadcom 57412 (2 x 10GbE SFP+) PCIe', 70], ['Network card', 'Broadcom 57404 (2 x 25Gb SFP28) PCIe', 50], ['Network card', 'Broadcom 57414 (2 x 25Gb SFP28) PCIe', 70], ['Network card', 'Broadcom 57416 (2 x 10Gb RJ45) PCIe', 80],
+  ['Network card', 'Intel I350-T4 (4 x 1Gb RJ45) PCIe', 40], ['Network card', 'Intel X520-DA2 (2 x 10Gb SFP+) PCIe', 40], ['Network card', 'Intel X520-T2 (2 x 10Gb RJ45) PCIe', 145], ['Network card', 'Intel X710-DA2 (2 x 10Gb SFP+) PCIe', 65],
+  ['Network card', 'Intel XXV710-DA2 (2 x 25GbE SFP28) PCIe', 80], ['Network card', 'Intel E810-XXVDA2 (2 x 25GbE SFP28) PCIe', 220], ['Network card', 'Intel OPA (1 x 100Gb QSFP) PCIe', 160], ['Network card', 'MELLANOX ConnectX-5 MCX516A (2x 100Gb QSFP28) PCIe', 590],
+  ['Fibre Channel', 'Dell Emulex LPe12000 (1 x 8Gb SFP+)', 17], ['Fibre Channel', 'Dell Emulex LPe12002 (2 x 8Gb SFP+)', 20], ['Fibre Channel', 'Dell Emulex LPe31000 (1 x 16Gb SFP+)', 115], ['Fibre Channel', 'Dell Emulex LPe31002 (2 x 16Gb SFP+)', 165],
+  ['Fibre Channel', 'Dell Emulex LPe32002 (2 x 32Gb SFP+)', 300], ['Fibre Channel', 'Dell Emulex LPe35000 (1 x 32Gb SFP+)', 650], ['Fibre Channel', 'DELL QLE2562 (2 x 8Gb)', 25], ['Fibre Channel', 'DELL QLE2692 (2 x 16Gb SFP+)', 210],
+  ['Fibre Channel', 'DELL QLE2772 (2 x 32Gb)', 690], ['Fibre Channel', 'QLogic QLE2562 (2 x 8Gb)', 17], ['Fibre Channel', 'QLogic QLE2692 (2 x 16Gb SFP+)', 180], ['Fibre Channel', 'QLogic QLE2772 (2 x 32Gb)', 600]
+].map(function (p, i) { return { id: 'pci' + i, group: p[0], label: p[1], price: p[2] }; });
+var BOSS = [{ id: 'none', label: 'Without BOSS Card', price: 0 }, { id: 'n1-480', label: 'Dell BOSS-N1 Card 2 x 480GB SSD NVMe M.2', price: 2000 }, { id: 'n1-960', label: 'Dell BOSS-N1 Card 2 x 960GB SSD NVMe M.2', price: 2300 }];
+var TPM = [{ id: 'none', label: 'NO Trusted Platform Module (TPM)', price: 0 }, { id: 'tpm', label: 'Dell Trusted Platform Module (TPM)', price: 80 }];
+var PSU = [{ id: '800', w: 800, label: '2x DELL 800W Gen 15/16', price: 780 }, { id: '1100', w: 1100, label: '2x DELL 1100W Gen 15/16', price: 1200 }, { id: '1400', w: 1400, label: '2x DELL 1400W Gen 15/16', price: 1450 }, { id: '1800', w: 1800, label: '2x DELL 1800W Gen 15/16 (220v Only)', price: 950 }];
+var INSTALL = [{ id: 'rails', label: 'DELL PowerEdge Rail Kit 2U', short: 'Rail kit 2U', price: 95 }, { id: 'bezel', label: 'DELL 2U Security Bezel Gen16', short: 'Security bezel', price: 95 }, { id: 'lcd', label: 'DELL 2U LCD Security Bezel Gen16', short: 'LCD bezel', price: 125 }];
+var OS = [{ id: 'none', label: 'No OS', price: 0 }, { id: 'std', label: 'Microsoft Windows Server 2025 Standard 16-Core License', short: 'Windows Server 2025 Standard', price: 1176, perUnit: true }, { id: 'dc', label: 'Microsoft Windows Server 2025 Datacenter 16-Core License', short: 'Windows Server 2025 Datacenter', price: 6770, perUnit: true }];
+var COLO = [
+  { id: 'none', label: 'Without Colocation', price: 0 },
+  { id: 'mia2', label: 'Miami 2 | FL | USA', dc: '365 Data Centers', from: 110, badge: 'Fast Deployment' },
+  { id: 'dal', label: 'Dallas | TX | USA', dc: 'Digital Realty', from: 90 },
+  { id: 'sfo', label: 'San-Francisco | CA | USA', dc: 'Digital Realty', from: 90 },
+  { id: 'mia', label: 'Miami | FL | USA', dc: 'Digital Realty' },
+  { id: 'waw', label: 'Warsaw | Poland', dc: 'Atman' }
+];
+var WARRANTY = [{ id: '1y', years: 1, label: 'Standard 1-Year Warranty, including HDD and SSD', base: 0 }, { id: '2y', years: 2, label: 'Extended 2-Year Warranty, including HDD and SSD', base: 1524 }, { id: '3y', years: 3, label: 'Extended 3-Year Warranty, including HDD and SSD', base: 2286 }, { id: '5y', years: 5, label: 'Extended 5-Year Warranty, including HDD and SSD', base: 3048 }, { id: 'life', years: 99, label: 'FREE Lifetime Warranty, including HDD and SSD', base: 0, coloOnly: true }];
+
+var SECTIONS = [
+  { id: 'chassis', title: 'Chassis', nav: 'Chassis' },
+  { id: 'cpu', title: 'CPU', nav: 'CPU' },
+  { id: 'ram', title: 'RAM', nav: 'RAM' },
+  { id: 'raid', title: 'RAID controller', nav: 'RAID' },
+  { id: 'cage', title: 'Drive cage', nav: 'Drives' },
+  { id: 'nic', title: 'Network card', nav: 'Network' },
+  { id: 'pci', title: 'Additional PCI devices', nav: 'PCI' },
+  { id: 'boss', title: 'BOSS card', nav: 'BOSS' },
+  { id: 'idrac', title: 'Remote administration', nav: 'iDRAC' },
+  { id: 'tpm', title: 'TPM', nav: 'TPM' },
+  { id: 'power', title: 'Power supply', nav: 'Power' },
+  { id: 'install', title: 'Installation', nav: 'Installation' },
+  { id: 'os', title: 'Operating system', nav: 'OS' },
+  { id: 'colo', title: 'Colocation', nav: 'Colocation' },
+  { id: 'warranty', title: 'Warranty', nav: 'Warranty' },
+  { id: 'payment', title: 'Payment terms', nav: 'Payment' }
+];
+var IDS = SECTIONS.map(function (s) { return s.id; });
+var KEY_SECTION = { chassis: 'chassis', cpu: 'cpu', ram: 'ram', ramQty: 'ram', raid: 'raid', drives: 'cage', nic: 'nic', pci: 'pci', boss: 'boss', tpm: 'tpm', psu: 'power', install: 'install', os: 'os', osQty: 'os', colo: 'colo', warranty: 'warranty', pay: 'payment' };
+
+var INITIAL = { chassis: '28lff', cpu: '4410Y', ram: '16-4800', ramQty: 2, raid: 'hba355i', drives: {}, nic: 'qlogic', pci: {}, boss: 'none', tpm: 'none', psu: '800', install: {}, os: 'none', osQty: 1, colo: 'none', warranty: '2y', pay: 'full' };
+
+/* ---------- derived state: prices, summaries, statuses ---------- */
+function find(arr, id) { for (var i = 0; i < arr.length; i++) if (arr[i].id === id) return arr[i]; return arr[0]; }
+function derive(s) {
+  var ch = find(CHASSIS, s.chassis), cpu = find(CPUS, s.cpu), ram = find(RAM, s.ram), raid = find(RAID, s.raid), nic = find(NICS, s.nic), boss = find(BOSS, s.boss), tpm = find(TPM, s.tpm), psu = find(PSU, s.psu), os = find(OS, s.os), colo = find(COLO, s.colo);
+  var drives = DRIVES.filter(function (d) { return s.drives[d.id]; }).map(function (d) { return { d: d, q: s.drives[d.id] }; });
+  var bays = drives.reduce(function (a, x) { return a + (x.d.bay ? x.q : 0); }, 0);
+  var drivePrice = drives.reduce(function (a, x) { return a + x.d.price * x.q; }, 0);
+  var pci = PCI.filter(function (p) { return s.pci[p.id]; }).map(function (p) { return { p: p, q: s.pci[p.id] }; });
+  var pciCount = pci.reduce(function (a, x) { return a + x.q; }, 0), pciPrice = pci.reduce(function (a, x) { return a + x.p.price * x.q; }, 0);
+  var inst = INSTALL.filter(function (i) { return s.install[i.id]; });
+  var instPrice = inst.reduce(function (a, i) { return a + i.price; }, 0);
+  var ramPrice = ram.price * s.ramQty, osPrice = os.price * (os.perUnit ? s.osQty : 1);
+  var draw = 120 + 2 * cpu.tdp + s.ramQty * 5 + bays * 9 + pciCount * 15 + (s.boss !== 'none' ? 10 : 0);
+  var hw = ch.price + cpu.price + ramPrice + raid.price + drivePrice + nic.price + pciPrice + boss.price + tpm.price + psu.price + instPrice + osPrice;
+  var tierYears = hw >= 20000 ? 3 : hw >= 7500 ? 2 : 1;
+  function wPrice(w) { return w.years <= tierYears || w.coloOnly ? 0 : w.base; }
+  var war = find(WARRANTY, s.warranty), warPrice = wPrice(war);
+  var coloOn = s.colo !== 'none';
+  var hasRails = !!s.install.rails;
+  var total = hw + warPrice;
+  var savings = (ch.old ? ch.old - ch.price : 0) + (nic.old ? nic.old - nic.price : 0) + (war.years <= tierYears && !war.coloOnly ? war.base : 0);
+  var cores = cpu.cores * 2, licNeed = Math.ceil(cores / 16);
+
+  var st = {};
+  function set(id, value, price, status, extra) { st[id] = Object.assign({ value: value, price: price, status: status || 'ok' }, extra || {}); }
+  set('chassis', ch.short, ch.price, 'ok', { old: ch.old });
+  set('cpu', '2x Xeon ' + cpu.fam + ' ' + cpu.model + ' · ' + cores + ' cores', cpu.price, cpu.tdp > 200 ? 'warning' : 'ok', { note: cpu.tdp > 200 ? 'High Performance fans required' : null });
+  set('ram', s.ramQty + ' × ' + ram.gb + 'GB DDR5 ' + ram.mhz + ' · ' + (s.ramQty * ram.gb) + ' GB', ramPrice);
+  set('raid', raid.label.replace(/^Dell /, ''), raid.price);
+  if (!drives.length) set('cage', 'No drives added', 0, 'warning', { empty: true });
+  else {
+    var first = drives[0], more = drives.length - 1;
+    set('cage', first.q + ' × ' + (first.d.short || first.d.label) + (more ? ' +' + more + ' more' : '') + ' · ' + bays + ' of ' + ch.bays + ' bays', drivePrice, bays > ch.bays ? 'error' : 'ok');
+  }
+  set('nic', nic.label.replace(/^(Dell|DELL) /, ''), nic.price, coloOn && !nic.sfp ? 'warning' : 'ok', { old: nic.old });
+  set('pci', pciCount ? pciCount + (pciCount === 1 ? ' device' : ' devices') + ' · ' + pci.map(function (x) { return x.p.label.split(' (')[0]; }).join(', ') : 'No PCI devices added', pciPrice, 'ok', { empty: !pciCount });
+  set('boss', boss.label, boss.price, 'ok', { empty: s.boss === 'none' });
+  set('idrac', 'iDRAC9 Enterprise', 0);
+  set('tpm', tpm.id === 'none' ? 'No TPM' : 'Dell TPM', tpm.price, 'ok', { empty: tpm.id === 'none' });
+  var load = draw / psu.w;
+  set('power', '2× ' + psu.w + 'W · ' + draw + ' of ' + psu.w + ' W', psu.price, load > 1 ? 'error' : load > 0.85 ? 'warning' : 'ok');
+  set('install', inst.length ? inst.map(function (i) { return i.short; }).join(', ') : 'No installation accessories', instPrice, coloOn && !hasRails ? 'error' : 'ok', { empty: !inst.length });
+  set('os', os.id === 'none' ? 'No OS' : (os.perUnit ? s.osQty + ' × ' : '') + os.short, osPrice, os.perUnit && s.osQty < licNeed ? 'warning' : 'ok', { empty: os.id === 'none' });
+  set('colo', coloOn ? colo.label.split(' | ')[0] + ' · ' + colo.dc : 'Without colocation', 0, 'ok', { empty: !coloOn, priceText: coloOn ? (colo.from ? 'from ' + money(colo.from) + '/mo' : 'Ask manager') : null });
+  set('warranty', war.coloOnly ? 'Lifetime (with colocation)' : war.years + '-year, incl. HDD and SSD', warPrice, war.coloOnly && !coloOn ? 'error' : 'ok', { old: warPrice === 0 && war.base ? war.base : null });
+  set('payment', s.pay === 'full' ? 'Pay in full' : '12-month plan at 0%', 0, s.pay === 'install' && !coloOn ? 'warning' : 'ok', { priceText: s.pay === 'install' ? money(total / 12) + '/mo' : null });
+
+  var setCount = IDS.filter(function (id) { return !st[id].empty; }).length;
+  var issues = IDS.filter(function (id) { return st[id].status !== 'ok'; });
+  return { st: st, total: total, old: total + savings, savings: savings, monthly: total / 12, ch: ch, cpu: cpu, ram: ram, draw: draw, psu: psu, bays: bays, pciCount: pciCount, coloOn: coloOn, hasRails: hasRails, nic: nic, tierYears: tierYears, wPrice: wPrice, cores: cores, licNeed: licNeed, setCount: setCount, issues: issues };
+}
+
+/* ---------- small building blocks ---------- */
+function Section(p) {
+  return h('section', { id: 'sec-' + p.id, 'data-sec': p.id, className: 'sec' + (p.flash ? ' is-flash' : '') + (p.off ? ' sec--off' : '') + (p.status === 'error' ? ' sec--error' : ''), 'aria-labelledby': 'h-' + p.id },
+    h('div', { className: 'sec__head' },
+      h('h2', { className: 'sec__title', id: 'h-' + p.id, tabIndex: -1 }, p.title, p.status && p.status !== 'ok' && h(N.Tag, { size: 'sm', variant: 'subtle', color: p.status === 'error' ? 'error' : 'warning', icon: 'alert-triangle' }, p.status === 'error' ? 'Needs a fix' : 'Check this')),
+      p.meta && h('span', { className: 'sec__meta' }, p.meta)),
+    p.children && h('div', { className: 'sec__body' }, p.children));
+}
+function GroupLabel(p) { return h('div', { className: 'ogrp' }, h('span', null, p.children), p.count != null && h(N.CountBadge, { count: p.count, shape: 'pill', tone: 'neutral' })); }
+function Meter(p) {
+  var pct = Math.min(100, Math.round((p.value / p.max) * 100));
+  var tone = p.value > p.max ? 'error' : (p.warnAt && p.value / p.max > p.warnAt ? 'warning' : '');
+  return h('div', { className: 'meter' + (tone ? ' meter--' + tone : '') },
+    h('span', { className: 'meter__k' }, p.label),
+    h('div', { className: 'meter__track', role: 'meter', 'aria-valuemin': 0, 'aria-valuemax': p.max, 'aria-valuenow': p.value, 'aria-label': p.label }, h('div', { className: 'meter__fill', style: { width: pct + '%' } })),
+    h('span', { className: 'meter__v' }, p.text));
+}
+function Promo(p) {
+  return h('div', { className: 'promo' }, h('span', { className: 'promo__icon' }, h(N.Icon, { name: p.icon || 'server', size: 20 })),
+    h('div', null, h('p', { className: 'promo__t' }, p.title), h('p', { className: 'promo__d' }, p.children)));
+}
+function Meta(label, meta, badge) {
+  return h('span', null, label, (meta || badge) && h('span', { className: 'opt-meta' }, meta, badge && h(N.Tag, { size: 'sm', variant: 'filled', color: 'success' }, badge)));
+}
+
+/* CPU details: info icon in the option row opens a Popover (click, not hover, so it works on touch too).
+   The trigger sits inside the row's <label>, so clicks are kept from selecting the option. */
+var SUFFIX = { 'Y+': 'Speed Select profiles + built-in accelerators (QAT, DLB, DSA, IAA)', 'Y': 'Intel Speed Select: switchable performance profiles', '+': 'Built-in accelerators enabled (QAT, DLB, DSA, IAA)', 'N': 'Optimized for networking and 5G workloads', 'H': 'Database and analytics, scales up to 8 sockets', 'S': 'Optimized for storage and HCI', 'Q': 'Optimized for liquid cooling' };
+function cpuSuffix(m) { var x = m.replace(/^\d+/, ''); return SUFFIX[x] ? { code: x, text: SUFFIX[x] } : null; }
+function CpuInfo(p) {
+  var c = p.cpu, gen = c.model.charAt(1) === '5' ? '5th Gen Xeon Scalable (Emerald Rapids)' : '4th Gen Xeon Scalable (Sapphire Rapids)';
+  var sfx = cpuSuffix(c.model);
+  var rows = [['Generation', gen], ['Per CPU', c.cores + ' cores / ' + c.cores * 2 + ' threads'], ['Base clock', c.ghz + ' GHz'], ['TDP', c.tdp + ' W per CPU'], ['In this build', '2 CPUs · ' + c.cores * 2 + ' cores / ' + c.cores * 4 + ' threads']];
+  if (sfx) rows.push(['Suffix ' + sfx.code, sfx.text]);
+  function stop(e) { e.preventDefault(); e.stopPropagation(); }
+  var body = h('div', { className: 'cpu-pop' },
+    h('dl', null, rows.map(function (r) { return h(React.Fragment, { key: r[0] }, h('dt', null, r[0]), h('dd', null, r[1])); })),
+    c.tdp > 200 && h('p', { className: 'cpu-pop__note' }, 'TDP above 200 W: High Performance fans are added automatically.'));
+  return h(RowInfo, { title: 'Xeon ' + c.fam + ' ' + c.model, icon: 'cpu', label: 'Details about Xeon ' + c.fam + ' ' + c.model, description: '2x ' + c.ghz + ' GHz · ' + c.cores * 2 + ' cores in this build', mobile: p.mobile, body: body });
+}
+
+/* Info icon inside an option row: Popover on desktop, BottomSheet on phones (rendered in the themed overlay layer).
+   The trigger sits inside the row's <label>, so its clicks are kept from selecting the option. */
+function RowInfo(p) {
+  var o = useState(false);
+  function stop(e) { e.preventDefault(); e.stopPropagation(); }
+  var btn = h('button', { type: 'button', className: 'cpu-info__btn', 'aria-label': p.label }, h(N.Icon, { name: 'info', size: 16 }));
+  if (p.mobile) return h('span', { className: 'cpu-info', onClick: stop },
+    React.cloneElement(btn, { onClick: function () { o[1](true); }, 'aria-haspopup': 'dialog' }),
+    o[0] && ReactDOM.createPortal(h(N.BottomSheet, { title: p.title, description: p.description, onClose: function () { o[1](false); } }, p.body), document.getElementById('cfg-layer') || document.body));
+  return h('span', { className: 'cpu-info', onClick: stop },
+    h(N.Popover, { title: p.title, icon: p.icon, placement: 'bottom', align: 'start', width: p.width || 340, label: p.label, content: p.body }, btn));
+}
+
+/* Data center profile (Dallas from the live site; the others reuse it as example content until their profiles are wired) */
+var DC_PROFILE = {
+  dal: { address: '2323 Bryan St, Dallas, TX 75201', certs: ['SOC2', 'SOC3', 'PCI-DSS'], mapping: 'SOC 2 Mapping: NIST 800-53, HIPAA, and ISO 27001', security: ['24x7 onsite security personnel', 'CCTV with 90 day backup', 'Biometric / Photo badge access'] }
+};
+function DcInfo(p) {
+  var c = p.dc, real = DC_PROFILE[c.id], d = real || DC_PROFILE.dal;
+  var city = c.label.split(' | ').slice(0, 2).join(', ');
+  var body = h('div', { className: 'dc-pop' },
+    h('p', { className: 'dc-pop__addr' }, h(N.Icon, { name: 'map-pin', size: 16 }), real ? d.address : city),
+    h('div', { className: 'dc-pop__sec' }, h('span', { className: 'dc-pop__ic' }, h(N.Icon, { name: 'check-circle', size: 18 })),
+      h('div', null, h('p', { className: 'dc-pop__h' }, 'Compliance & Certifications'),
+        h('div', { className: 'dc-pop__tags' }, d.certs.map(function (t) { return h(N.Tag, { key: t, size: 'sm', variant: 'subtle', color: 'neutral' }, t); })),
+        h('p', { className: 'dc-pop__t' }, d.mapping))),
+    h('div', { className: 'dc-pop__sec' }, h('span', { className: 'dc-pop__ic' }, h(N.Icon, { name: 'shield', size: 18 })),
+      h('div', null, h('p', { className: 'dc-pop__h' }, 'Security & Infrastructure'),
+        h('ul', { className: 'dc-pop__list' }, d.security.map(function (t) { return h('li', { key: t }, t); })))),
+    !real && h('p', { className: 'cpu-pop__note' }, 'Example content: this site\'s profile is not in the prototype yet.'));
+  return h(RowInfo, { title: c.dc, icon: 'server', label: 'Data center details: ' + c.dc + ', ' + city, description: city, mobile: p.mobile, body: body, width: 360 });
+}
+
+/* Long option list: shows the first `limit` rows plus anything selected, with a "Show all" toggle. */
+function RowList(p) {
+  var s = useState(false), open = s[0];
+  var items = p.items, limit = p.limit || 5;
+  var shown = open ? items : items.filter(function (it, i) { return i < limit || it.on; });
+  var hidden = items.length - shown.length;
+  return h(React.Fragment, null,
+    h('div', { className: 'rows' }, shown.map(function (it) { return h(React.Fragment, { key: it.key }, it.el); })),
+    (hidden > 0 || open) && items.length > limit && h('div', { className: 'rows__more' },
+      h(N.Button, { variant: 'text', size: 'sm', iconRight: open ? 'chevron-up' : 'chevron-down', onClick: function () { s[1](!open); } }, open ? 'Show fewer' : 'Show all ' + items.length + ' options')));
+}
+
+/* ---------- scroll-spy ---------- */
+/* Active section = the last one whose top has crossed a line just under the sticky offset.
+   A click locks the target: intermediate sections don't light up while the page scrolls, and after arrival the target
+   stays active (short sections can't reach the line) until the user scrolls by hand. */
+function useScrollSpy(ids) {
+  var a = useState(ids[0]), active = a[0], setActive = a[1];
+  var f = useState(null), flash = f[0], setFlash = f[1];
+  var lock = useRef(null), timer = useRef(0);
+  var compute = useCallback(function () {
+    if (lock.current) return;
+    var cs = getComputedStyle(document.documentElement);
+    var off = parseFloat(cs.getPropertyValue('--sticky-top')) + parseFloat(cs.getPropertyValue('--nav-h'));
+    var line = off + Math.min(200, (window.innerHeight - off) * 0.25);
+    var cur = ids[0];
+    for (var i = 0; i < ids.length; i++) { var el = document.getElementById('sec-' + ids[i]); if (el && el.getBoundingClientRect().top <= line) cur = ids[i]; }
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+      for (var j = ids.length - 1; j >= 0; j--) { var e2 = document.getElementById('sec-' + ids[j]); if (e2 && e2.getBoundingClientRect().top < window.innerHeight - 40) { cur = ids[j]; break; } }
+    }
+    setActive(cur);
+  }, [ids]);
+  function arrive() {
+    var l = lock.current; if (!l || l.arrived) return;
+    l.arrived = true; clearTimeout(timer.current);
+    setFlash(l.id); setActive(l.id);
+    var hd = document.getElementById('h-' + l.id); if (hd) hd.focus({ preventScroll: true });
+  }
+  useEffect(function () {
+    var raf = 0;
+    function onScroll() {
+      var l = lock.current;
+      if (l) { if (!l.arrived) { clearTimeout(timer.current); timer.current = setTimeout(arrive, 160); } return; }
+      if (!raf) raf = requestAnimationFrame(function () { raf = 0; compute(); });
+    }
+    function onEnd() { var l = lock.current; if (l && !l.arrived && performance.now() - l.t > 120) arrive(); }
+    /* the user takes over (wheel, touch, keys, scrollbar): drop the lock and follow their scroll */
+    function onUser(e) { if (!lock.current) return; if (e.type === 'mousedown' && e.target !== document.documentElement) return; lock.current = null; clearTimeout(timer.current); compute(); }
+    var evs = [['scroll', onScroll], ['resize', onScroll], ['scrollend', onEnd], ['wheel', onUser], ['touchstart', onUser], ['keydown', onUser], ['mousedown', onUser]];
+    evs.forEach(function (x) { window.addEventListener(x[0], x[1], { passive: true }); });
+    compute();
+    return function () { evs.forEach(function (x) { window.removeEventListener(x[0], x[1]); }); };
+  }, [compute]);
+  useEffect(function () { if (!flash) return; var t = setTimeout(function () { setFlash(null); }, 900); return function () { clearTimeout(t); }; }, [flash]);
+  function goTo(id) {
+    var el = document.getElementById('sec-' + id); if (!el) return;
+    lock.current = { id: id, arrived: false, t: performance.now() }; setActive(id);
+    el.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
+    clearTimeout(timer.current); timer.current = setTimeout(arrive, 260);
+  }
+  return { active: active, flash: flash, goTo: goTo };
+}
+
+/* ---------- summary list (shared by the desktop panel and the mobile sheet) ---------- */
+function SummaryList(p) {
+  var listRef = useRef(null), innerRef = useRef(null), mk = useState({ y: 0, h: 0 });
+  useLayoutEffect(function () {
+    var inner = innerRef.current; if (!inner) return;
+    var it = inner.querySelector('[data-id="' + p.active + '"]'); if (!it) return;
+    var list = listRef.current; if (!list || list.scrollHeight <= list.clientHeight) return;
+    var top = it.offsetTop, bottom = top + it.offsetHeight;
+    if (top < list.scrollTop + 8 || bottom > list.scrollTop + list.clientHeight - 8) {
+      list.scrollTo({ top: Math.max(0, top - list.clientHeight / 2 + it.offsetHeight / 2), behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }
+  }, [p.active, p.data]);
+  return h('nav', { className: p.className || 'sum__list', ref: listRef, 'aria-label': 'Configuration summary' },
+    h('div', { className: 'sum__inner', ref: innerRef },
+      SECTIONS.map(function (sec) {
+        var x = p.data.st[sec.id], on = p.active === sec.id;
+        var price = x.priceText ? x.priceText : (x.price ? money(x.price) : (x.old ? '$0' : ''));
+        return h('button', { key: sec.id + (p.changed && p.changed.id === sec.id ? p.changed.n : ''), type: 'button', 'data-id': sec.id, className: 'sum__item' + (on ? ' is-active' : '') + (x.empty ? ' is-empty' : '') + (p.changed && p.changed.id === sec.id ? ' is-changed' : ''), 'aria-current': on ? 'location' : undefined, onClick: function () { p.onPick(sec.id); } },
+          h('span', { className: 'sum__k' }, sec.title, x.status !== 'ok' && h('span', { className: 'dot dot--' + x.status, title: x.status === 'error' ? 'Needs a fix' : 'Check this' })),
+          h('span', { className: 'sum__p' }, x.old && x.price !== x.old ? h('s', null, money(x.old)) : null, price),
+          h('span', { className: 'sum__v' }, x.value));
+      })));
+}
+
+function useBump(value) {
+  var prev = useRef(value), s = useState({ n: 0, d: 0 });
+  useEffect(function () { if (prev.current !== value) { s[1](function (o) { return { n: o.n + 1, d: value - prev.current }; }); prev.current = value; } }, [value]);
+  return s[0];
+}
+
+function SummaryPanel(p) {
+  var d = p.data, bump = useBump(d.total);
+  var issues = d.issues.length;
+  /* the panel starts under the title, before it sticks: fit it to the visible part of the viewport so the total and CTA stay on screen */
+  var ref = useRef(null);
+  useEffect(function () {
+    var raf = 0;
+    function fit() { raf = 0; var el = ref.current; if (!el) return; var top = Math.max(el.getBoundingClientRect().top, 16); el.style.maxHeight = Math.max(360, window.innerHeight - top - 16) + 'px'; }
+    function on() { if (!raf) raf = requestAnimationFrame(fit); }
+    window.addEventListener('scroll', on, { passive: true }); window.addEventListener('resize', on); fit();
+    return function () { window.removeEventListener('scroll', on); window.removeEventListener('resize', on); };
+  }, []);
+  return h('aside', { className: 'cfg-aside', ref: ref, 'aria-label': 'Your configuration' },
+    h('div', { className: 'sum__head' },
+      h('div', { className: 'sum__eyebrow' }, 'Your configuration'),
+      h('p', { className: 'sum__name' }, d.ch.label),
+      h('div', { className: 'sum__progress' }, h('span', null, h('b', null, d.setCount), ' of ' + IDS.length + ' set'), issues ? h('span', { className: 'warn' }, '· ' + issues + (issues === 1 ? ' needs' : ' need') + ' attention') : null)),
+    h(SummaryList, { data: d, active: p.active, onPick: p.onPick, changed: p.changed }),
+    h('div', { className: 'sum__foot' },
+      h('div', { key: bump.n, className: 'total' + (bump.n ? ' is-bump' : '') },
+        h('span', { className: 'total__k' }, 'Total'),
+        h('span', { className: 'total__v' }, d.savings ? h('s', null, money(d.old)) : null, h('b', null, money(d.total))),
+        bump.n && bump.d ? h('span', { className: 'delta', 'aria-hidden': true }, (bump.d > 0 ? '+' : '−') + money(Math.abs(bump.d))) : null),
+      h('p', { className: 'monthly' }, 'or ' + money(d.monthly) + '/month with 0% installments'),
+      h('div', { className: 'sum__btns', 'data-theme': 'primary' },
+        h(N.Button, { variant: 'primary', fullWidth: true, size: p.tall ? 'lg' : 'md', iconLeft: p.added ? 'check' : 'shopping-cart', onClick: p.onAdd }, p.added ? 'Added to cart' : 'Add to Cart'),
+        h(N.Button, { variant: 'ghost', fullWidth: true, size: p.tall ? 'lg' : 'md' }, 'Get my Quote')),
+      h('button', { type: 'button', className: 'sum__help', onClick: p.onHelp }, h(N.Icon, { name: 'help-circle', size: 16 }), 'Not sure? Ask a specialist')));
+}
+
+/* ---------- help request (Drawer on desktop, BottomSheet on mobile) ---------- */
+function HelpBody(p) {
+  if (p.sent) return h(N.EmptyState, { tone: 'success', title: 'Request sent' }, 'A NewServerLife specialist will reply within one business hour. Your current build is attached.');
+  return h('div', { className: 'help' },
+    h(N.ContextCard, { icon: 'server', eyebrow: 'Your current build is attached automatically', title: p.data.ch.short + ' · ' + p.data.setCount + ' of ' + IDS.length + ' set', meta: money(p.data.total) + (p.data.issues.length ? ' · ' + p.data.issues.length + ' to check' : '') }),
+    h(N.Textarea, { label: 'Describe what you need', rows: 4, placeholder: 'Workload, capacity, budget, anything you are unsure about' }),
+    h(N.FileAttach, { optional: true, title: 'Attach a spec or RFQ', hint: 'PDF, XLSX or DOCX, up to 10 MB' }),
+    h('div', { className: 'help-grid' }, h(N.Input, { label: 'Name', size: 'md' }), h(N.Input, { label: 'Email', type: 'email', size: 'md' })));
+}
+function HelpFooter(p) {
+  if (p.sent) return h(N.Button, { variant: 'ghost', fullWidth: true, onClick: p.onClose }, 'Back to configuration');
+  return h(React.Fragment, null, h(N.Button, { variant: 'primary', fullWidth: true, iconLeft: 'send', onClick: p.onSend }, 'Send to a specialist'), h('span', { className: 'help-note' }, 'Goes straight to a specialist, not a bot.'));
+}
+
+/* ---------- sections ---------- */
+function Sections(p) {
+  var s = p.sel, d = p.data, upd = p.upd, fl = p.flash, mobile = p.mobile;
+  function radio(key, opt, extra) {
+    extra = extra || {};
+    return h(N.ConfiguratorRow, Object.assign({ key: opt.id, selector: 'radio', name: key, mobile: mobile, label: extra.label || opt.label, selected: s[key] === opt.id, onSelect: function () { upd(key, opt.id); }, price: opt.price, oldPrice: opt.old, tag: opt.tag, stepper: false, unit: ' ' }, extra.props || {}));
+  }
+  function multi(key, opt, max, err) {
+    var q = s[key][opt.id];
+    return h(N.ConfiguratorRow, { key: opt.id, selector: 'checkbox', mobile: mobile, label: opt.label, selected: !!q, quantity: q || 1, unit: '/ ea.',
+      onSelect: function (v) { var n = Object.assign({}, s[key]); if (v) n[opt.id] = 1; else delete n[opt.id]; upd(key, n); },
+      onQuantityChange: function (v) { var n = Object.assign({}, s[key]); n[opt.id] = Math.max(1, Math.min(max || 99, v)); upd(key, n); }, price: opt.price, error: q ? err : undefined });
+  }
+  var st = d.st;
+  var cpuGroups = ['Silver', 'Gold', 'Platinum'];
+  var df = s.driveFilter || [];
+  var driveItems = DRIVES.filter(function (x) { return !df.length || df.every(function (t) { return x.tags.indexOf(t) >= 0; }); });
+
+  return h('div', null,
+    h(Section, { id: 'chassis', title: 'Chassis', flash: fl === 'chassis' }, h('div', { className: 'rows' }, CHASSIS.map(function (c) { return radio('chassis', c); }))),
+
+    h(Section, { id: 'cpu', title: 'CPU', meta: '2 sockets · prices for a pair', flash: fl === 'cpu', status: st.cpu.status },
+      cpuGroups.map(function (g) {
+        var list = CPUS.filter(function (c) { return c.fam === g; });
+        return h(React.Fragment, { key: g }, h(GroupLabel, { count: list.length }, 'Xeon ' + g),
+          h(RowList, { limit: g === 'Gold' ? 4 : 5, items: list.map(function (c) { return { key: c.id, on: s.cpu === c.id, el: radio('cpu', c, { label: h('span', null, '2x Intel Xeon ' + g + ' ' + c.model + ' ' + c.ghz + ' GHz ' + c.cores + ' Core = ' + c.cores * 2 + ' Cores', h(CpuInfo, { cpu: c, mobile: mobile })) }) }; }) }));
+      }),
+      d.cpu.tdp > 200 && h(N.Notification, { type: 'warning', title: 'High Performance fans added' }, 'The manufacturer requires High Performance fans when CPU TDP exceeds 200W or NVMe drives are installed. Standard fans would run at full speed.')),
+
+    h(Section, { id: 'ram', title: 'RAM', meta: 'Up to 16 modules · max 1536 GB', flash: fl === 'ram' },
+      h('div', { className: 'meters' },
+        h(Meter, { label: 'Slots', value: s.ramQty, max: 16, text: s.ramQty + ' of 16' }),
+        h(Meter, { label: 'Capacity', value: s.ramQty * d.ram.gb, max: 1536, text: s.ramQty * d.ram.gb + ' of 1536 GB' })),
+      ['4800', '5600'].map(function (mhz) {
+        return h(React.Fragment, { key: mhz }, h(GroupLabel, { count: RAM.filter(function (r) { return r.mhz === mhz; }).length }, mhz + ' MHz'),
+          h('div', { className: 'rows' }, RAM.filter(function (r) { return r.mhz === mhz; }).map(function (r) {
+            var on = s.ram === r.id;
+            return h(N.ConfiguratorRow, { key: r.id, selector: 'radio', name: 'ram', mobile: mobile, label: r.label, selected: on, unit: '/ ea.', price: r.price,
+              onSelect: function () { upd('ram', r.id); }, quantity: s.ramQty, onQuantityChange: function (v) { upd('ramQty', Math.max(1, Math.min(16, v))); } });
+          })));
+      })),
+
+    h(Section, { id: 'raid', title: 'RAID controller', meta: 'Built into a special socket', flash: fl === 'raid' }, h('div', { className: 'rows' }, RAID.map(function (r) { return radio('raid', r); }))),
+
+    h(Section, { id: 'cage', title: 'Drive cage', meta: d.ch.bays + ' × LFF/SFF bays', flash: fl === 'cage', status: st.cage.status },
+      h('p', { className: 'sec__lead' }, 'Plan storage first: the ', h('a', { href: '#cage' }, 'RAID calculator'), ' shows usable capacity and redundancy. We recommend 2 SSD in RAID 1 for the operating system.'),
+      h(Meter, { label: 'Bays', value: d.bays, max: d.ch.bays, text: d.bays + ' of ' + d.ch.bays }),
+      !d.bays && h(N.Notification, { type: 'warning' }, 'No drives added. The server ships without storage unless you add at least one drive.'),
+      h(N.ChipGroup, { label: 'Quick filters', multiple: true, size: 'sm', options: ['Caddy', 'HDD', 'SAS'], value: df, onChange: function (v) { upd('driveFilter', v); } }),
+      ['Empty drive tray', 'HDD SAS'].map(function (g) {
+        var list = driveItems.filter(function (x) { return x.group === g; }); if (!list.length) return null;
+        return h(React.Fragment, { key: g }, h(GroupLabel, { count: list.length }, g),
+          h(RowList, { limit: 5, items: list.map(function (x) { return { key: x.id, on: !!s.drives[x.id], el: multi('drives', x, x.bay ? d.ch.bays : 99, x.bay && d.bays > d.ch.bays ? d.bays + ' drives selected, the chassis has ' + d.ch.bays + ' bays. Remove ' + (d.bays - d.ch.bays) + '.' : undefined) }; }) }));
+      })),
+
+    h(Section, { id: 'nic', title: 'Network card', meta: 'OCP 3.0 slot · one card', flash: fl === 'nic', status: st.nic.status },
+      d.coloOn && !d.nic.sfp && h(N.Notification, { type: 'warning' }, 'Colocation needs SFP+ connectivity. Pick a card with SFP+ or SFP28 ports.'),
+      h(RowList, { limit: 5, items: NICS.map(function (n) { return { key: n.id, on: s.nic === n.id, el: radio('nic', n) }; }) })),
+
+    h(Section, { id: 'pci', title: 'Additional PCI devices', meta: d.pciCount + ' of 9 slots used', flash: fl === 'pci' },
+      ['Network card', 'Fibre Channel'].map(function (g) {
+        var list = PCI.filter(function (x) { return x.group === g; });
+        return h(React.Fragment, { key: g }, h(GroupLabel, { count: list.length }, g), h(RowList, { limit: 4, items: list.map(function (x) { return { key: x.id, on: !!s.pci[x.id], el: multi('pci', x, 9) }; }) }));
+      })),
+
+    h(Section, { id: 'gpu', title: 'Video cards and accelerators', meta: 'Not supported by the R760xd2 chassis', off: true }),
+
+    h(Section, { id: 'boss', title: 'BOSS card', meta: 'Boot drives on M.2', flash: fl === 'boss' }, h('div', { className: 'rows' }, BOSS.map(function (b) { return radio('boss', b); }))),
+    h(Section, { id: 'idrac', title: 'Remote administration', flash: fl === 'idrac' }, h('div', { className: 'rows' }, h(N.ConfiguratorRow, { selector: 'radio', name: 'idrac', mobile: mobile, label: 'iDRAC9 Enterprise Remote Administration', selected: true, price: 0, stepper: false, tag: 'Included', unit: ' ' }))),
+    h(Section, { id: 'tpm', title: 'TPM', meta: 'Trusted Platform Module', flash: fl === 'tpm' }, h('div', { className: 'rows' }, TPM.map(function (t) { return radio('tpm', t); }))),
+
+    h(Section, { id: 'power', title: 'Power supply', meta: 'Two redundant units', flash: fl === 'power', status: st.power.status },
+      h(Meter, { label: 'Peak draw', value: d.draw, max: d.psu.w, warnAt: 0.85, text: d.draw + ' of ' + d.psu.w + ' W' }),
+      h('div', { className: 'rows' }, PSU.map(function (x) { return radio('psu', x, { props: { error: s.psu === x.id && d.draw > x.w ? 'Peak draw ' + d.draw + ' W is above this ' + x.w + ' W supply. Choose a larger unit.' : undefined } }); }))),
+
+    h(Section, { id: 'install', title: 'Installation', flash: fl === 'install', status: st.install.status },
+      d.coloOn && !d.hasRails ? h(N.Notification, { type: 'error', title: 'Rails are required for colocation' }, 'Add the 2U rail kit so the server can be mounted in the rack.')
+        : h(Promo, { icon: 'server', title: 'Hosting in a TIER-III data center?' }, 'Rails are required for rack installation. ', h('a', { className: 'link', href: '#colo', onClick: function (e) { e.preventDefault(); p.goTo('colo'); } }, 'See colocation options')),
+      h('div', { className: 'rows' }, INSTALL.map(function (x) {
+        return h(N.ConfiguratorRow, { key: x.id, selector: 'checkbox', mobile: mobile, label: x.label, selected: !!s.install[x.id], stepper: false, price: x.price, unit: ' ',
+          onSelect: function (v) { var n = Object.assign({}, s.install); if (v) n[x.id] = 1; else delete n[x.id]; upd('install', n); } });
+      }))),
+
+    h(Section, { id: 'os', title: 'Operating system', flash: fl === 'os', status: st.os.status },
+      h(N.Notification, { type: 'info' }, 'Windows Server is licensed per 16 cores. Your ' + d.cores + '-core build needs ' + d.licNeed + (d.licNeed === 1 ? ' license' : ' licenses') + '; our team confirms the exact quantity.'),
+      h('div', { className: 'rows' }, OS.map(function (o) {
+        return h(N.ConfiguratorRow, { key: o.id, selector: 'radio', name: 'os', mobile: mobile, label: o.label, selected: s.os === o.id, price: o.price, unit: o.perUnit ? '/ ea.' : ' ', stepper: !!o.perUnit,
+          onSelect: function () { upd('os', o.id); }, quantity: s.osQty, onQuantityChange: function (v) { upd('osQty', Math.max(1, Math.min(8, v))); } });
+      }))),
+
+    h(Section, { id: 'colo', title: 'Colocation', meta: 'First month free', flash: fl === 'colo' },
+      h(Promo, { icon: 'globe', title: 'Try colocation, first month free' }, 'A+ class data centers, 24/7 security monitoring, 20 Gbps network. Requires rails and an SFP+ network card.'),
+      h('div', { className: 'rows' }, COLO.map(function (c) {
+        return radio('colo', c, { label: c.dc ? h('span', null, c.label + ' · ' + c.dc, h(DcInfo, { dc: c, mobile: mobile })) : c.label, props: { tag: c.badge, price: c.id === 'none' ? 0 : (c.from ? 'From ' + money(c.from) : 'Ask manager') } });
+      }))),
+
+    h(Section, { id: 'warranty', title: 'Warranty', meta: 'Bigger order, longer coverage: ' + d.tierYears + '-year included', flash: fl === 'warranty', status: st.warranty.status },
+      h('div', { className: 'rows' }, WARRANTY.map(function (w) {
+        var pr = d.wPrice(w), incl = pr === 0 && w.base > 0;
+        return radio('warranty', w, { label: w.coloOnly ? w.label + ' (only with colocation service)' : w.label, props: { price: pr, oldPrice: incl ? w.base : undefined, tag: incl ? 'Included' : undefined, error: w.coloOnly && s.warranty === w.id && !d.coloOn ? 'Lifetime warranty comes only with colocation. Choose a data center or another warranty.' : undefined } });
+      }))),
+
+    h(Section, { id: 'payment', title: 'Payment terms', flash: fl === 'payment', status: st.payment.status },
+      h(N.ButtonGroup, { icons: false, fullWidth: mobile, value: s.pay, onChange: function (v) { upd('pay', v); }, items: [{ label: 'Pay in full', value: 'full' }, { label: 'Pay in installments', value: 'install' }] }),
+      s.pay === 'install' ? h(N.Notification, { type: d.coloOn ? 'info' : 'warning', title: '12-month installment plan at 0%' }, d.coloOn ? '12 payments of ' + money(d.monthly) + '. Colocation is billed separately. Our manager confirms the plan after you submit.' : 'Installments are available with colocation. Choose a data center above to use the plan.')
+        : h('p', { className: 'sec__lead' }, 'Cards, ACH direct debit, bank transfer or crypto.')));
+}
+
+/* ---------- mobile pieces ---------- */
+function ChipNav(p) {
+  var ref = useRef(null);
+  useEffect(function () {
+    var nav = ref.current; if (!nav) return; var c = nav.querySelector('[data-id="' + p.active + '"]'); if (!c) return;
+    nav.scrollTo({ left: c.offsetLeft - (nav.clientWidth - c.offsetWidth) / 2, behavior: reduceMotion() ? 'auto' : 'smooth' });
+  }, [p.active]);
+  return h('nav', { className: 'chipnav', ref: ref, 'aria-label': 'Configuration sections' },
+    SECTIONS.map(function (s) {
+      var x = p.data.st[s.id];
+      return h('button', { key: s.id, type: 'button', 'data-id': s.id, className: 'chip' + (p.active === s.id ? ' is-active' : ''), 'aria-current': p.active === s.id ? 'location' : undefined, onClick: function () { p.onPick(s.id); } },
+        s.nav, x.status !== 'ok' && h('span', { className: 'dot dot--' + x.status }));
+    }), h('span', { className: 'chipnav__end' }));
+}
+function BuyBar(p) {
+  var d = p.data, bump = useBump(d.total);
+  return h('div', { className: 'buybar' },
+    h('button', { type: 'button', className: 'buybar__help', 'aria-label': 'Ask a specialist', onClick: p.onHelp }, h(N.Icon, { name: 'help-circle', size: 22 })),
+    h('button', { key: bump.n, type: 'button', className: 'buybar__sum' + (bump.n ? ' is-bump' : ''), onClick: p.onSummary, 'aria-label': 'Show configuration summary, total ' + money(d.total) },
+      h('span', { className: 'buybar__k' }, d.setCount + ' of ' + IDS.length + ' set', d.issues.length ? h('span', { className: 'dot dot--warning' }) : null, h(N.Icon, { name: 'chevron-up', size: 14 })),
+      h('span', { className: 'buybar__v' }, money(d.total))),
+    h('span', { 'data-theme': 'primary', style: { display: 'contents' } }, h(N.Button, { variant: 'primary', size: 'md', iconLeft: p.added ? 'check' : undefined, onClick: p.onAdd }, p.added ? 'Added' : 'Add to Cart')));
+}
+
+/* ---------- app ---------- */
+function App() {
+  var desktop = useMQ('(min-width: 1024px)'), edge = useMQ('(min-width: 1280px)');
+  var s = useState(INITIAL), sel = s[0];
+  var ch = useState(null), changed = ch[0];
+  var data = useMemo(function () { return derive(sel); }, [sel]);
+  var spy = useScrollSpy(IDS);
+  var hp = useState(false), helpOpen = hp[0], setHelp = hp[1];
+  var sn = useState(false), sent = sn[0];
+  var sm = useState(false), sumOpen = sm[0];
+  var tab = useState('ctl');
+  /* configurator theme (primary pink / secondary blue), switched from the review toolbar */
+  var th = useState('primary'), theme = th[0];
+  useEffect(function () {
+    function on(e) { if (e.data && (e.data.nslTheme === 'primary' || e.data.nslTheme === 'secondary')) th[1](e.data.nslTheme); }
+    window.addEventListener('message', on);
+    try { window.parent.postMessage({ nslReady: true }, '*'); } catch (err) {}
+    return function () { window.removeEventListener('message', on); };
+  }, []);
+
+  function upd(k, v) {
+    s[1](function (o) { var n = Object.assign({}, o); n[k] = v; return n; });
+    if (KEY_SECTION[k]) ch[1](function (o) { return { id: KEY_SECTION[k], n: (o ? o.n : 0) + 1 }; });
+  }
+  var ad = useState(false), added = ad[0];
+  var errorId = IDS.filter(function (id) { return data.st[id].status === 'error'; })[0];
+  function addToCart() {
+    sm[1](false);
+    if (errorId) { setTimeout(function () { spy.goTo(errorId); }, 60); return; }
+    ad[1](true); setTimeout(function () { ad[1](false); }, 2200);
+  }
+  var tall = useMQ('(min-height: 900px)');
+  function openHelp() { sn[1](false); setHelp(true); }
+  function closeHelp() { setHelp(false); var t = document.querySelector('.nsl-edgetab'); if (t) t.focus(); }
+  function pickFromSheet(id) { sm[1](false); setTimeout(function () { spy.goTo(id); }, 80); }
+
+  return h(React.Fragment, null,
+    desktop ? h(N.Header, { active: 'Hardware', cartCount: 0 }) : h(N.MobileHeader, { tone: 'light', cartCount: 0 }),
+    h('main', null,
+      h('div', { className: 'nsl-container' },
+        h('div', { className: 'crumbs' }, h(N.Breadcrumbs, { items: [{ label: 'Home', href: '#' }, { label: 'Configure', href: '#' }, { label: 'Dell', href: '#' }, { label: 'PowerEdge R760xd2', href: '#' }, { label: 'R760xd2 24LFF + 4LFF' }] })),
+        /* title spans the page; below it the 8/4 grid: gallery, tabs and options on the left, the sticky summary on the right from the very top */
+        h('div', { className: 'top__head' },
+          h('div', { className: 'top__badges' }, h(N.ProductBadge, { type: 'in-stock' }), h(N.Tag, { size: 'sm', variant: 'outline', color: 'neutral' }, 'Configure-to-order')),
+          h('h1', { className: 'top__title' }, 'Dell PowerEdge R760xd2 24LFF + 4LFF')),
+        h('div', { className: 'cfg', 'data-theme': theme },
+          h('div', { className: 'cfg__main' },
+            h('div', { className: 'top' },
+              h(N.ProductGallery, { images: [null, null, null, null], ratio: desktop ? '16:9' : '4:3', mobile: !desktop, alt: 'Dell PowerEdge R760xd2' })),
+            h('div', { className: 'tabs' }, h(N.Tabs, { value: tab[0], onChange: tab[1], items: [{ label: 'Configure-to-order', value: 'ctl' }, { label: 'Features', value: 'f' }, { label: 'Co-location', value: 'c' }, { label: 'Helpful Hints', value: 'h' }] })),
+            !desktop && h(ChipNav, { data: data, active: spy.active, onPick: spy.goTo }),
+            h(Sections, { sel: sel, data: data, upd: upd, flash: spy.flash, goTo: spy.goTo, mobile: !desktop })),
+          desktop && h(SummaryPanel, { data: data, active: spy.active, onPick: spy.goTo, onHelp: openHelp, changed: changed, onAdd: addToCart, added: added, tall: tall })))),
+    h(N.Footer, { variant: desktop ? 'desktop' : 'mobile' }),
+
+    /* help: EdgeTab + Drawer on desktop (tab only where the page margin fits it), BottomSheet on mobile.
+       Overlays live in one layer that carries the configurator theme. */
+    h('div', { id: 'cfg-layer', 'data-theme': theme },
+    desktop && edge && h(N.EdgeTab, { open: helpOpen, controls: 'help-drawer', top: '42%', onClick: function () { helpOpen ? closeHelp() : openHelp(); }, style: helpOpen ? { right: '440px' } : undefined }),
+    desktop && helpOpen && h(N.Drawer, { id: 'help-drawer', title: 'Ask a specialist', description: 'Write it your way. A real engineer replies, usually within an hour.', onClose: closeHelp,
+      footer: h(HelpFooter, { sent: sent, onSend: function () { sn[1](true); }, onClose: closeHelp }) }, h(HelpBody, { data: data, sent: sent })),
+    !desktop && h(BuyBar, { data: data, onAdd: addToCart, added: added, onHelp: openHelp, onSummary: function () { sm[1](true); } }),
+    !desktop && sumOpen && h(N.BottomSheet, { title: 'Your configuration', description: data.ch.short + ' · ' + data.setCount + ' of ' + IDS.length + ' set', onClose: function () { sm[1](false); },
+      footer: h(React.Fragment, null, h('div', { className: 'sheet-total' }, h('span', null, 'Total'), h('b', null, money(data.total))), h('div', { className: 'sum__btns', 'data-theme': 'primary' }, h(N.Button, { variant: 'primary', fullWidth: true, iconLeft: 'shopping-cart', onClick: addToCart }, 'Add to Cart'), h(N.Button, { variant: 'ghost', fullWidth: true }, 'Get my Quote'))) },
+      h(SummaryList, { className: 'sheet-sum', data: data, active: spy.active, onPick: pickFromSheet })),
+    !desktop && helpOpen && h(N.BottomSheet, { title: 'Ask a specialist', description: 'Write it your way. A real engineer replies.', onClose: function () { setHelp(false); },
+      footer: h(HelpFooter, { sent: sent, onSend: function () { sn[1](true); }, onClose: function () { setHelp(false); } }) }, h(HelpBody, { data: data, sent: sent }))));
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+})();
+</script>
+</body>
+</html>

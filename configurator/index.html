@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>R760xd2 Configurator Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: review shell — toolbar on top, the live page in a scaled frame, notes in a side panel (overlay below 1100px). */
+:root {
+  --bg: #eef0f4; --surface: #ffffff; --fg: #18304c; --muted: #5d6676; --line: #dde1e8;
+  --accent: #b91f69; --accent-soft: #fce7f1; --seg: #18304c; --seg-fg: #ffffff;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace; --sans: "IBM Plex Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f1520; --surface: #172131; --fg: #e8edf5; --muted: #9aa6b8; --line: #2a3648; --accent: #f77fb8; --accent-soft: #3a1729; --seg: #e8edf5; --seg-fg: #0f1520; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0f1520; --surface: #172131; --fg: #e8edf5; --muted: #9aa6b8; --line: #2a3648; --accent: #f77fb8; --accent-soft: #3a1729; --seg: #e8edf5; --seg-fg: #0f1520; color-scheme: dark; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 400 14px/20px var(--sans); }
+.app { height: 100%; display: flex; flex-direction: column; }
+.bar { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); background: var(--surface); border-bottom: 1px solid var(--line); }
+.bar__name { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
+.bar__name b { font: 600 15px/20px var(--mono); }
+.bar__name span { font-size: 12px; line-height: 16px; color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--fg); padding: 6px 12px; font: 500 12px/16px var(--mono); cursor: pointer; font-variant-numeric: tabular-nums; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--seg); color: var(--seg-fg); }
+.sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.sw--p { background: #b91f69; }
+.sw--s { background: #1d6cbe; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--fg); padding: 6px 12px; font: 500 13px/16px var(--sans); cursor: pointer; text-decoration: none; }
+.btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.seg button:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.main { flex: 1; min-height: 0; display: flex; position: relative; }
+.stage { flex: 1; min-width: 0; position: relative; overflow: hidden; display: grid; place-items: start center; padding: 16px; }
+.stage.is-fit { padding: 0; }
+.frame-box { position: relative; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 12px 32px rgba(15,21,32,.12); border-radius: 6px; overflow: hidden; }
+.stage.is-fit .frame-box { border-radius: 0; box-shadow: none; }
+.frame-box.is-phone { border-radius: 28px; outline: 8px solid #111827; outline-offset: 0; margin-top: 8px; }
+iframe { display: block; border: 0; transform-origin: 0 0; background: #fff; }
+.scale { position: absolute; right: 10px; bottom: 8px; padding: 2px 6px; border-radius: 4px; background: rgba(17,24,39,.72); color: #fff; font: 500 11px/16px var(--mono); pointer-events: none; }
+.notes { flex: none; width: 400px; overflow-y: auto; background: var(--surface); border-left: 1px solid var(--line); padding: 20px 22px 32px; }
+.notes[hidden] { display: none !important; }
+@media (max-width: 1099px) { .notes { position: absolute; inset: 0 0 0 auto; width: min(420px, 100%); z-index: 5; box-shadow: -12px 0 32px rgba(15,21,32,.18); padding-left: max(22px, env(safe-area-inset-left, 0px)); padding-right: max(22px, env(safe-area-inset-right, 0px)); } }
+.notes h2 { margin: 24px 0 8px; font: 600 15px/20px var(--mono); text-wrap: balance; }
+.notes h2:first-child { margin-top: 0; }
+.notes p, .notes li { margin: 0 0 8px; color: var(--fg); }
+.notes ul { margin: 0 0 8px; padding-left: 18px; }
+.notes .k { font: 600 12px/16px var(--mono); color: var(--accent); }
+.notes .muted { color: var(--muted); }
+.notes code { font: 500 12px/16px var(--mono); background: var(--bg); padding: 1px 4px; border-radius: 4px; }
+.try { margin-top: 8px; padding: 12px 14px; border-radius: 8px; background: var(--bg); }
+.try li { margin-bottom: 6px; }
+@media (max-width: 719px) { .bar__name span { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="bar">
+    <div class="bar__name"><b>R760xd2 · Configure-to-order</b><span>Prototype on NSL Design System · summary with scroll-spy, help tab, mobile</span></div>
+    <div class="seg" role="group" aria-label="Frame width" id="widths">
+      <button type="button" data-w="fit" aria-pressed="true">Fit</button>
+      <button type="button" data-w="1440" aria-pressed="false">1440</button>
+      <button type="button" data-w="1024" aria-pressed="false">1024</button>
+      <button type="button" data-w="375" aria-pressed="false">375</button>
+    </div>
+    <div class="seg" role="group" aria-label="Configurator theme" id="themes">
+      <button type="button" data-t="primary" aria-pressed="true"><span class="sw sw--p" aria-hidden="true"></span>Primary</button>
+      <button type="button" data-t="secondary" aria-pressed="false"><span class="sw sw--s" aria-hidden="true"></span>Secondary</button>
+    </div>
+    <button type="button" class="btn" id="notesBtn" aria-pressed="true" aria-controls="notes">Notes</button>
+  </header>
+  <div class="main">
+    <div class="stage is-fit" id="stage">
+      <div class="frame-box" id="box"><iframe id="frame" src="proto.html" title="Configurator prototype"></iframe><span class="scale" id="scale" hidden></span></div>
+    </div>
+    <aside class="notes" id="notes" aria-label="Notes">
+      <h2>Правая колонка, от 1024 px</h2>
+      <ul>
+        <li><span class="k">Связь.</span> Каждая секция и пункт сводки имеют общий id. На живом сайте это уже есть: <code>data-block</code>, 22 пары.</li>
+        <li><span class="k">Клик по пункту.</span> Плавная прокрутка к секции; отступ сверху задаёт <code>scroll-margin-top</code>. Пока идёт анимация, активный пункт зафиксирован на цели, промежуточные не мигают. По прибытии секция коротко подсвечивается, фокус уходит на её заголовок. Если пользователь крутит колесо или тянет пальцем во время анимации, фиксация снимается.</li>
+        <li><span class="k">Блок во вьюпорте.</span> Активная линия под верхом экрана, на 25% его высоты, но не ниже 200 px: активна последняя секция, чей верх её пересёк. После перехода кликом цель остаётся активной, пока пользователь не начнёт крутить сам. Внизу страницы, где короткие секции до линии не дотягиваются, берётся последняя видимая.</li>
+        <li><span class="k">Сводка.</span> Активный пункт выделен нейтральной серой заливкой <code>bg-muted</code>, без розового и без рейки слева; на мобильном активный чип тёмный. Список скроллится сам внутри колонки и подтягивает активный пункт; итог и кнопки закреплены внизу. На экранах ниже 820 px строка рассрочки прячется, кнопки становятся md.</li>
+        <li><span class="k">Обратная связь.</span> Изменение опции подсвечивает её пункт в сводке, итог мигает и показывает дельту.</li>
+        <li><span class="k">Статусы.</span> Жёлтая точка — стоит проверить, красная — нужно исправить. Add to Cart при ошибке ведёт к первой проблемной секции.</li>
+      </ul>
+
+      <h2>Тема конфигуратора</h2>
+      <ul>
+        <li>Переключатель Primary / Secondary в панели сверху ставит <code>data-theme</code> на блок конфигуратора: секции, сводку, Drawer, нижнюю панель и шиты. Шапка, заголовок и подвал остаются в основной теме.</li>
+        <li>В Secondary синими становятся выбранные строки, вкладки, фокус и ссылки внутри блока. Цены синие в обеих темах.</li>
+        <li>Главные кнопки — Add to Cart и Get my Quote в сайдбаре, в нижней панели и в шите сводки — всегда остаются в теме Primary: розовый на странице только у CTA.</li>
+      </ul>
+
+      <h2>Шильдик помощи</h2>
+      <ul>
+        <li>EdgeTab белый, чтобы единственной залитой кнопкой оставалась Add to Cart. Стоит на 42% высоты, выше чат-виджета в правом нижнем углу.</li>
+        <li>Показывается от 1280 px: на 1024 поле страницы 35 px, а таб 44 px перекрыл бы сводку. На любой ширине есть ссылка «Not sure? Ask a specialist» в подвале сводки.</li>
+        <li>Drawer на 440 px без затемнения: конфигуратор остаётся рабочим. Таб уезжает к краю панели и превращается в шеврон. Текущая сборка подставляется в ContextCard.</li>
+      </ul>
+
+      <h2>Мобильная версия, до 1024 px</h2>
+      <ul>
+        <li><span class="k">Колонка распадается на два элемента.</span> Сверху липкая лента разделов: активный чип центрируется, у проблемных разделов точка статуса. Снизу панель покупки: помощь, итог, Add to Cart.</li>
+        <li><span class="k">Сводка.</span> Тап по итогу открывает BottomSheet со сводкой. Тап по пункту закрывает шит и ведёт к секции с той же подсветкой.</li>
+        <li><span class="k">Помощь.</span> Иконка в панели открывает BottomSheet с той же формой, что и Drawer. EdgeTab на мобильном не используется.</li>
+        <li><span class="k">Длинные списки.</span> CPU (26), диски (16), сетевые карты (13), PCI (24) свёрнуты до 4–5 строк. Выбранные строки видны всегда, остальные раскрывает «Show all N options». То же на десктопе: страница короче, скролл-спай понятнее.</li>
+        <li>ConfiguratorRow в режиме <code>mobile</code>: цена под названием. Индикаторы заполнения идут в столбик.</li>
+        <li>Панель учитывает safe-area снизу, под неё оставлен отступ, чтобы последняя секция не пряталась.</li>
+      </ul>
+
+      <h2>Что добавить в DS</h2>
+      <ul>
+        <li><b>ConfigSection</b>: заголовок, meta, статус-тег, якорь, состояния off и flash.</li>
+        <li><b>OptionGroupLabel</b>: «Xeon Gold · 20», «4800 MHz».</li>
+        <li><b>UsageMeter</b>: слоты RAM, отсеки, питание; warning от 85%, error выше 100%.</li>
+        <li><b>InlinePromo</b>: TIER-III, колокация.</li>
+        <li><b>ConfigSummary</b> и <b>SummaryItem</b>, хук <b>useScrollSpy</b>.</li>
+        <li><b>SectionNav</b> (чипы) и <b>StickyBuyBar</b> для мобильного.</li>
+        <li><b>RowList</b>: свёрнутый список с «Show all».</li>
+        <li><b>ConfiguratorRow</b>: проп <code>meta</code> для второй строки, <code>unit={false}</code> (сейчас «/ ea.» выводится всегда, в прототипе обойдено пробелом), бейдж вроде «Fast Deployment», слот <code>action</code> для «Details».</li>
+        <li><b>EdgeTab</b>: прятать ниже 1280 px на уровне компонента.</li>
+      </ul>
+
+      <h2>Попробуй</h2>
+      <ul class="try">
+        <li>CPU: Xeon Platinum 8462Y+ → предупреждение о вентиляторах, точка у CPU.</li>
+        <li>Colocation: Miami 2 → ошибка в Installation (нет рельсов) и предупреждение у Network card.</li>
+        <li>Warranty: Lifetime без колокации → ошибка; затем Add to Cart прокрутит к ней.</li>
+        <li>Диски: 24TB, количество 28, и Platinum → индикатор питания уходит в красное.</li>
+        <li>Ширина 375: лента разделов, тап по итогу внизу, иконка помощи.</li>
+      </ul>
+      <p class="muted">Данные и цены взяты с живой страницы 4 ноября 2026. Энергопотребление в прототипе посчитано грубо, только для демонстрации состояний.</p>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage'), box = document.getElementById('box'), frame = document.getElementById('frame'), scaleTag = document.getElementById('scale');
+  var notes = document.getElementById('notes'), notesBtn = document.getElementById('notesBtn');
+  var mode = 'fit';
+  try { var saved = localStorage.getItem('r760-proto-w'); if (saved) mode = saved; } catch (e) {}
+  if (window.innerWidth < 1100) { notes.hidden = true; notesBtn.setAttribute('aria-pressed', 'false'); }
+  function layout() {
+    var sw = stage.clientWidth, sh = stage.clientHeight;
+    stage.classList.toggle('is-fit', mode === 'fit');
+    box.classList.toggle('is-phone', mode === '375');
+    if (mode === 'fit') { frame.style.width = sw + 'px'; frame.style.height = sh + 'px'; frame.style.transform = ''; box.style.width = sw + 'px'; box.style.height = sh + 'px'; scaleTag.hidden = true; return; }
+    var w = +mode, availW = sw - 32, availH = sh - 32 - (mode === '375' ? 16 : 0);
+    var k = Math.min(1, availW / w);
+    var hgt = mode === '375' ? Math.min(812, availH / k) : availH / k;
+    frame.style.width = w + 'px'; frame.style.height = Math.round(hgt) + 'px'; frame.style.transform = k < 1 ? 'scale(' + k + ')' : '';
+    box.style.width = Math.round(w * k) + 'px'; box.style.height = Math.round(hgt * k) + 'px';
+    scaleTag.hidden = k >= 1; scaleTag.textContent = w + ' px · ' + Math.round(k * 100) + '%';
+  }
+  function setMode(m) {
+    mode = m;
+    try { localStorage.setItem('r760-proto-w', m); } catch (e) {}
+    document.querySelectorAll('#widths button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.w === m)); });
+    layout();
+  }
+  document.getElementById('widths').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setMode(b.dataset.w); });
+  notesBtn.addEventListener('click', function () { notes.hidden = !notes.hidden; notesBtn.setAttribute('aria-pressed', String(!notes.hidden)); layout(); });
+  /* configurator theme: primary (pink) or secondary (blue) brand inside the configurator block */
+  var theme = 'primary';
+  try { var st = localStorage.getItem('r760-proto-theme'); if (st === 'secondary') theme = st; } catch (e) {}
+  function sendTheme() { try { frame.contentWindow.postMessage({ nslTheme: theme }, '*'); } catch (e) {} }
+  function setTheme(t) {
+    theme = t;
+    try { localStorage.setItem('r760-proto-theme', t); } catch (e) {}
+    document.querySelectorAll('#themes button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.t === t)); });
+    sendTheme();
+  }
+  document.getElementById('themes').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setTheme(b.dataset.t); });
+  window.addEventListener('message', function (e) { if (e.source === frame.contentWindow && e.data && e.data.nslReady) sendTheme(); });
+  frame.addEventListener('load', sendTheme);
+  setTheme(theme);
+  new ResizeObserver(layout).observe(stage);
+  setMode(mode);
+})();
+</script>
+</body>
+</html>
