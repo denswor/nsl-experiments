@@ -880,7 +880,7 @@ function SearchResult(p) {
   if (kind === 'page') {
     var crumbs = (p.breadcrumbs || []).map(function (b) { return typeof b === 'string' ? { label: b } : b; });
     return h('article', { className: cx('nsl-sres', 'nsl-sres--page', p.className) },
-      h('span', { className: 'nsl-sres__icon' }, h(Icon, { name: p.icon || 'info', size: 20 })),
+      h('span', { className: 'nsl-sres__icon' }, h(Icon, { name: p.icon || 'file-text', size: 20 })),
       h('div', { className: 'nsl-sres__body' },
         h('h3', { className: 'nsl-sres__title nsl-sres__title--link' }, title),
         p.excerpt && h('p', { className: 'nsl-sres__excerpt' }, p.excerpt),
@@ -1015,9 +1015,9 @@ function Drawer(p) {
   useEsc(p.open !== false && !p.inline, p.onClose);
   if (p.open === false) return null;
   var w = p.width || 440;
-  var panel = h('aside', { className: cx('nsl-drawer', p.inline && 'nsl-drawer--inline', 'nsl-drawer--' + (p.side || 'right'), p.className), role: p.scrim ? 'dialog' : 'complementary', 'aria-modal': p.scrim ? true : undefined, 'aria-label': typeof p.title === 'string' ? p.title : undefined, id: p.id, style: { width: typeof w === 'number' ? w + 'px' : w } },
+  var panel = h('aside', { className: cx('nsl-drawer', p.inline && 'nsl-drawer--inline', 'nsl-drawer--' + (p.side || 'right'), p.className), role: p.scrim ? 'dialog' : 'complementary', 'aria-modal': p.scrim ? true : undefined, 'aria-label': p.label || (typeof p.title === 'string' ? p.title : undefined), id: p.id, style: { width: typeof w === 'number' ? w + 'px' : w } },
     h('div', { className: 'nsl-drawer__head' },
-      h('div', { className: 'nsl-drawer__titles' }, h('h2', { className: 'nsl-drawer__title' }, p.title), p.description && h('p', { className: 'nsl-drawer__desc' }, p.description)),
+      h('div', { className: 'nsl-drawer__titles' }, p.title && h('h2', { className: 'nsl-drawer__title' }, p.title), p.description && h('p', { className: 'nsl-drawer__desc' }, p.description)),
       p.onClose && h(CloseButton, { label: p.closeLabel || 'Close panel', onClick: p.onClose })),
     h('div', { className: 'nsl-drawer__body' }, p.children),
     p.footer && h('div', { className: 'nsl-drawer__foot' }, p.footer));

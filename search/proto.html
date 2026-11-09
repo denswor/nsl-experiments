@@ -27,9 +27,9 @@ button { font: inherit; }
 .help { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: var(--radius-md); background: var(--bg-subtle); }
 .help h2 { margin: 0; font: var(--text-heading-sm); letter-spacing: -0.01em; text-wrap: balance; }
 .help p { margin: 0; font: var(--text-body-sm); color: var(--text-secondary); }
-.help__q { font: var(--text-mono-xs-medium); color: var(--text-primary); }
 
-.empty { padding: 48px 24px; }
+.hform { display: flex; flex-direction: column; gap: 20px; }
+.hform__note { display: block; margin-top: 8px; font: var(--text-body-xs); color: var(--text-secondary); text-align: center; }
 
 /* ---------- below 1024: mobile pattern ---------- */
 .mhead { position: relative; z-index: 41; background: var(--bg-default); }
@@ -68,7 +68,7 @@ button { font: inherit; }
   /* Mock index. Bitrix search.page returns one list ordered by relevance: products, articles and pages mixed. */
   var BASE = [
     { kind: 'product', typeLabel: 'Chassis', image: A + 'dl380-16sff.webp', title: 'HPE ProLiant DL380 Gen10 16SFF (8x NVMe)', badges: ['in-stock'], ctaType: 'configure' },
-    { kind: 'product', typeLabel: 'Server model', image: A + 'dl380-8sff.webp', title: 'HPE ProLiant DL380 Gen10', excerpt: '12 preconfigured servers on this platform', ctaType: 'configure', cta: 'Choose Chassis' },
+    { kind: 'product', typeLabel: 'Server model', image: A + 'dl380-8sff.webp', title: 'HPE ProLiant DL380 Gen10', ctaType: 'configure', cta: 'Choose Chassis' },
     { kind: 'article', typeLabel: 'Blog', meta: '7 min read', image: A + 'blog-datacenter.webp', title: 'NVMe in the DL380 Gen10: which cages and risers you need for 8, 16 and 24 drives', excerpt: 'Drive cage options, PCIe lane limits and what to pick for a database or a virtualization host.' },
     { kind: 'product', typeLabel: 'Server', image: A + 'dl-bezel.webp', title: 'DL380 Gen10 · 2x Gold 6248 · 256GB · 8x 1.92TB NVMe', badges: ['prebuild', 'in-stock'], ctaType: 'cart' },
     { kind: 'page', title: 'How we test NVMe drives before shipping', breadcrumbs: ['Home', 'Service', 'Testing'], excerpt: 'Every drive passes a SMART check, a full write pass and a speed test. Here is what goes into the report.' },
@@ -76,22 +76,12 @@ button { font: inherit; }
     { kind: 'product', typeLabel: 'Component', image: A + 'cage-8sff-nvme.webp', title: 'HPE DL380 Gen10 8SFF NVMe Drive Cage Kit', badges: ['in-stock'], ctaType: 'cart' },
     { kind: 'article', typeLabel: 'Blog', meta: '5 min read', image: A + 'blog-cpu.webp', title: 'Gen10 or Gen10 Plus: what changed in the storage subsystem', excerpt: 'PCIe 4.0, new drive cages and what it means for NVMe-heavy builds on the DL380.' },
     { kind: 'product', typeLabel: 'Component', image: A + 'nvme-drive.webp', title: 'HPE 1.92TB NVMe U.2 SFF Drive', badges: ['in-stock'], ctaType: 'cart' },
-    { kind: 'page', title: 'Delivery and payment', breadcrumbs: ['Home', 'Delivery'], excerpt: 'Delivery times, packaging and freight insurance; payment options for companies.' },
-
-    { kind: 'product', typeLabel: 'Chassis', image: A + 'dl380-8sff.webp', title: 'HPE ProLiant DL380 Gen10 Plus 8SFF (8x NVMe)', badges: ['on-request'], ctaType: 'configure' },
-    { kind: 'product', typeLabel: 'Server', image: A + 'dl-bezel.webp', title: 'DL380 Gen10 · 2x Silver 4214 · 128GB · 8x 960GB NVMe', badges: ['prebuild'], ctaType: 'cart' },
-    { kind: 'article', typeLabel: 'Solution', meta: 'Databases', image: A + 'blog-datacenter.webp', title: 'A server for a high-load database on NVMe', excerpt: 'Why NVMe pays off for OLTP, how many drives a 2U box needs, and where the PCIe lanes run out.' },
-    { kind: 'product', typeLabel: 'Component', image: A + 'nvme-drive.webp', title: 'HPE 960GB NVMe U.2 SFF Drive', badges: ['in-stock'], ctaType: 'cart' },
-    { kind: 'page', title: 'Warranty on refurbished servers', breadcrumbs: ['Home', 'Warranty'], excerpt: 'Warranty terms, periods and how to contact the service team.' },
-    { kind: 'product', typeLabel: 'Server model', image: A + 'dl380-8sff.webp', title: 'HPE ProLiant DL380 Gen10 Plus', excerpt: '4 chassis on this platform', ctaType: 'configure', cta: 'Choose Chassis' },
-    { kind: 'product', typeLabel: 'Component', title: 'HPE DL380 Gen10 Secondary NVMe Riser', badges: ['on-request'], ctaType: 'quote' },
-    { kind: 'page', title: 'HPE ProLiant server configurator', breadcrumbs: ['Home', 'Configurator'], excerpt: 'Build a server step by step: chassis, processors, memory, drives and controllers.' },
-    { kind: 'article', typeLabel: 'Blog', meta: '4 min read', image: A + 'blog-cpu.webp', title: 'How many NVMe drives can a DL380 Gen10 take?', excerpt: 'Front cages, the mid-tray and the rear kit: the real limits and the controllers each layout needs.' },
-    { kind: 'product', typeLabel: 'Chassis', image: A + 'dl380-16sff.webp', title: 'HPE ProLiant DL380 Gen10 16SFF (16x NVMe)', badges: ['in-stock'], ctaType: 'configure' }
+    { kind: 'page', title: 'Delivery and payment', breadcrumbs: ['Home', 'Delivery'], excerpt: 'Delivery times, packaging and freight insurance; payment options for companies.' }
   ];
-  /* 47 results: the 20 unique rows repeat on pages 3–5 (prototype only) */
-  var RESULTS = [];
-  for (var i = 0; i < TOTAL; i++) RESULTS.push(Object.assign({ id: i }, BASE[i % BASE.length]));
+  /* 47 results, 10 per page. Prototype: every page shows the same 10 rows in its own order, so a page switch feels like new results. */
+  var ORDERS = [[0,1,2,3,4,5,6,7,8,9], [5,7,2,9,0,3,8,4,6,1], [8,3,6,0,9,2,1,7,4,5], [3,9,4,6,1,8,0,5,2,7], [6,0,8,1,5,9,3,2,7,4]];
+  function pageRows(n) { var len = Math.min(PER_PAGE, TOTAL - (n - 1) * PER_PAGE); return ORDERS[n - 1].slice(0, len).map(function (i) { return Object.assign({ id: n + '-' + i }, BASE[i]); }); }
+  var BUDGET = ['<$5k', '$5–10k', '$10–20k', '$20–50k', '$50k+'];
 
   function useMedia(q) {
     var s = useState(function () { return window.matchMedia(q).matches; });
@@ -110,9 +100,28 @@ button { font: inherit; }
 
   function Help(p) {
     return h('section', { className: 'help', 'aria-labelledby': 'help-t' },
-      h('h2', { id: 'help-t' }, 'Can’t find the right configuration?'),
-      h('p', null, 'An engineer will pick a server for your workload. Your search ', h('span', { className: 'help__q' }, '“' + p.query + '”'), ' is already in the request.'),
-      h(N.Button, { variant: 'primary', size: p.desktop ? 'md' : 'lg', iconLeft: 'mail', fullWidth: true }, 'Request a Configuration'));
+      h('h2', { id: 'help-t' }, 'Can\u2019t find the right configuration?'),
+      h('p', null, 'An engineer will pick a server for your workload.'),
+      h(N.Button, { variant: 'primary', size: p.desktop ? 'md' : 'lg', iconLeft: 'mail', fullWidth: true, onClick: p.onOpen, 'aria-controls': 'help-drawer', 'aria-expanded': p.open }, 'Request a Configuration'));
+  }
+
+  /* Ask a specialist: free text first, then an optional file and budget, then contacts (sales feedback: buyers prefer to write it their way). */
+  function HelpForm(p) {
+    if (p.sent) return h(N.EmptyState, { tone: 'success', title: 'Request sent' }, 'A NewServerLife specialist will reply within one business hour.');
+    return h('form', { className: 'hform', id: 'help-form', onSubmit: function (e) { e.preventDefault(); p.onSend(); } },
+      h(N.Textarea, { label: 'Describe what you need', rows: 5, placeholder: 'Workload, capacity, the parts you are unsure about' }),
+      h(N.FileAttach, { optional: true, title: 'Attach a spec, RFQ or screenshot', hint: 'PDF, Excel, Word or images, up to 10 MB' }),
+      h(N.Slider, { label: 'Budget', optional: true, min: 0, max: 4, step: 1, stepMarks: true, value: p.budget, onChange: p.onBudget, valueText: BUDGET[p.budget],
+        ticks: BUDGET.map(function (l, v) { return { value: v, label: l }; }) }),
+      h(N.Input, { label: 'Name', size: 'md', autoComplete: 'name' }),
+      h(N.Input, { label: 'Email', type: 'email', size: 'md', autoComplete: 'email' }),
+      h(N.Input, { label: 'Phone', type: 'tel', size: 'md', optional: true, autoComplete: 'tel' }));
+  }
+  function HelpFooter(p) {
+    if (p.sent) return h(N.Button, { variant: 'ghost', fullWidth: true, onClick: p.onClose }, 'Back to results');
+    return h(React.Fragment, null,
+      h(N.Button, { type: 'submit', form: 'help-form', variant: 'primary', fullWidth: true, iconLeft: 'send' }, 'Send to a specialist'),
+      h('span', { className: 'hform__note' }, 'Goes straight to a specialist, not a bot.'));
   }
 
   function App() {
@@ -120,15 +129,21 @@ button { font: inherit; }
     var qs = useState('dl380 8x nvme'), query = qs[0];
     var ps = useState(1), page = ps[0];          /* desktop: page number */
     var ms = useState([1, 1]), from = ms[0][0], to = ms[0][1];   /* mobile: loaded pages, from..to */
+    var hs = useState(false), helpOpen = hs[0];
+    var ss = useState(false), sent = ss[0];
+    var bs = useState(2), budget = bs[0];
     var firstNew = useRef(null);
     var listRef = useRef(null);
 
     function search(q) { q = (q || '').trim(); if (!q) return; qs[1](q); ps[1](1); ms[1]([1, 1]); firstNew.current = null; window.scrollTo(0, 0); }
     function goPage(n) { ps[1](n); if (listRef.current) listRef.current.scrollIntoView({ block: 'start' }); }
     function more() { firstNew.current = (to - from + 1) * PER_PAGE; ms[1]([from, Math.min(PAGES, to + 1)]); }
+    function openHelp() { ss[1](false); hs[1](true); }
+    function closeHelp() { hs[1](false); ss[1](false); }
     function jump(n) { firstNew.current = null; ms[1]([n, n]); if (listRef.current) listRef.current.scrollIntoView({ block: 'start' }); }
 
-    var rows = desktop ? RESULTS.slice((page - 1) * PER_PAGE, page * PER_PAGE) : RESULTS.slice((from - 1) * PER_PAGE, to * PER_PAGE);
+    var rows = [];
+    if (desktop) rows = pageRows(page); else for (var n = from; n <= to; n++) rows = rows.concat(pageRows(n));
     var firstShown = ((desktop ? page : from) - 1) * PER_PAGE + 1;
     var crumbs = [{ label: 'Home', href: '#' }, { label: 'Search results for' }];
 
@@ -152,9 +167,16 @@ button { font: inherit; }
                   to < PAGES && h(N.Button, { variant: 'ghost', size: 'lg', iconLeft: 'plus', fullWidth: true, onClick: more }, 'Show ' + Math.min(PER_PAGE, TOTAL - to * PER_PAGE) + ' more'),
                   h('p', { className: 'more__count', role: 'status' }, 'Showing ' + firstShown + '–' + (firstShown + rows.length - 1) + ' of ' + TOTAL),
                   h(N.Pagination, { total: PAGES, page: to, compact: true, onChange: jump }))),
-          h('aside', { className: 'aside', 'aria-label': 'Help' }, h(Help, { query: query, desktop: desktop })))),
+          h('aside', { className: 'aside', 'aria-label': 'Help' }, h(Help, { desktop: desktop, open: helpOpen, onOpen: openHelp })))),
 
-      h(N.Footer, { variant: desktop ? 'desktop' : 'mobile' }));
+      h(N.Footer, { variant: desktop ? 'desktop' : 'mobile' }),
+
+      /* help: EdgeTab + Drawer on desktop, BottomSheet on mobile (as in the configurator) */
+      desktop && h(N.EdgeTab, { open: helpOpen, controls: 'help-drawer', top: '42%', onClick: function () { helpOpen ? closeHelp() : openHelp(); }, style: helpOpen ? { right: '440px' } : undefined }),
+      desktop && helpOpen && h(N.Drawer, { id: 'help-drawer', title: 'Ask a specialist', onClose: closeHelp, footer: h(HelpFooter, { sent: sent, onClose: closeHelp }) },
+        h(HelpForm, { sent: sent, onSend: function () { ss[1](true); }, budget: budget, onBudget: bs[1] })),
+      !desktop && helpOpen && h(N.BottomSheet, { title: 'Ask a specialist', onClose: closeHelp, footer: h(HelpFooter, { sent: sent, onClose: closeHelp }) },
+        h(HelpForm, { sent: sent, onSend: function () { ss[1](true); }, budget: budget, onBudget: bs[1] })));
   }
 
   ReactDOM.createRoot(document.getElementById('root')).render(h(App));
