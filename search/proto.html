@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Search results — dl380 8x nvme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../_shared/nsl/tokens.css">
+<link rel="stylesheet" href="../_shared/nsl/bundle.css">
+<style>
+/* Layout: desktop ≥1024 — results list (8 cols) + help aside (4 cols); below 1024 — mobile header, sticky search band, one column, "Show 10 more". */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: auto; }
+body { margin: 0; background: var(--bg-default); color: var(--text-primary); font: var(--text-body-md); -webkit-font-smoothing: antialiased; }
+button { font: inherit; }
+
+.page { display: flex; flex-direction: column; gap: 24px; padding-block: 24px 64px; }
+.layout { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: 30px; align-items: start; }
+.results { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.list { border: 1px solid var(--border-default); border-radius: var(--radius-md); overflow: hidden; }
+.list > .nsl-sres:last-child { border-bottom: 0; }
+.list__more { display: flex; justify-content: center; }
+.aside { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+.help { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: var(--radius-md); background: var(--bg-subtle); }
+.help h2 { margin: 0; font: var(--text-heading-sm); letter-spacing: -0.01em; text-wrap: balance; }
+.help p { margin: 0; font: var(--text-body-sm); color: var(--text-secondary); }
+.help__q { font: var(--text-mono-xs-medium); color: var(--text-primary); }
+
+.empty { padding: 48px 24px; }
+
+/* ---------- below 1024: mobile pattern ---------- */
+.mhead { position: relative; z-index: 41; background: var(--bg-default); }
+.sband { position: sticky; top: 0; z-index: 40; padding: 8px 16px; background: var(--bg-default); border-bottom: 1px solid var(--border-default); }
+.more { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.more__count { margin: 0; font: var(--text-body-xs); color: var(--text-secondary); }
+@media (max-width: 1023px) {
+  .page { padding-block: 16px 40px; gap: 16px; }
+  .layout { grid-template-columns: 1fr; gap: 24px; }
+  .aside { position: static; }
+  .list { margin-inline: calc(-1 * var(--grid-margin-tablet-portrait)); border-inline: 0; border-radius: 0; }
+  .help { padding: 20px; }
+}
+@media (max-width: 719px) {
+  .list { margin-inline: calc(-1 * var(--grid-margin-mobile)); }
+}
+
+/* the row that was just added by "Show 10 more" gets a short highlight */
+@keyframes sres-in { from { background: var(--bg-subtle); } to { background: var(--bg-default); } }
+.is-new { animation: sres-in 1.2s ease-out; }
+@media (prefers-reduced-motion: reduce) { .is-new { animation: none; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="../_shared/nsl/bundle.js"></script>
+<script>
+(function () {
+  var N = window.NSL, h = React.createElement, useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
+  var A = 'assets/';
+  var TOTAL = 47, PER_PAGE = 10, PAGES = Math.ceil(TOTAL / PER_PAGE);
+
+  /* Mock index. Bitrix search.page returns one list ordered by relevance: products, articles and pages mixed. */
+  var BASE = [
+    { kind: 'product', typeLabel: 'Chassis', image: A + 'dl380-16sff.webp', title: 'HPE ProLiant DL380 Gen10 16SFF (8x NVMe)', badges: ['in-stock'], ctaType: 'configure' },
+    { kind: 'product', typeLabel: 'Server model', image: A + 'dl380-8sff.webp', title: 'HPE ProLiant DL380 Gen10', excerpt: '12 preconfigured servers on this platform', ctaType: 'configure', cta: 'Choose Chassis' },
+    { kind: 'article', typeLabel: 'Blog', meta: '7 min read', image: A + 'blog-datacenter.webp', title: 'NVMe in the DL380 Gen10: which cages and risers you need for 8, 16 and 24 drives', excerpt: 'Drive cage options, PCIe lane limits and what to pick for a database or a virtualization host.' },
+    { kind: 'product', typeLabel: 'Server', image: A + 'dl-bezel.webp', title: 'DL380 Gen10 · 2x Gold 6248 · 256GB · 8x 1.92TB NVMe', badges: ['prebuild', 'in-stock'], ctaType: 'cart' },
+    { kind: 'page', title: 'How we test NVMe drives before shipping', breadcrumbs: ['Home', 'Service', 'Testing'], excerpt: 'Every drive passes a SMART check, a full write pass and a speed test. Here is what goes into the report.' },
+    { kind: 'product', typeLabel: 'Chassis', image: A + 'dl380-24sff.webp', title: 'HPE ProLiant DL380 Gen10 24SFF (24x NVMe)', badges: ['in-stock'], ctaType: 'configure' },
+    { kind: 'product', typeLabel: 'Component', image: A + 'cage-8sff-nvme.webp', title: 'HPE DL380 Gen10 8SFF NVMe Drive Cage Kit', badges: ['in-stock'], ctaType: 'cart' },
+    { kind: 'article', typeLabel: 'Blog', meta: '5 min read', image: A + 'blog-cpu.webp', title: 'Gen10 or Gen10 Plus: what changed in the storage subsystem', excerpt: 'PCIe 4.0, new drive cages and what it means for NVMe-heavy builds on the DL380.' },
+    { kind: 'product', typeLabel: 'Component', image: A + 'nvme-drive.webp', title: 'HPE 1.92TB NVMe U.2 SFF Drive', badges: ['in-stock'], ctaType: 'cart' },
+    { kind: 'page', title: 'Delivery and payment', breadcrumbs: ['Home', 'Delivery'], excerpt: 'Delivery times, packaging and freight insurance; payment options for companies.' },
+
+    { kind: 'product', typeLabel: 'Chassis', image: A + 'dl380-8sff.webp', title: 'HPE ProLiant DL380 Gen10 Plus 8SFF (8x NVMe)', badges: ['on-request'], ctaType: 'configure' },
+    { kind: 'product', typeLabel: 'Server', image: A + 'dl-bezel.webp', title: 'DL380 Gen10 · 2x Silver 4214 · 128GB · 8x 960GB NVMe', badges: ['prebuild'], ctaType: 'cart' },
+    { kind: 'article', typeLabel: 'Solution', meta: 'Databases', image: A + 'blog-datacenter.webp', title: 'A server for a high-load database on NVMe', excerpt: 'Why NVMe pays off for OLTP, how many drives a 2U box needs, and where the PCIe lanes run out.' },
+    { kind: 'product', typeLabel: 'Component', image: A + 'nvme-drive.webp', title: 'HPE 960GB NVMe U.2 SFF Drive', badges: ['in-stock'], ctaType: 'cart' },
+    { kind: 'page', title: 'Warranty on refurbished servers', breadcrumbs: ['Home', 'Warranty'], excerpt: 'Warranty terms, periods and how to contact the service team.' },
+    { kind: 'product', typeLabel: 'Server model', image: A + 'dl380-8sff.webp', title: 'HPE ProLiant DL380 Gen10 Plus', excerpt: '4 chassis on this platform', ctaType: 'configure', cta: 'Choose Chassis' },
+    { kind: 'product', typeLabel: 'Component', title: 'HPE DL380 Gen10 Secondary NVMe Riser', badges: ['on-request'], ctaType: 'quote' },
+    { kind: 'page', title: 'HPE ProLiant server configurator', breadcrumbs: ['Home', 'Configurator'], excerpt: 'Build a server step by step: chassis, processors, memory, drives and controllers.' },
+    { kind: 'article', typeLabel: 'Blog', meta: '4 min read', image: A + 'blog-cpu.webp', title: 'How many NVMe drives can a DL380 Gen10 take?', excerpt: 'Front cages, the mid-tray and the rear kit: the real limits and the controllers each layout needs.' },
+    { kind: 'product', typeLabel: 'Chassis', image: A + 'dl380-16sff.webp', title: 'HPE ProLiant DL380 Gen10 16SFF (16x NVMe)', badges: ['in-stock'], ctaType: 'configure' }
+  ];
+  /* 47 results: the 20 unique rows repeat on pages 3–5 (prototype only) */
+  var RESULTS = [];
+  for (var i = 0; i < TOTAL; i++) RESULTS.push(Object.assign({ id: i }, BASE[i % BASE.length]));
+
+  function useMedia(q) {
+    var s = useState(function () { return window.matchMedia(q).matches; });
+    useEffect(function () { var m = window.matchMedia(q), f = function () { s[1](m.matches); }; m.addEventListener('change', f); f(); return function () { m.removeEventListener('change', f); }; }, [q]);
+    return s[0];
+  }
+
+  function Row(p) {
+    var r = p.r;
+    return h(N.SearchResult, {
+      kind: r.kind, query: p.query, title: r.title, href: '#', typeLabel: r.typeLabel, image: r.image,
+      badges: r.badges, excerpt: r.excerpt, meta: r.meta, breadcrumbs: r.breadcrumbs,
+      ctaType: r.ctaType, cta: r.cta, className: p.fresh ? 'is-new' : undefined
+    });
+  }
+
+  function Help(p) {
+    return h('section', { className: 'help', 'aria-labelledby': 'help-t' },
+      h('h2', { id: 'help-t' }, 'Can’t find the right configuration?'),
+      h('p', null, 'An engineer will pick a server for your workload. Your search ', h('span', { className: 'help__q' }, '“' + p.query + '”'), ' is already in the request.'),
+      h(N.Button, { variant: 'primary', size: p.desktop ? 'md' : 'lg', iconLeft: 'mail', fullWidth: true }, 'Request a Configuration'));
+  }
+
+  function App() {
+    var desktop = useMedia('(min-width: 1024px)');
+    var qs = useState('dl380 8x nvme'), query = qs[0];
+    var ps = useState(1), page = ps[0];          /* desktop: page number */
+    var ms = useState([1, 1]), from = ms[0][0], to = ms[0][1];   /* mobile: loaded pages, from..to */
+    var firstNew = useRef(null);
+    var listRef = useRef(null);
+
+    function search(q) { q = (q || '').trim(); if (!q) return; qs[1](q); ps[1](1); ms[1]([1, 1]); firstNew.current = null; window.scrollTo(0, 0); }
+    function goPage(n) { ps[1](n); if (listRef.current) listRef.current.scrollIntoView({ block: 'start' }); }
+    function more() { firstNew.current = (to - from + 1) * PER_PAGE; ms[1]([from, Math.min(PAGES, to + 1)]); }
+    function jump(n) { firstNew.current = null; ms[1]([n, n]); if (listRef.current) listRef.current.scrollIntoView({ block: 'start' }); }
+
+    var rows = desktop ? RESULTS.slice((page - 1) * PER_PAGE, page * PER_PAGE) : RESULTS.slice((from - 1) * PER_PAGE, to * PER_PAGE);
+    var firstShown = ((desktop ? page : from) - 1) * PER_PAGE + 1;
+    var crumbs = [{ label: 'Home', href: '#' }, { label: 'Search results for' }];
+
+    return h(React.Fragment, null,
+      desktop
+        ? h(N.Header, { active: 'Hardware', cartCount: 2, searchValue: query, onSearch: search, key: 'h-' + query })
+        : h(React.Fragment, null,
+            h('div', { className: 'mhead' }, h(N.MobileHeader, { cartCount: 2 })),
+            h('div', { className: 'sband' }, h(N.SearchField, { defaultValue: query, onSearch: search, key: 's-' + query, 'aria-label': 'Search NewServerLife' }))),
+
+      h('main', { className: 'nsl-container page' },
+        h(N.Breadcrumbs, { items: crumbs }),
+        h(N.SearchSummary, { query: query, count: TOTAL }),
+        h('div', { className: 'layout' },
+          h('div', { className: 'results', ref: listRef, style: { scrollMarginTop: desktop ? 16 : 72 } },
+            h('section', { className: 'list', 'aria-label': 'Search results' },
+              rows.map(function (r, i) { return h(Row, { key: r.id, r: r, query: query, fresh: !desktop && firstNew.current !== null && i >= firstNew.current }); })),
+            desktop
+              ? h('div', { className: 'list__more' }, h(N.Pagination, { total: PAGES, page: page, onChange: goPage }))
+              : h('div', { className: 'more' },
+                  to < PAGES && h(N.Button, { variant: 'ghost', size: 'lg', iconLeft: 'plus', fullWidth: true, onClick: more }, 'Show ' + Math.min(PER_PAGE, TOTAL - to * PER_PAGE) + ' more'),
+                  h('p', { className: 'more__count', role: 'status' }, 'Showing ' + firstShown + '–' + (firstShown + rows.length - 1) + ' of ' + TOTAL),
+                  h(N.Pagination, { total: PAGES, page: to, compact: true, onChange: jump }))),
+          h('aside', { className: 'aside', 'aria-label': 'Help' }, h(Help, { query: query, desktop: desktop })))),
+
+      h(N.Footer, { variant: desktop ? 'desktop' : 'mobile' }));
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+  try { parent.postMessage({ nslReady: true }, '*'); } catch (e) {}
+})();
+</script>
+</body>
+</html>

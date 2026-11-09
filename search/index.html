@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Search Results Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: review shell — toolbar on top, the live page in a scaled frame, notes in a side panel (overlay below 1100px). */
+:root {
+  --bg: #eef0f4; --surface: #ffffff; --fg: #18304c; --muted: #5d6676; --line: #dde1e8;
+  --accent: #b91f69; --accent-soft: #fce7f1; --seg: #18304c; --seg-fg: #ffffff;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace; --sans: "IBM Plex Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f1520; --surface: #172131; --fg: #e8edf5; --muted: #9aa6b8; --line: #2a3648; --accent: #f77fb8; --accent-soft: #3a1729; --seg: #e8edf5; --seg-fg: #0f1520; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0f1520; --surface: #172131; --fg: #e8edf5; --muted: #9aa6b8; --line: #2a3648; --accent: #f77fb8; --accent-soft: #3a1729; --seg: #e8edf5; --seg-fg: #0f1520; color-scheme: dark; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 400 14px/20px var(--sans); }
+.app { height: 100%; display: flex; flex-direction: column; }
+.bar { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); background: var(--surface); border-bottom: 1px solid var(--line); }
+.bar__name { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
+.bar__name b { font: 600 15px/20px var(--mono); }
+.bar__name span { font-size: 12px; line-height: 16px; color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--fg); padding: 6px 12px; font: 500 12px/16px var(--mono); cursor: pointer; font-variant-numeric: tabular-nums; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--seg); color: var(--seg-fg); }
+.sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.sw--p { background: #b91f69; }
+.sw--s { background: #1d6cbe; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--fg); padding: 6px 12px; font: 500 13px/16px var(--sans); cursor: pointer; text-decoration: none; }
+.btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.seg button:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.main { flex: 1; min-height: 0; display: flex; position: relative; }
+.stage { flex: 1; min-width: 0; position: relative; overflow: hidden; display: grid; place-items: start center; padding: 16px; }
+.stage.is-fit { padding: 0; }
+.frame-box { position: relative; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 12px 32px rgba(15,21,32,.12); border-radius: 6px; overflow: hidden; }
+.stage.is-fit .frame-box { border-radius: 0; box-shadow: none; }
+.frame-box.is-phone { border-radius: 28px; outline: 8px solid #111827; outline-offset: 0; margin-top: 8px; }
+iframe { display: block; border: 0; transform-origin: 0 0; background: #fff; }
+.scale { position: absolute; right: 10px; bottom: 8px; padding: 2px 6px; border-radius: 4px; background: rgba(17,24,39,.72); color: #fff; font: 500 11px/16px var(--mono); pointer-events: none; }
+.notes { flex: none; width: 400px; overflow-y: auto; background: var(--surface); border-left: 1px solid var(--line); padding: 20px 22px 32px; }
+.notes[hidden] { display: none !important; }
+@media (max-width: 1099px) { .notes { position: absolute; inset: 0 0 0 auto; width: min(420px, 100%); z-index: 5; box-shadow: -12px 0 32px rgba(15,21,32,.18); padding-left: max(22px, env(safe-area-inset-left, 0px)); padding-right: max(22px, env(safe-area-inset-right, 0px)); } }
+.notes h2 { margin: 24px 0 8px; font: 600 15px/20px var(--mono); text-wrap: balance; }
+.notes h2:first-child { margin-top: 0; }
+.notes p, .notes li { margin: 0 0 8px; color: var(--fg); }
+.notes ul { margin: 0 0 8px; padding-left: 18px; }
+.notes .k { font: 600 12px/16px var(--mono); color: var(--accent); }
+.notes .muted { color: var(--muted); }
+.notes code { font: 500 12px/16px var(--mono); background: var(--bg); padding: 1px 4px; border-radius: 4px; }
+.try { margin-top: 8px; padding: 12px 14px; border-radius: 8px; background: var(--bg); }
+.try li { margin-bottom: 6px; }
+@media (max-width: 719px) { .bar__name span { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="bar">
+    <div class="bar__name"><b>Search results · «dl380 8x nvme»</b><span>Prototype on NSL Design System · one mixed list, desktop and mobile</span></div>
+    <div class="seg" role="group" aria-label="Frame width" id="widths">
+      <button type="button" data-w="fit" aria-pressed="true">Fit</button>
+      <button type="button" data-w="1440" aria-pressed="false">1440</button>
+      <button type="button" data-w="1024" aria-pressed="false">1024</button>
+      <button type="button" data-w="375" aria-pressed="false">375</button>
+    </div>
+    <button type="button" class="btn" id="notesBtn" aria-pressed="true" aria-controls="notes">Notes</button>
+  </header>
+  <div class="main">
+    <div class="stage is-fit" id="stage">
+      <div class="frame-box" id="box"><iframe id="frame" src="proto.html" title="Search results prototype"></iframe><span class="scale" id="scale" hidden></span></div>
+    </div>
+    <aside class="notes" id="notes" aria-label="Notes">
+      <h2>Что это</h2>
+      <ul>
+        <li>Вариант 1.1 выдачи: один список в порядке релевантности, как отдаёт Битрикс <code>search.page</code>. Товары, статьи и страницы сайта идут вперемешку, у каждого типа своя плотность строки.</li>
+        <li>Собрано на компонентах NSL Design System: <code>SearchSummary</code>, <code>SearchResult</code>, <code>Pagination</code>, <code>Header</code> / <code>MobileHeader</code>, <code>Footer</code>.</li>
+      </ul>
+
+      <h2>Десктоп, от 1024 px</h2>
+      <ul>
+        <li><span class="k">Заголовок.</span> H1 — сам запрос и число результатов. «Search results for» — последний пункт хлебных крошек.</li>
+        <li><span class="k">Строки товаров.</span> Без характеристик и цены: в индексе поиска их может не быть. Остаётся одна кнопка шириной 176 px (по самой длинной надписи «Choose Chassis»), по центру строки.</li>
+        <li><span class="k">Заголовки.</span> У всех типов один стиль: Mono 20/24 SemiBold. Слова запроса подсвечены; в синих заголовках страниц — подчёркиванием.</li>
+        <li><span class="k">Ссылки на страницы.</span> Путь «Home / Service / Testing» тихой строкой под описанием.</li>
+        <li>10 результатов на страницу, пагинация. Справа блок «Can’t find the right configuration?» с единственной заливной кнопкой на странице.</li>
+      </ul>
+
+      <h2>Мобильная версия, до 1024 px</h2>
+      <ul>
+        <li>Мобильная шапка и липкая полоса поиска с запросом под ней.</li>
+        <li>Список на всю ширину экрана. Ниже 720 px картинка 96 px, заголовки Mono 14/20, описание 12/16, кнопка под текстом, иконка «i» у ссылок прижата к тексту.</li>
+        <li>«Show 10 more» догружает следующую страницу в тот же список, новые строки коротко подсвечиваются. Компактная пагинация «1 / 5» ведёт сразу на нужную страницу.</li>
+      </ul>
+
+      <h2>Попробуй</h2>
+      <ul class="try">
+        <li>Введи другой запрос в поиске: обновятся заголовок и подсветка в строках (список остаётся тем же).</li>
+        <li>Ширина 375: «Show 10 more», затем «1 / 5» → следующая страница.</li>
+      </ul>
+      <p class="muted">Данные и картинки — макетные. В выдаче 20 уникальных строк, на страницах 3–5 они повторяются. Сортировка, фильтр по наличию и строка «Also matched» скрыты: такой поиск пока не реализовать.</p>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage'), box = document.getElementById('box'), frame = document.getElementById('frame'), scaleTag = document.getElementById('scale');
+  var notes = document.getElementById('notes'), notesBtn = document.getElementById('notesBtn');
+  var mode = 'fit';
+  try { var saved = localStorage.getItem('search-proto-w'); if (saved) mode = saved; } catch (e) {}
+  if (window.innerWidth < 1100) { notes.hidden = true; notesBtn.setAttribute('aria-pressed', 'false'); }
+  function layout() {
+    var sw = stage.clientWidth, sh = stage.clientHeight;
+    stage.classList.toggle('is-fit', mode === 'fit');
+    box.classList.toggle('is-phone', mode === '375');
+    if (mode === 'fit') { frame.style.width = sw + 'px'; frame.style.height = sh + 'px'; frame.style.transform = ''; box.style.width = sw + 'px'; box.style.height = sh + 'px'; scaleTag.hidden = true; return; }
+    var w = +mode, availW = sw - 32, availH = sh - 32 - (mode === '375' ? 16 : 0);
+    var k = Math.min(1, availW / w);
+    var hgt = mode === '375' ? Math.min(812, availH / k) : availH / k;
+    frame.style.width = w + 'px'; frame.style.height = Math.round(hgt) + 'px'; frame.style.transform = k < 1 ? 'scale(' + k + ')' : '';
+    box.style.width = Math.round(w * k) + 'px'; box.style.height = Math.round(hgt * k) + 'px';
+    scaleTag.hidden = k >= 1; scaleTag.textContent = w + ' px · ' + Math.round(k * 100) + '%';
+  }
+  function setMode(m) {
+    mode = m;
+    try { localStorage.setItem('search-proto-w', m); } catch (e) {}
+    document.querySelectorAll('#widths button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.w === m)); });
+    layout();
+  }
+  document.getElementById('widths').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setMode(b.dataset.w); });
+  notesBtn.addEventListener('click', function () { notes.hidden = !notes.hidden; notesBtn.setAttribute('aria-pressed', String(!notes.hidden)); layout(); });
+  new ResizeObserver(layout).observe(stage);
+  setMode(mode);
+})();
+</script>
+</body>
+</html>
