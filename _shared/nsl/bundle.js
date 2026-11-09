@@ -528,7 +528,7 @@ function MobileHeader(p) {
         h('button', { type: 'button', className: cx('nsl-mheader__cell', cartOn && 'is-active'), 'aria-label': 'Cart, ' + (p.cartCount || 0) + ' items', 'aria-expanded': cartOn, onClick: function () { tog('cart'); } },
           h('span', { className: 'nsl-hcart__icon' }, h(Icon, { name: cartOn ? 'x' : 'nsl-shopping-cart', size: 24 }), !cartOn && p.cartCount > 0 && h(CountBadge, { count: p.cartCount, tone: 'brand' }))))),
     searchOn && h('div', { className: 'nsl-mpanel nsl-mpanel--search' }, h(SearchField, { placeholder: p.searchPlaceholder || 'Search NewServerLife...', onSearch: p.onSubmitSearch }), p.searchSuggestions),
-    cartOn && h('div', { className: 'nsl-mpanel nsl-mpanel--cart' }, h(CartDropdown, { items: p.cartItems || [], total: p.cartTotal, onCheckout: p.onCheckout })),
+    cartOn && h('div', { className: 'nsl-mpanel nsl-mpanel--cart' }, h(CartDropdown, { size: 'sm', items: p.cartItems || [], total: p.cartTotal, onCheckout: p.onCheckout })),
     menuOn && p.menu && h('div', { className: 'nsl-mpanel nsl-mpanel--menu' }, p.menu));
 }
 var SOCIAL = { linkedin: 'LinkedIn', instagram: 'Instagram', facebook: 'Facebook', ebay: 'eBay' };
@@ -780,14 +780,16 @@ function ConfiguratorRow(p) {
     c[1](p.selector === 'radio' ? true : !on);
   }
   var hasQty = on && p.stepper !== false;
+  var warnEl = p.error && h(Tooltip, { content: typeof p.error === 'string' ? p.error : (p.errorText || 'Not compatible with the current configuration.'), placement: 'top', tone: 'dark' }, h('span', { className: 'nsl-crow__warn', tabIndex: 0, role: 'img', 'aria-label': 'Incompatible option' }, h(Icon, { name: 'alert-triangle', size: 16 })));
   return h('div', { className: cx('nsl-crow', p.mobile && 'nsl-crow--mobile', hasQty && 'has-qty', on && 'is-selected', p.error && 'is-error', p.className), onClick: rowClick },
     h('div', { className: 'nsl-crow__main' },
       h(C, { size: 'sm', checked: on, name: p.name, onChange: function (v) { c[1](p.selector === 'radio' ? true : v); }, label: p.label, error: p.error }),
       p.info && h(Tooltip, { content: p.info }),
       p.tag && h('span', { className: 'nsl-crow__tag' }, p.tag)),
     h('div', { className: 'nsl-crow__side' },
+      !p.mobile && warnEl,
       hasQty && h('span', { className: 'nsl-crow__qty' }, h(NumberStepper, { compact: true, value: qty[0], min: 1, onChange: qty[1] }), h('span', { className: 'nsl-crow__unit' }, 'pcs.')),
-      p.error && h(Tooltip, { content: typeof p.error === 'string' ? p.error : (p.errorText || 'Not compatible with the current configuration.'), placement: 'top', align: 'end', tone: 'dark' }, h('span', { className: 'nsl-crow__warn', tabIndex: 0, role: 'img', 'aria-label': 'Incompatible option' }, h(Icon, { name: 'alert-triangle', size: 16 }))),
+      p.mobile && warnEl,
       p.oldPrice && h('s', { className: 'nsl-crow__old' }, money(p.oldPrice)),
       h('b', { className: 'nsl-crow__price' }, money(p.price)), h('span', { className: 'nsl-crow__unit' }, p.unit || '/ ea.')));
 }
@@ -800,7 +802,7 @@ function CartDropdown(p) {
   var items = p.items || [];
   var total = p.total !== undefined ? p.total : items.reduce(function (s, x) { return s + (typeof x.price === 'number' ? x.price : 0); }, 0);
   var ar = p.arrow ? (p.arrow === true ? 'end' : p.arrow) : null;
-  return h('div', { className: cx('nsl-cartdd', ar && 'nsl-cartdd--arrow nsl-cartdd--arrow-' + ar, p.className), role: 'dialog', 'aria-label': 'Cart', style: p.arrowOffset !== undefined ? { '--cartdd-arrow': (typeof p.arrowOffset === 'number' ? p.arrowOffset + 'px' : p.arrowOffset) } : undefined },
+  return h('div', { className: cx('nsl-cartdd', p.size === 'sm' && 'nsl-cartdd--sm', ar && 'nsl-cartdd--arrow nsl-cartdd--arrow-' + ar, p.className), role: 'dialog', 'aria-label': 'Cart', style: p.arrowOffset !== undefined ? { '--cartdd-arrow': (typeof p.arrowOffset === 'number' ? p.arrowOffset + 'px' : p.arrowOffset) } : undefined },
     h('div', { className: 'heading-md nsl-cartdd__title' }, 'Cart'),
     items.length ? h(Fragment, null, h('div', { className: 'nsl-cartdd__items' }, items.map(function (x, i) { return h(CartLineItem, Object.assign({ key: i }, x)); })),
       h('div', { className: 'nsl-cartdd__total' }, h('span', null, 'Total'), h('b', null, money(total))),

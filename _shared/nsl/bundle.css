@@ -281,6 +281,9 @@
 .nsl-mpanel--search .nsl-search { width: 100%; }
 .nsl-mpanel--cart { box-shadow: 0 8px 16px 0 var(--black-alpha-10); border-bottom: 1px solid var(--border-default); }
 .nsl-mpanel--cart .nsl-cartdd { width: 100%; border-radius: 0; box-shadow: none; }
+/* CartDropdown size="sm": 14/20 text for phones (MobileHeader's cart panel uses it) */
+.nsl-cartdd--sm .nsl-cline, .nsl-cartdd--sm .nsl-cartdd__total { font-size: 14px; line-height: 20px; }
+.nsl-cartdd--sm .nsl-cartdd__total b { font-size: 18px; line-height: 24px; }
 
 .nsl-mnav { display: flex; flex-direction: column; background: var(--bg-default); color: var(--text-primary); font-family: var(--font-sans); }
 .nsl-mnav button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; text-align: left; }
@@ -632,6 +635,8 @@ span.nsl-tag--filled:hover { background: var(--tc); } span.nsl-tag--subtle:hover
 .nsl-crow--mobile.has-qty .nsl-crow__main { flex-basis: 100%; }
 .nsl-crow--mobile.has-qty .nsl-crow__side { flex: 1 0 100%; box-sizing: border-box; min-width: 0; padding-left: 24px; }
 .nsl-crow--mobile.has-qty .nsl-crow__qty { margin-right: auto; }
+.nsl-crow--mobile.has-qty .nsl-crow__qty:has(+ .nsl-tip) { margin-right: 0; }
+.nsl-crow--mobile.has-qty .nsl-crow__qty + .nsl-tip { margin-right: auto; } /* warning sits right after "pcs.", the price stays at the right edge */
 /* Row hover: the whole row is clickable, not only the control's label */
 .nsl-crow { cursor: pointer; transition: background-color 0.12s ease; }
 .nsl-crow:hover { background: var(--brand-subtle); }
