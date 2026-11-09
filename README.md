@@ -24,6 +24,10 @@ search/           Search results page, variant 1.1 (one mixed list for Bitrix se
   index.html      review shell: frame width (Fit / 1440 / 1024 / 375), notes
   proto.html      the page itself (React 18, NSL bundle, plain createElement, no build step)
   assets/         product photos and blog covers
+black-friday/     Black Friday home hero, variant C (dark band, mark with rim light following the pointer)
+  index.html      review shell: frame width (Fit / 1440 / 1024 / 375), notes
+  proto.html      the page itself (React 18 for Header / MobileHeader / Button, plain DOM for the hero)
+  assets/         server photo with transparent background
 ```
 
 ## Adding an experiment

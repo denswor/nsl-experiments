@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Black Friday — home hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Montserrat:wght@900&display=swap">
+<link rel="stylesheet" href="../_shared/nsl/tokens.css">
+<link rel="stylesheet" href="../_shared/nsl/bundle.css">
+<style>
+/* Layout: header (Header from 1024, MobileHeader below), then the Black Friday hero.
+   Hero layers, back to front: radial background → server photo (decor, never moves content) → NSL mark with rim light → copy.
+   ≥720: centered stack in a 648px band. <720: 540px band, copy on top, CTA pinned to the bottom. */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: #0b0714; color: #fff; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+.bf { position: relative; overflow: hidden; height: 648px; touch-action: pan-y;
+  background: radial-gradient(ellipse 820px 560px at 50% 48%, #0b0714 0%, #0d0819 45%, #170c2e 78%, #22113f 100%); }
+
+.bf__server { position: absolute; left: 50%; top: 360px; width: max(100%, 1440px); height: auto; transform: translateX(-50%);
+  display: block; pointer-events: none; user-select: none; opacity: .6;
+  -webkit-mask-image: radial-gradient(ellipse 62% 70% at 50% 62%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(ellipse 62% 70% at 50% 62%, #000 30%, transparent 78%); }
+
+.bf__mark { position: absolute; left: 50%; top: 50px; width: 360px; height: 535px; margin-left: -180px; overflow: visible; pointer-events: none; }
+.bf__mark .rim-base { stroke-width: 2.5; }
+.bf__mark .rim-glow { stroke-width: 12; }
+.bf__mark .rim-line { stroke-width: 3.5; }
+
+.bf__stack { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+  padding: 0 24px; text-align: center; pointer-events: none; }
+.bf__text { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.bf__action { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 12px; pointer-events: auto; }
+
+.bf__eyebrow { margin: 0; font: 500 14px/20px "IBM Plex Mono", monospace; letter-spacing: .4em; text-transform: uppercase; color: rgba(255,255,255,.78); }
+.bf__title { margin: 0; font: 900 clamp(64px, 7.8vw, 112px)/.93 Montserrat, sans-serif; letter-spacing: -.04em; color: #fff; white-space: nowrap; }
+.bf__lead { margin: 0; width: min(600px, 100%); font-size: 18px; line-height: 28px; color: rgba(255,255,255,.8); }
+.bf__fine { margin: 0; font: 400 13px/20px "IBM Plex Mono", monospace; color: rgba(255,255,255,.66); }
+.only-m { display: none; }
+
+@media (max-width: 719px) {
+  .bf { height: 540px; background: radial-gradient(ellipse 300px 420px at 50% 40%, #0b0714 0%, #0d0819 45%, #170c2e 78%, #22113f 100%); }
+  .bf__server { top: 337px; width: 795px; -webkit-mask-image: radial-gradient(ellipse 45% 70% at 50% 55%, #000 30%, transparent 80%); mask-image: radial-gradient(ellipse 45% 70% at 50% 55%, #000 30%, transparent 80%); }
+  .bf__mark { top: 48px; width: 279px; height: 424px; margin-left: -139.5px; }
+  .bf__mark .rim-base { stroke-width: 3.5; }
+  .bf__mark .rim-glow { stroke-width: 16; }
+  .bf__mark .rim-line { stroke-width: 5; }
+  .bf__stack { justify-content: space-between; gap: 0; padding: 145px 16px 32px; }
+  .bf__text { gap: 12px; }
+  .bf__eyebrow { font-size: 12px; line-height: 16px; letter-spacing: .28em; color: rgba(255,255,255,.8); }
+  .bf__title { font-size: 60px; line-height: 56px; letter-spacing: -.05em; }
+  .bf__lead { margin-top: 12px; font-size: 14px; line-height: 20px; color: rgba(255,255,255,.82); }
+  .bf__action { align-self: stretch; align-items: stretch; gap: 12px; margin-top: 0; }
+  .bf__fine { font-size: 12px; line-height: 16px; color: rgba(255,255,255,.7); }
+  .only-m { display: inline; }
+  .only-d { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="header"></div>
+
+<section class="bf nsl-on-dark" id="hero" aria-labelledby="bf-title">
+  <img class="bf__server" src="assets/server-r740xd-lit.webp" alt="" aria-hidden="true" width="1800" height="600" decoding="async">
+
+  <svg class="bf__mark" id="mark" viewBox="0 0 461 685" aria-hidden="true">
+    <defs>
+      <path id="mk" d="M21.9512 685C18.1566 685 14.374 684.016 10.9756 682.06C4.19091 678.136 0 670.901 0 663.053V433.646C0 379.924 28.1595 332.441 75.3043 306.642C122.473 280.843 177.663 282.715 222.971 311.646L261.698 336.377C293.268 356.548 331.742 357.856 364.609 339.869C397.476 321.882 417.098 288.787 417.098 251.348V59.9317L252.451 154.908V255.668C252.451 267.788 242.628 277.603 230.5 277.603C218.372 277.603 208.549 267.788 208.549 255.668V142.249C208.549 134.413 212.74 127.165 219.524 123.253L428.073 2.93389C434.87 -0.977963 443.24 -0.977963 450.024 2.93389C456.821 6.85774 461 14.0935 461 21.9292V251.336C461 305.058 432.84 352.541 385.696 378.352C338.539 404.151 283.337 402.279 238.029 373.348L199.302 348.617C167.732 328.458 129.246 327.15 96.3789 345.125C63.5121 363.1 43.8905 396.195 43.8905 433.646V625.062L208.525 530.074V429.314C208.525 417.194 218.348 407.379 230.476 407.379C242.604 407.379 252.427 417.194 252.427 429.314V542.733C252.427 550.569 248.236 557.817 241.452 561.729L32.9269 682.06C29.5405 684.016 25.7459 685 21.9512 685Z"/>
+      <linearGradient id="lg" x1="230" y1="685" x2="230" y2="0" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#2e67b1"/><stop offset=".28" stop-color="#558fcb"/><stop offset=".67" stop-color="#92278e"/><stop offset="1" stop-color="#cb1c68"/>
+      </linearGradient>
+      <radialGradient id="spotIdle" cx="230" cy="340" r="210" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#fff"/><stop offset=".35" stop-color="#ff7be3"/><stop offset="1" stop-color="#7b5cff" stop-opacity="0"/>
+        <animate attributeName="cx" values="20;440;300;20" dur="9s" repeatCount="indefinite"/>
+        <animate attributeName="cy" values="620;80;420;620" dur="9s" repeatCount="indefinite"/>
+      </radialGradient>
+      <radialGradient id="spotMouse" cx="230" cy="340" r="210" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#fff"/><stop offset=".35" stop-color="#ff7be3"/><stop offset="1" stop-color="#7b5cff" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="bl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+      <filter id="au" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="50"/></filter>
+    </defs>
+    <use href="#mk" fill="url(#lg)" opacity=".22" filter="url(#au)"/>
+    <use class="rim-base" href="#mk" fill="#0e0919" stroke="url(#lg)" stroke-opacity=".5"/>
+    <use class="rim rim-glow" href="#mk" fill="none" stroke="url(#spotIdle)" filter="url(#bl)"/>
+    <use class="rim rim-line" href="#mk" fill="none" stroke="url(#spotIdle)"/>
+  </svg>
+
+  <div class="bf__stack">
+    <div class="bf__text">
+      <p class="bf__eyebrow">Special offer<span class="only-d"> · </span><br class="only-m">[Nov 27 – Dec 1]</p>
+      <h1 class="bf__title" id="bf-title">BLACK<span class="only-d"> </span><br class="only-m">FRIDAY</h1>
+      <p class="bf__lead">Exclusive B2B conditions for MSPs, Data Centers, and Corporate clients: high-quality hardware, transparent warranty tiers and dedicated engineering support.</p>
+    </div>
+    <div class="bf__action">
+      <div id="cta"></div>
+      <p class="bf__fine">Up to [X]% off · ends [Dec 1]</p>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="../_shared/nsl/bundle.js"></script>
+<script>
+(function () {
+  var N = window.NSL, h = React.createElement, useState = React.useState, useEffect = React.useEffect;
+
+  function useMedia(q) {
+    var s = useState(function () { return window.matchMedia(q).matches; });
+    useEffect(function () { var m = window.matchMedia(q), f = function () { s[1](m.matches); }; m.addEventListener('change', f); f(); return function () { m.removeEventListener('change', f); }; }, [q]);
+    return s[0];
+  }
+
+  function Head() {
+    var desktop = useMedia('(min-width: 1024px)');
+    return desktop ? h(N.Header, { active: 'Home' }) : h(N.MobileHeader, {});
+  }
+
+  function Cta() {
+    var phone = useMedia('(max-width: 719px)');
+    return h(N.Button, { variant: 'primary', size: phone ? 'lg' : 'xl', fullWidth: phone, iconRight: 'arrow-right', href: '#' }, 'Shop Black Friday deals');
+  }
+
+  ReactDOM.createRoot(document.getElementById('header')).render(h(Head));
+  ReactDOM.createRoot(document.getElementById('cta')).render(h(Cta));
+
+  /* Rim light: follows the pointer (mouse, or a finger while it touches the hero); otherwise drifts on its own. */
+  var hero = document.getElementById('hero'), mark = document.getElementById('mark');
+  var spot = document.getElementById('spotMouse'), rims = mark.querySelectorAll('.rim');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce && mark.pauseAnimations) mark.pauseAnimations();
+  function use(id) { rims.forEach(function (r) { r.setAttribute('stroke', 'url(#' + id + ')'); }); }
+  var pt = mark.createSVGPoint(), raf = 0, last = null;
+  function apply() {
+    raf = 0;
+    var m = mark.getScreenCTM(); if (!m || !last) return;
+    pt.x = last.x; pt.y = last.y;
+    var p = pt.matrixTransform(m.inverse());
+    spot.setAttribute('cx', Math.round(p.x)); spot.setAttribute('cy', Math.round(p.y));
+  }
+  hero.addEventListener('pointermove', function (e) { last = { x: e.clientX, y: e.clientY }; use('spotMouse'); if (!raf) raf = requestAnimationFrame(apply); });
+  hero.addEventListener('pointerdown', function (e) { last = { x: e.clientX, y: e.clientY }; use('spotMouse'); apply(); });
+  function release() { use('spotIdle'); }
+  hero.addEventListener('pointerleave', release);
+  hero.addEventListener('pointercancel', release);
+  hero.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') release(); });
+})();
+</script>
+</body>
+</html>
