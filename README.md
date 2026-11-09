@@ -20,6 +20,9 @@ hero/             Hero kit — first-screen components and the site heroes rebui
 configurator/     Configure-to-order tab of Dell PowerEdge R760xd2 24LFF + 4LFF
   index.html      review shell: frame width (Fit / 1440 / 1024 / 375), configurator theme, notes
   proto.html      the page itself (React 18, NSL bundle, plain createElement, no build step)
+ask-specialist/   Ask a specialist help form on the R760xd2 configurator (Secondary theme), checkboxes and radios variant
+  index.html      review shell: frame width, configurator theme (Secondary by default), notes
+  proto.html      configurator/proto.html plus the full help form and "Stuck here?" in section heads
 search/           Search results page, variant 1.1 (one mixed list for Bitrix search.page)
   index.html      review shell: frame width (Fit / 1440 / 1024 / 375), notes
   proto.html      the page itself (React 18, NSL bundle, plain createElement, no build step)

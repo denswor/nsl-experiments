@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ask a Specialist Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: review shell — toolbar on top, the live page in a scaled frame, notes in a side panel (overlay below 1100px). */
+:root {
+  --bg: #eef0f4; --surface: #ffffff; --fg: #18304c; --muted: #5d6676; --line: #dde1e8;
+  --accent: #b91f69; --accent-soft: #fce7f1; --seg: #18304c; --seg-fg: #ffffff;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace; --sans: "IBM Plex Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f1520; --surface: #172131; --fg: #e8edf5; --muted: #9aa6b8; --line: #2a3648; --accent: #f77fb8; --accent-soft: #3a1729; --seg: #e8edf5; --seg-fg: #0f1520; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0f1520; --surface: #172131; --fg: #e8edf5; --muted: #9aa6b8; --line: #2a3648; --accent: #f77fb8; --accent-soft: #3a1729; --seg: #e8edf5; --seg-fg: #0f1520; color-scheme: dark; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 400 14px/20px var(--sans); }
+.app { height: 100%; display: flex; flex-direction: column; }
+.bar { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); background: var(--surface); border-bottom: 1px solid var(--line); }
+.bar__name { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
+.bar__name b { font: 600 15px/20px var(--mono); }
+.bar__name span { font-size: 12px; line-height: 16px; color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--fg); padding: 6px 12px; font: 500 12px/16px var(--mono); cursor: pointer; font-variant-numeric: tabular-nums; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--seg); color: var(--seg-fg); }
+.sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.sw--p { background: #b91f69; }
+.sw--s { background: #1d6cbe; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--fg); padding: 6px 12px; font: 500 13px/16px var(--sans); cursor: pointer; text-decoration: none; }
+.btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.seg button:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.main { flex: 1; min-height: 0; display: flex; position: relative; }
+.stage { flex: 1; min-width: 0; position: relative; overflow: hidden; display: grid; place-items: start center; padding: 16px; }
+.stage.is-fit { padding: 0; }
+.frame-box { position: relative; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 12px 32px rgba(15,21,32,.12); border-radius: 6px; overflow: hidden; }
+.stage.is-fit .frame-box { border-radius: 0; box-shadow: none; }
+.frame-box.is-phone { border-radius: 28px; outline: 8px solid #111827; outline-offset: 0; margin-top: 8px; }
+iframe { display: block; border: 0; transform-origin: 0 0; background: #fff; }
+.scale { position: absolute; right: 10px; bottom: 8px; padding: 2px 6px; border-radius: 4px; background: rgba(17,24,39,.72); color: #fff; font: 500 11px/16px var(--mono); pointer-events: none; }
+.notes { flex: none; width: 400px; overflow-y: auto; background: var(--surface); border-left: 1px solid var(--line); padding: 20px 22px 32px; }
+.notes[hidden] { display: none !important; }
+@media (max-width: 1099px) { .notes { position: absolute; inset: 0 0 0 auto; width: min(420px, 100%); z-index: 5; box-shadow: -12px 0 32px rgba(15,21,32,.18); padding-left: max(22px, env(safe-area-inset-left, 0px)); padding-right: max(22px, env(safe-area-inset-right, 0px)); } }
+.notes h2 { margin: 24px 0 8px; font: 600 15px/20px var(--mono); text-wrap: balance; }
+.notes h2:first-child { margin-top: 0; }
+.notes p, .notes li { margin: 0 0 8px; color: var(--fg); }
+.notes ul { margin: 0 0 8px; padding-left: 18px; }
+.notes .k { font: 600 12px/16px var(--mono); color: var(--accent); }
+.notes .muted { color: var(--muted); }
+.notes code { font: 500 12px/16px var(--mono); background: var(--bg); padding: 1px 4px; border-radius: 4px; }
+.try { margin-top: 8px; padding: 12px 14px; border-radius: 8px; background: var(--bg); }
+.try li { margin-bottom: 6px; }
+@media (max-width: 719px) { .bar__name span { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="bar">
+    <div class="bar__name"><b>Ask a specialist · R760xd2</b><span>Help request form on the configurator · NSL Design System · checkboxes and radios</span></div>
+    <div class="seg" role="group" aria-label="Frame width" id="widths">
+      <button type="button" data-w="fit" aria-pressed="true">Fit</button>
+      <button type="button" data-w="1440" aria-pressed="false">1440</button>
+      <button type="button" data-w="1024" aria-pressed="false">1024</button>
+      <button type="button" data-w="375" aria-pressed="false">375</button>
+    </div>
+    <div class="seg" role="group" aria-label="Configurator theme" id="themes">
+      <button type="button" data-t="primary" aria-pressed="false"><span class="sw sw--p" aria-hidden="true"></span>Primary</button>
+      <button type="button" data-t="secondary" aria-pressed="true"><span class="sw sw--s" aria-hidden="true"></span>Secondary</button>
+    </div>
+    <div class="seg" role="group" aria-label="Panel motion" id="motion">
+      <button type="button" data-m="on" aria-pressed="true">Slide + bounce</button>
+      <button type="button" data-m="off" aria-pressed="false">No motion</button>
+    </div>
+    <button type="button" class="btn" id="notesBtn" aria-pressed="true" aria-controls="notes">Notes</button>
+  </header>
+  <div class="main">
+    <div class="stage is-fit" id="stage">
+      <div class="frame-box" id="box"><iframe id="frame" src="proto.html" title="Ask a specialist prototype"></iframe><span class="scale" id="scale" hidden></span></div>
+    </div>
+    <aside class="notes" id="notes" aria-label="Notes">
+      <h2>Что это</h2>
+      <p>Форма «Ask a specialist» (вариант с чекбоксами и радиокнопками) внутри конфигуратора R760xd2. Конфигуратор тот же, что в прототипе <a href="../configurator/">configurator</a>; тема по умолчанию Secondary.</p>
+
+      <h2>Как открыть</h2>
+      <ul>
+        <li><span class="k">EdgeTab</span> справа (от 1280 px) и ссылка «Not sure? Ask a specialist» под сводкой — форма без предвыбора.</li>
+        <li><span class="k">«Stuck here?»</span> в заголовке секций CPU, RAM, RAID, Drive cage, BOSS, Network, PCI, Power, Chassis, Installation — блок «Add details» раскрыт, нужная проблема уже отмечена, сверху плашка «Opened from …».</li>
+        <li><span class="k">Мобильный</span> (до 1024 px): иконка помощи в нижней панели открывает BottomSheet с той же формой.</li>
+      </ul>
+
+      <h2>Форма</h2>
+      <ul>
+        <li>Сначала свободный текст и вложение — по фидбеку продажников. Текущая сборка подставляется в ContextCard автоматически, с итогом и тем, что ещё не выбрано.</li>
+        <li><span class="k">Add details</span> (Disclosure, необязательно): «Where are you stuck?» — CheckboxGroup в две колонки, на мобильном в одну; бюджет — Slider на 10 ступеней, «No fixed budget» его отключает. Подзаголовок блока показывает, что уже отмечено.</li>
+        <li><span class="k">Контакты</span> всегда видны: Name, Work email, Phone — столбиком, email бывает длинным. При канале Email телефон помечается как optional.</li>
+        <li>Канал и срочность — RadioGroup: в строку в Drawer, двумя колонками на мобильном. Часового пояса и времени звонка нет.</li>
+        <li>После отправки — EmptyState «Message sent» с текстом под выбранный канал и срок; при повторном открытии форма чистая, контакты сохраняются.</li>
+      </ul>
+
+      <h2>Анимация панели</h2>
+      <ul>
+        <li>Переключатель «Slide + bounce / No motion» в панели сверху.</li>
+        <li><span class="k">Появление.</span> Drawer выезжает из-за края за 480 мс с одним небольшим перелётом: −12 px, затем +3 px, затем на место. Таб едет вместе с ним с той же кривой. Пока панель перелетает за край, щель справа закрывает полоска её же фона.</li>
+        <li><span class="k">Закрытие.</span> Короткий уезд за край за 220 мс, без отскока: уходящее не должно привлекать внимание.</li>
+        <li><span class="k">Мобильный.</span> Шит поднимается снизу с тем же отскоком (−10 px), затемнение плавно проявляется.</li>
+        <li>При <code>prefers-reduced-motion</code> анимации нет.</li>
+      </ul>
+
+      <h2>Тема</h2>
+      <ul>
+        <li>Форма помощи всегда в Primary, независимо от темы конфигуратора: Drawer, его таб у края и мобильный шит — розовые кнопка «Send to a specialist», чекбоксы, радио, слайдер и фокус. Add to Cart и Get my Quote тоже остаются в Primary.</li>
+        <li>Переключатель Primary / Secondary влияет только на сам конфигуратор: выбранные строки, вкладки, сводку и ссылки.</li>
+      </ul>
+
+      <h2>Попробуй</h2>
+      <ul class="try">
+        <li>Drive cage → «Stuck here?»: отмечено Storage &amp; RAID, есть плашка.</li>
+        <li>Прикрепи любой файл — он появится строкой с размером.</li>
+        <li>Канал Email → у телефона появится «(optional)»; отправь и посмотри текст подтверждения.</li>
+        <li>Ширина 375: иконка помощи в нижней панели.</li>
+      </ul>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage'), box = document.getElementById('box'), frame = document.getElementById('frame'), scaleTag = document.getElementById('scale');
+  var notes = document.getElementById('notes'), notesBtn = document.getElementById('notesBtn');
+  var mode = 'fit';
+  try { var saved = localStorage.getItem('ask-proto-w'); if (saved) mode = saved; } catch (e) {}
+  if (window.innerWidth < 1100) { notes.hidden = true; notesBtn.setAttribute('aria-pressed', 'false'); }
+  function layout() {
+    var sw = stage.clientWidth, sh = stage.clientHeight;
+    stage.classList.toggle('is-fit', mode === 'fit');
+    box.classList.toggle('is-phone', mode === '375');
+    if (mode === 'fit') { frame.style.width = sw + 'px'; frame.style.height = sh + 'px'; frame.style.transform = ''; box.style.width = sw + 'px'; box.style.height = sh + 'px'; scaleTag.hidden = true; return; }
+    var w = +mode, availW = sw - 32, availH = sh - 32 - (mode === '375' ? 16 : 0);
+    var k = Math.min(1, availW / w);
+    var hgt = mode === '375' ? Math.min(812, availH / k) : availH / k;
+    frame.style.width = w + 'px'; frame.style.height = Math.round(hgt) + 'px'; frame.style.transform = k < 1 ? 'scale(' + k + ')' : '';
+    box.style.width = Math.round(w * k) + 'px'; box.style.height = Math.round(hgt * k) + 'px';
+    scaleTag.hidden = k >= 1; scaleTag.textContent = w + ' px · ' + Math.round(k * 100) + '%';
+  }
+  function setMode(m) {
+    mode = m;
+    try { localStorage.setItem('ask-proto-w', m); } catch (e) {}
+    document.querySelectorAll('#widths button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.w === m)); });
+    layout();
+  }
+  document.getElementById('widths').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setMode(b.dataset.w); });
+  notesBtn.addEventListener('click', function () { notes.hidden = !notes.hidden; notesBtn.setAttribute('aria-pressed', String(!notes.hidden)); layout(); });
+  /* configurator theme: primary (pink) or secondary (blue) brand inside the configurator block */
+  var theme = 'secondary';
+  try { var st = localStorage.getItem('ask-proto-theme'); if (st === 'primary' || st === 'secondary') theme = st; } catch (e) {}
+  var motion = true;
+  try { if (localStorage.getItem('ask-proto-motion') === 'off') motion = false; } catch (e) {}
+  function sendTheme() { try { frame.contentWindow.postMessage({ nslTheme: theme, nslMotion: motion }, '*'); } catch (e) {} }
+  function setMotion(on) {
+    motion = on;
+    try { localStorage.setItem('ask-proto-motion', on ? 'on' : 'off'); } catch (e) {}
+    document.querySelectorAll('#motion button').forEach(function (b) { b.setAttribute('aria-pressed', String((b.dataset.m === 'on') === on)); });
+    sendTheme();
+  }
+  document.getElementById('motion').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setMotion(b.dataset.m === 'on'); });
+  function setTheme(t) {
+    theme = t;
+    try { localStorage.setItem('ask-proto-theme', t); } catch (e) {}
+    document.querySelectorAll('#themes button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.t === t)); });
+    sendTheme();
+  }
+  document.getElementById('themes').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setTheme(b.dataset.t); });
+  window.addEventListener('message', function (e) { if (e.source === frame.contentWindow && e.data && e.data.nslReady) sendTheme(); });
+  frame.addEventListener('load', sendTheme);
+  setTheme(theme);
+  setMotion(motion);
+  new ResizeObserver(layout).observe(stage);
+  setMode(mode);
+})();
+</script>
+</body>
+</html>
