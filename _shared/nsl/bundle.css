@@ -608,7 +608,8 @@ span.nsl-tag--filled:hover { background: var(--tc); } span.nsl-tag--subtle:hover
 
 .nsl-crow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); min-height: 40px; padding: var(--space-8) var(--space-12); border-radius: var(--radius-sm); border-bottom: 1px solid var(--border-default); color: var(--text-primary); font: 400 12px/16px var(--font-sans); }
 .nsl-crow__main { display: flex; align-items: center; gap: var(--space-8); min-width: 0; }
-.nsl-crow .nsl-check--sm { font-size: 12px; line-height: 16px; }
+.nsl-crow .nsl-check--sm { font-size: 14px; line-height: 20px; } /* option name: 14/20 on desktop */
+.nsl-crow--mobile .nsl-check--sm { font-size: 12px; line-height: 16px; } /* 12/16 in the phone layout */
 .nsl-crow__tag { display: inline-flex; align-items: center; height: 16px; padding: 0 6px; border-radius: var(--radius-full); background: var(--brand-default); color: var(--text-on-brand); font: 600 8px/10px var(--font-sans); text-transform: uppercase; }
 .nsl-crow__side { display: flex; align-items: center; gap: var(--space-8); flex: none; white-space: nowrap; }
 .nsl-crow__qty { display: inline-flex; align-items: center; gap: var(--space-8); }
@@ -629,7 +630,7 @@ span.nsl-tag--filled:hover { background: var(--tc); } span.nsl-tag--subtle:hover
 .nsl-crow--mobile { flex-wrap: wrap; align-items: center; row-gap: var(--space-8); }
 .nsl-crow--mobile .nsl-crow__main { flex: 1 1 0; }
 .nsl-crow--mobile.has-qty .nsl-crow__main { flex-basis: 100%; }
-.nsl-crow--mobile.has-qty .nsl-crow__side { width: 100%; padding-left: 24px; }
+.nsl-crow--mobile.has-qty .nsl-crow__side { flex: 1 0 100%; box-sizing: border-box; min-width: 0; padding-left: 24px; }
 .nsl-crow--mobile.has-qty .nsl-crow__qty { margin-right: auto; }
 /* Row hover: the whole row is clickable, not only the control's label */
 .nsl-crow { cursor: pointer; transition: background-color 0.12s ease; }
@@ -1199,3 +1200,8 @@ a.nsl-navhead:focus-visible { outline: none; box-shadow: var(--shadow-focus); bo
 .nsl-lgrid--tablet { --lg-max: none; }
 .nsl-lgrid--tablet-portrait { --lg-max: none; --lg-pad: var(--grid-margin-tablet-portrait); --lg-cols: var(--grid-columns-tablet-portrait); --lg-gap: var(--gutter-tablet-portrait); --lg-show9: none; }
 .nsl-lgrid--mobile { --lg-max: none; --lg-pad: var(--grid-margin-mobile); --lg-cols: var(--grid-columns-mobile); --lg-gap: var(--gutter-mobile); --lg-show9: none; --lg-show5: none; }
+/* Tooltip: stays inside the viewport. --fl-shift is set by the component when the bubble would cross an edge; the arrow moves back by the same amount so it still points at the trigger. */
+.nsl-tip__bubble { max-width: min(260px, calc(100vw - 16px)); }
+.nsl-tip__bubble--top, .nsl-tip__bubble--bottom { transform: translateX(calc(-50% + var(--fl-shift, 0px))); }
+.nsl-tip__bubble--start, .nsl-tip__bubble--end { transform: translateX(var(--fl-shift, 0px)); }
+.nsl-tip__bubble::after { translate: calc(-1 * var(--fl-shift, 0px)) 0; }

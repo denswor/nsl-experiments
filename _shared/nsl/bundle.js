@@ -632,10 +632,20 @@ function Tooltip(p) {
   useEffect(function () { return function () { clearTimeout(t.current); }; }, []);
   useEsc(s[0], hide);
   var open = p.open !== undefined ? p.open : s[0];
+  /* Keep the bubble inside the viewport: shift it sideways (the arrow stays on the trigger). */
+  var bub = useRef(null);
+  React.useLayoutEffect(function () {
+    var el = bub.current; if (!el) return;
+    el.style.setProperty('--fl-shift', '0px');
+    if (!open) return;
+    var r = el.getBoundingClientRect(), vw = document.documentElement.clientWidth, dx = 0;
+    if (r.left < 8) dx = 8 - r.left; else if (r.right > vw - 8) dx = vw - 8 - r.right;
+    if (dx) el.style.setProperty('--fl-shift', Math.round(dx) + 'px');
+  }, [open]);
   var trigger = p.children || h('button', { type: 'button', className: 'nsl-tip__trigger', 'aria-label': p.label || 'More info' }, h(Icon, { name: p.icon || 'info', size: 16 }));
   return h('span', { className: cx('nsl-tip', p.className), onMouseEnter: show, onMouseLeave: hide, onFocus: function () { clearTimeout(t.current); s[1](true); }, onBlur: hide },
     React.cloneElement(trigger, { 'aria-describedby': id, onClick: function (e) { if (trigger.props.onClick) trigger.props.onClick(e); if (!p.children) s[1](!s[0]); } }),
-    h('span', { id: id, role: 'tooltip', className: cx(floatCls('nsl-tip__bubble', p), p.tone === 'light' && 'nsl-tip__bubble--light', open && 'is-open'), style: p.maxWidth ? { maxWidth: p.maxWidth } : undefined },
+    h('span', { id: id, ref: bub, role: 'tooltip', className: cx(floatCls('nsl-tip__bubble', p), p.tone === 'light' && 'nsl-tip__bubble--light', open && 'is-open'), style: p.maxWidth ? { maxWidth: p.maxWidth } : undefined },
       p.title && h('b', { className: 'nsl-tip__title' }, p.title), p.content));
 }
 function Popover(p) {
@@ -776,8 +786,8 @@ function ConfiguratorRow(p) {
       p.info && h(Tooltip, { content: p.info }),
       p.tag && h('span', { className: 'nsl-crow__tag' }, p.tag)),
     h('div', { className: 'nsl-crow__side' },
-      p.error && h(Tooltip, { content: typeof p.error === 'string' ? p.error : (p.errorText || 'Not compatible with the current configuration.'), placement: 'top', align: 'end', tone: 'dark' }, h('span', { className: 'nsl-crow__warn', tabIndex: 0, role: 'img', 'aria-label': 'Incompatible option' }, h(Icon, { name: 'alert-triangle', size: 16 }))),
       hasQty && h('span', { className: 'nsl-crow__qty' }, h(NumberStepper, { compact: true, value: qty[0], min: 1, onChange: qty[1] }), h('span', { className: 'nsl-crow__unit' }, 'pcs.')),
+      p.error && h(Tooltip, { content: typeof p.error === 'string' ? p.error : (p.errorText || 'Not compatible with the current configuration.'), placement: 'top', align: 'end', tone: 'dark' }, h('span', { className: 'nsl-crow__warn', tabIndex: 0, role: 'img', 'aria-label': 'Incompatible option' }, h(Icon, { name: 'alert-triangle', size: 16 }))),
       p.oldPrice && h('s', { className: 'nsl-crow__old' }, money(p.oldPrice)),
       h('b', { className: 'nsl-crow__price' }, money(p.price)), h('span', { className: 'nsl-crow__unit' }, p.unit || '/ ea.')));
 }
