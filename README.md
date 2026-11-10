@@ -23,11 +23,12 @@ configurator/     Configure-to-order tab of Dell PowerEdge R760xd2 24LFF + 4LFF
 ask-specialist/   Ask a specialist help form on the R760xd2 configurator (Secondary theme), checkboxes and radios variant
   index.html      review shell: frame width, configurator theme (Secondary by default), notes
   proto.html      configurator/proto.html plus the full help form and "Stuck here?" in section heads
-  component/      nsl-ask.js — the same form in vanilla JS for the live site (Shadow DOM, no dependencies), demo, ZIP for developers
+  component/      nsl-ask.js — the same form in vanilla JS for the live site (Shadow DOM, no dependencies; variant 'simple' for pages without a build), demo, ZIP for developers
 search/           Search results page, variant 1.1 (one mixed list for Bitrix search.page)
   index.html      review shell: frame width (Fit / 1440 / 1024 / 375), notes
   proto.html      the page itself (React 18, NSL bundle, plain createElement, no build step)
   assets/         product photos and blog covers
+  component/      nsl-search — the same page in vanilla JS for the live site: CSS, JS, Bitrix search.page template, suggest endpoint, demo, ZIP for developers
 black-friday/     Black Friday home hero, variant C (dark band, mark with rim light following the pointer)
   index.html      review shell: frame width (Fit / 1440 / 1024 / 375), notes
   proto.html      the page itself (React 18 for Header / MobileHeader / Button, plain DOM for the hero)

@@ -1,5 +1,5 @@
 /*!
- * nsl-ask v1.0.0 — "Ask a specialist" help request for newserverlife.com
+ * nsl-ask v1.1.0 — "Ask a specialist" help request for newserverlife.com
  * No dependencies. ES2017. Styles are isolated in a Shadow DOM.
  * Built on NSL Design System tokens (values inlined below), Primary theme.
  *
@@ -13,15 +13,19 @@
  *     });
  *   </script>
  *
+ *   variant: 'simple' — the short form for pages without a build (search results, catalog, blog):
+ *   message, file, optional budget, name / email / phone (optional). No build card, problem areas or channel.
+ *
  *   Any element with data-nsl-ask opens it; data-nsl-ask-area="storage" preselects a problem area,
  *   data-nsl-ask-from="Drive cage" names the place it was opened from.
  */
 (function (global) {
   'use strict';
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.1.0';
 
   var DEFAULTS = {
+    variant: 'full',            // 'full' (configurator: build card, problem areas, channel) or 'simple' (search page and others)
     endpoint: '',               // POST URL. Empty + no `submit` = demo mode (always succeeds)
     encoding: 'multipart',      // 'multipart' (FormData, carries the file) or 'json' (no file)
     extraFields: null,          // e.g. { sessid: BX.bitrix_sessid() }
@@ -103,6 +107,26 @@
       successText: 'A specialist will read your message and contact you by {channel} {timing}. Your build{attachment} already with them.',
       channelText: { phone: 'phone', email: 'email', whatsapp: 'WhatsApp' },
       timingText: { today: 'today', norush: 'when convenient' }
+    }
+  };
+  /* 'simple' variant: what differs from DEFAULTS. Options passed to mount() still win. */
+  var SIMPLE = {
+    budgets: ['<$5k', '$5–10k', '$10–20k', '$20–50k', '$50k+'],
+    budgetTicks: [{ at: 0, label: '<$5k' }, { at: 1, label: '$5–10k' }, { at: 2, label: '$10–20k' }, { at: 3, label: '$20–50k' }, { at: 4, label: '$50k+' }],
+    budgetDefault: 2,
+    labels: {
+      subtitle: '',
+      contact: '',
+      email: 'Email',
+      messagePlaceholder: 'Workload, capacity, the parts you are unsure about',
+      messageHelper: '',
+      attachHint: 'PDF, Excel, Word or images, up to 10 MB',
+      attachHintMobile: 'Camera, PDF, Excel, Word, up to 10 MB',
+      note: 'Goes straight to a specialist, not a bot.',
+      back: 'Back to results',
+      errorPhone: 'Enter a phone number or leave it empty',
+      successTitle: 'Request sent',
+      successText: 'A NewServerLife specialist will reply within one business hour.'
     }
   };
   var STORE_KEY = 'nsl_ask_contact';
@@ -252,6 +276,7 @@
 .nsl-ask__budget { display: flex; flex-direction: column; gap: 12px; }
 .nsl-ask__budget-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .nsl-ask__budget-head label { font: 500 14px/20px var(--f-sans); }
+.nsl-ask__budget-head small { font: 400 12px/16px var(--f-sans); color: var(--c-text-2); }
 .nsl-ask__budget-val { font: 600 14px/20px var(--f-mono); color: var(--c-text); white-space: nowrap; }
 .nsl-ask__budget.is-off .nsl-ask__budget-val { color: var(--c-text-2); font-weight: 500; }
 .nsl-ask__rail { position: relative; height: 24px; margin: 0 10px; }
@@ -345,8 +370,11 @@
   /* ------------------------------------------------------------------ mount */
   function mount(target, options) {
     if (target && typeof target === 'object' && !(target instanceof Element)) { options = target; target = null; }
-    var o = merge(DEFAULTS, options || {});
-    o.labels = merge(DEFAULTS.labels, (options || {}).labels || {});
+    options = options || {};
+    var simple = options.variant === 'simple';
+    var base = simple ? merge(DEFAULTS, { budgets: SIMPLE.budgets, budgetTicks: SIMPLE.budgetTicks, budgetDefault: SIMPLE.budgetDefault }) : DEFAULTS;
+    var o = merge(base, options);
+    o.labels = merge(simple ? merge(DEFAULTS.labels, SIMPLE.labels) : DEFAULTS.labels, options.labels || {});
     var L = o.labels, id = 'nsl-ask-' + (++uid);
 
     var host = typeof target === 'string' ? document.querySelector(target) : target;
@@ -366,7 +394,7 @@
     var stored = {};
     if (o.remember) { try { stored = JSON.parse(global.localStorage.getItem(STORE_KEY) || '{}') || {}; } catch (e) {} }
     function fresh() {
-      return { msg: '', file: null, details: false, areas: [], from: '', budget: o.budgetDefault, noBudget: false,
+      return { msg: '', file: null, details: false, areas: [], from: '', budget: o.budgetDefault, noBudget: false, budgetTouched: false,
         name: stored.name || '', email: stored.email || '', phone: stored.phone || '', channel: stored.channel || o.channels[0].value, timing: o.timings[0].value };
     }
     var st = { open: false, leaving: false, sent: false, sending: false, errors: {}, formError: '', f: fresh() };
@@ -379,7 +407,7 @@
       if (typeof o.onEvent === 'function') { try { o.onEvent(type, detail); } catch (e) {} }
       try { if (Array.isArray(global.dataLayer)) global.dataLayer.push(merge({ event: 'ask_specialist_' + type }, detail)); } catch (e) {}
     }
-    function readBuild() { try { return typeof o.build === 'function' ? o.build() : o.build; } catch (e) { return null; } }
+    function readBuild() { if (simple) return null; try { return typeof o.build === 'function' ? o.build() : o.build; } catch (e) { return null; } }
     function isSheet() { return !desktopMq.matches; }
     function motionOn() { return o.motion && !reduced.matches; }
 
@@ -397,15 +425,26 @@
         '<span class="nsl-ask__ctx-title">' + esc(build.title) + '</span>' + (build.meta ? '<span class="nsl-ask__ctx-meta">' + esc(build.meta) + '</span>' : '') + '</div></div>';
     }
 
-    function htmlForm() {
-      var f = st.f, e = st.errors, sheet = isSheet();
-      var picked = f.areas.map(areaLabel);
+    /* budget slider; `inline` (simple variant) = a top-level field marked optional, sent only if the person moved it */
+    function htmlBudget(inline) {
+      var f = st.f;
       var pct = function (i) { return (i / (o.budgets.length - 1)) * 100; };
       var stops = o.budgets.map(function (_, i) { return '<span class="nsl-ask__stop' + (i <= f.budget ? ' is-on' : '') + '" style="left:' + pct(i) + '%"></span>'; }).join('');
       var ticks = o.budgetTicks.map(function (t) { var x = pct(t.at); return '<span class="' + (x <= 0 ? 'is-start' : x >= 100 ? 'is-end' : '') + '" style="left:' + x + '%">' + esc(t.label) + '</span>'; }).join('');
+      return '<div class="nsl-ask__budget' + (f.noBudget ? ' is-off' : '') + (inline ? ' nsl-ask__budget--inline' : '') + '"><div class="nsl-ask__budget-head"><label for="' + id + '-budget">' + esc(L.budget) + (inline ? ' <small>' + esc(L.phoneOptional) + '</small>' : '') + '</label><span class="nsl-ask__budget-val" data-budget-val>' + esc(f.noBudget ? L.noBudget : o.budgets[f.budget]) + '</span></div>' +
+        '<div class="nsl-ask__rail"><span class="nsl-ask__track"></span><span class="nsl-ask__fill" style="width:' + pct(f.budget) + '%"></span>' + stops +
+          '<input class="nsl-ask__range" id="' + id + '-budget" type="range" min="0" max="' + (o.budgets.length - 1) + '" step="1" value="' + f.budget + '" aria-valuetext="' + esc(o.budgets[f.budget]) + '"' + (f.noBudget ? ' disabled' : '') + '>' +
+          '<span class="nsl-ask__thumb" style="left:' + pct(f.budget) + '%"></span></div>' +
+        '<div class="nsl-ask__ticks" aria-hidden="true">' + ticks + '</div>' +
+        (inline ? '' : htmlCheck('checkbox', 'nobudget', '1', L.noBudget, f.noBudget)) + '</div>';
+    }
+
+    function htmlForm() {
+      var f = st.f, e = st.errors, sheet = isSheet();
+      var picked = f.areas.map(areaLabel);
       var err = function (k) { return e[k] ? '<span class="nsl-ask__error" id="' + id + '-' + k + '-err">' + esc(e[k]) + '</span>' : ''; };
       var inv = function (k) { return e[k] ? ' aria-invalid="true" aria-describedby="' + id + '-' + k + '-err"' : ''; };
-      var phoneOpt = f.channel === 'email';
+      var phoneOpt = simple || f.channel === 'email';
       var radios = function (name, list, val, row) {
         return '<div class="nsl-ask__opts' + (row ? ' nsl-ask__opts--row' : '') + '">' + list.map(function (x) { return htmlCheck('radio', id + '-' + name, x.value, x.label, x.value === val); }).join('') + '</div>';
       };
@@ -414,13 +453,14 @@
         htmlBuild(L.buildEyebrow) +
         '<div class="nsl-ask__field"><label class="nsl-ask__label" for="' + id + '-msg">' + esc(L.message) + '</label>' +
           '<textarea class="nsl-ask__textarea" id="' + id + '-msg" name="message" rows="' + (sheet ? 5 : 6) + '" placeholder="' + esc(L.messagePlaceholder) + '"' + inv('msg') + '>' + esc(f.msg) + '</textarea>' +
-          (e.msg ? err('msg') : '<span class="nsl-ask__helper">' + esc(L.messageHelper) + '</span>') + '</div>' +
+          (e.msg ? err('msg') : L.messageHelper ? '<span class="nsl-ask__helper">' + esc(L.messageHelper) + '</span>' : '') + '</div>' +
         '<div class="nsl-ask__field">' + (f.file
           ? '<div class="nsl-ask__file">' + svg(I.clip) + '<span class="nsl-ask__file-text"><span class="nsl-ask__file-name">' + esc(f.file.name) + '</span><span class="nsl-ask__file-meta">' + esc(fileMeta(f.file)) + ' · ' + esc(L.attachReady) + '</span></span>' +
             '<button type="button" class="nsl-ask__close" data-act="unfile" aria-label="' + esc(fmt(L.removeFile, { name: f.file.name })) + '">' + svg(I.x) + '</button></div>'
           : '<label class="nsl-ask__drop" data-drop><input type="file" name="file" accept="' + esc(o.accept) + '">' + svg(I.clip, 24) +
             '<span class="nsl-ask__drop-text"><span class="nsl-ask__drop-title">' + esc(sheet ? L.attachMobile : L.attach) + '</span><span class="nsl-ask__drop-hint">' + esc(sheet ? L.attachHintMobile : L.attachHint) + '</span></span></label>') +
           err('file') + '</div>' +
+        (simple ? htmlBudget(true) : (
         '<div class="nsl-ask__disc' + (f.details ? ' is-open' : '') + '">' +
           '<button type="button" class="nsl-ask__disc-head" data-act="details" aria-expanded="' + f.details + '" aria-controls="' + id + '-details">' +
             '<span class="nsl-ask__disc-text"><span class="nsl-ask__disc-title">' + esc(L.details) + '</span><span class="nsl-ask__disc-desc" data-disc-desc>' + esc(picked.length ? fmt(L.detailsNoted, { list: picked.join(', ') }) : L.detailsHint) + '</span></span>' +
@@ -429,18 +469,13 @@
             (f.from ? '<div class="nsl-ask__info">' + svg(I.info, 16) + '<span>' + esc(fmt(L.openedFrom, { from: f.from })) + '</span></div>' : '') +
             '<fieldset><legend>' + esc(L.areas) + ' <small>' + esc(L.areasHint) + '</small></legend><div class="nsl-ask__opts' + (sheet ? '' : ' nsl-ask__opts--grid') + '">' +
               o.areas.map(function (a) { return htmlCheck('checkbox', 'areas', a.value, a.label, f.areas.indexOf(a.value) > -1); }).join('') + '</div></fieldset>' +
-            '<div class="nsl-ask__budget' + (f.noBudget ? ' is-off' : '') + '"><div class="nsl-ask__budget-head"><label for="' + id + '-budget">' + esc(L.budget) + '</label><span class="nsl-ask__budget-val" data-budget-val>' + esc(f.noBudget ? L.noBudget : o.budgets[f.budget]) + '</span></div>' +
-              '<div class="nsl-ask__rail"><span class="nsl-ask__track"></span><span class="nsl-ask__fill" style="width:' + pct(f.budget) + '%"></span>' + stops +
-                '<input class="nsl-ask__range" id="' + id + '-budget" type="range" min="0" max="' + (o.budgets.length - 1) + '" step="1" value="' + f.budget + '" aria-valuetext="' + esc(o.budgets[f.budget]) + '"' + (f.noBudget ? ' disabled' : '') + '>' +
-                '<span class="nsl-ask__thumb" style="left:' + pct(f.budget) + '%"></span></div>' +
-              '<div class="nsl-ask__ticks" aria-hidden="true">' + ticks + '</div>' +
-              htmlCheck('checkbox', 'nobudget', '1', L.noBudget, f.noBudget) + '</div>' +
-          '</div></div>' +
-        '<div class="nsl-ask__block"><h3 class="nsl-ask__h">' + esc(L.contact) + '</h3>' +
+            htmlBudget(false) +
+          '</div></div>')) +
+        '<div class="nsl-ask__block">' + (L.contact ? '<h3 class="nsl-ask__h">' + esc(L.contact) + '</h3>' : '') +
           '<div class="nsl-ask__field"><label class="nsl-ask__label" for="' + id + '-name">' + esc(L.name) + '</label><input class="nsl-ask__input" id="' + id + '-name" name="name" autocomplete="name" placeholder="' + esc(L.namePlaceholder) + '" value="' + esc(f.name) + '"' + inv('name') + '>' + err('name') + '</div>' +
           '<div class="nsl-ask__field"><label class="nsl-ask__label" for="' + id + '-email">' + esc(L.email) + '</label><input class="nsl-ask__input" id="' + id + '-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="' + esc(L.emailPlaceholder) + '" value="' + esc(f.email) + '"' + inv('email') + '>' + err('email') + '</div>' +
           '<div class="nsl-ask__field"><label class="nsl-ask__label" for="' + id + '-phone">' + esc(L.phone) + ' <small data-phone-opt' + (phoneOpt ? '' : ' hidden') + '>' + esc(L.phoneOptional) + '</small></label><input class="nsl-ask__input" id="' + id + '-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="' + esc(L.phonePlaceholder) + '" value="' + esc(f.phone) + '"' + inv('phone') + '>' + err('phone') + '</div>' +
-          (sheet
+          (simple ? '' : sheet
             ? '<div class="nsl-ask__two"><fieldset><legend>' + esc(L.channel) + '</legend>' + radios('channel', o.channels, f.channel) + '</fieldset><fieldset><legend>' + esc(L.timing) + '</legend>' + radios('timing', o.timings, f.timing) + '</fieldset></div>'
             : '<fieldset><legend>' + esc(L.channel) + '</legend>' + radios('channel', o.channels, f.channel, true) + '</fieldset><fieldset><legend>' + esc(L.timing) + '</legend>' + radios('timing', o.timings, f.timing, true) + '</fieldset>') +
         '</div>' +
@@ -452,7 +487,7 @@
       var f = st.f;
       return '<div class="nsl-ask__done"><div class="nsl-ask__done-main" role="status"><span class="nsl-ask__done-icon">' + svg(I.check, 32) + '</span>' +
         '<h3 class="nsl-ask__done-title">' + esc(L.successTitle) + '</h3>' +
-        '<p class="nsl-ask__done-text">' + esc(fmt(L.successText, { channel: L.channelText[f.channel] || f.channel, timing: L.timingText[f.timing] || '', attachment: f.file ? ' and attachment are' : ' is' })) + '</p></div>' +
+        '<p class="nsl-ask__done-text">' + esc(simple ? L.successText : fmt(L.successText, { channel: L.channelText[f.channel] || f.channel, timing: L.timingText[f.timing] || '', attachment: f.file ? ' and attachment are' : ' is' })) + '</p></div>' +
         htmlBuild(L.buildSentEyebrow) + '</div>';
     }
 
@@ -480,7 +515,7 @@
         html += '<div class="nsl-ask__scrim" data-act="scrim"></div>' +
           '<section class="nsl-ask__panel" id="' + id + '-panel" role="dialog" aria-modal="' + isSheet() + '" aria-labelledby="' + id + '-title">' +
           '<span class="nsl-ask__grab" aria-hidden="true"></span>' +
-          '<div class="nsl-ask__head"><div class="nsl-ask__titles"><h2 class="nsl-ask__title" id="' + id + '-title">' + esc(L.title) + '</h2><p class="nsl-ask__sub">' + esc(L.subtitle) + '</p></div>' +
+          '<div class="nsl-ask__head"><div class="nsl-ask__titles"><h2 class="nsl-ask__title" id="' + id + '-title">' + esc(L.title) + '</h2>' + (L.subtitle ? '<p class="nsl-ask__sub">' + esc(L.subtitle) + '</p>' : '') + '</div>' +
           '<button type="button" class="nsl-ask__close" data-act="close" aria-label="' + esc(L.close) + '">' + svg(I.x) + '</button></div>' +
           '<div class="nsl-ask__body">' + (st.sent ? htmlDone() : htmlForm()) + '</div>' +
           '<div class="nsl-ask__foot">' + htmlFoot() + '</div></section>';
@@ -503,7 +538,7 @@
       if (st.sent) { st.sent = false; st.f = fresh(); }
       var f = st.f;
       f.from = opts.from || '';
-      if (opts.area) { f.details = true; if (f.areas.indexOf(opts.area) < 0) f.areas = f.areas.concat([opts.area]); }
+      if (opts.area && !simple) { f.details = true; if (f.areas.indexOf(opts.area) < 0) f.areas = f.areas.concat([opts.area]); }
       if (opts.message && !f.msg) f.msg = opts.message;
       build = opts.build || readBuild();
       st.errors = {}; st.formError = '';
@@ -538,14 +573,16 @@
       if (!f.msg.trim() && !f.file) e.msg = L.errorMessage;
       if (!f.name.trim()) e.name = L.errorName;
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) e.email = L.errorEmail;
-      if (f.channel !== 'email' && f.phone.replace(/\D/g, '').length < 6) e.phone = L.errorPhone;
+      var digits = f.phone.replace(/\D/g, '').length;
+      if (simple ? digits > 0 && digits < 6 : f.channel !== 'email' && digits < 6) e.phone = L.errorPhone;
       return e;
     }
     function payload() {
       var f = st.f;
       return {
-        message: f.msg.trim(), areas: f.areas, budget: f.noBudget ? 'none' : o.budgets[f.budget],
-        name: f.name.trim(), email: f.email.trim(), phone: f.phone.trim(), channel: f.channel, timing: f.timing,
+        variant: simple ? 'simple' : 'full',
+        message: f.msg.trim(), areas: f.areas, budget: simple ? (f.budgetTouched ? o.budgets[f.budget] : '') : f.noBudget ? 'none' : o.budgets[f.budget],
+        name: f.name.trim(), email: f.email.trim(), phone: f.phone.trim(), channel: simple ? '' : f.channel, timing: simple ? '' : f.timing,
         from: f.from || '', build: build || null, page: global.location ? global.location.href : '', fileName: f.file ? f.file.name : ''
       };
     }
@@ -640,7 +677,7 @@
       var t = e.target, f = st.f;
       if (t.name === 'message') { f.msg = t.value; if (t.value.trim()) clearError('msg'); }
       else if (t.name === 'name' || t.name === 'email' || t.name === 'phone') { f[t.name] = t.value; if (st.errors[t.name] && !validate()[t.name]) clearError(t.name); }
-      else if (t.type === 'range') { f.budget = Number(t.value); updateBudget(); }
+      else if (t.type === 'range') { f.budget = Number(t.value); f.budgetTouched = true; updateBudget(); }
     });
     wrap.addEventListener('change', function (e) {
       var t = e.target, f = st.f;

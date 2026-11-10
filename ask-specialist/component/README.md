@@ -1,6 +1,6 @@
 # nsl-ask.js — форма «Ask a specialist»
 
-Запрос помощи специалиста для конфигуратора newserverlife.com. Один файл на чистом JS, без React и других зависимостей, около 13 КБ в gzip.
+Запрос помощи специалиста для newserverlife.com: полная форма для конфигуратора и короткая (`variant: 'simple'`) для поиска и других страниц без сборки. Один файл на чистом JS, без React и других зависимостей, около 13 КБ в gzip.
 Стили изолированы в Shadow DOM: CSS шаблона Bitrix не влияет на форму, а стили формы не протекают на сайт. Цвета, шрифты и отступы — токены NSL Design System, тема Primary.
 
 - **Десктоп (от 1024 px):** панель 440 px справа без затемнения, конфигуратор остаётся рабочим. От 1280 px у правого края висит вертикальный таб «Ask a specialist».
@@ -9,7 +9,7 @@
 
 Демо на странице с нарочно «враждебным» CSS: https://denswor.github.io/nsl-experiments/ask-specialist/component/
 
-**Архив для разработчика:** https://denswor.github.io/nsl-experiments/ask-specialist/component/nsl-ask-1.0.0.zip
+**Архив для разработчика:** https://denswor.github.io/nsl-experiments/ask-specialist/component/nsl-ask-1.1.0.zip
 (минифицированный и исходный файлы, пример, заготовки для Bitrix, README, CHANGELOG)
 
 ## Подключение
@@ -38,6 +38,25 @@
 
 Контейнер не нужен: компонент сам добавляет `<div class="nsl-ask-host">` в конец `<body>`. Если хочется свой — `NSLAsk.mount('#my-host', { … })`.
 
+## Короткая форма: `variant: 'simple'`
+
+Для страниц, где нет сборки: поиск, каталог, блог. Так она работает на странице результатов поиска (пакет nsl-search).
+
+```js
+NSLAsk.mount({ variant: 'simple', endpoint: '/ajax/ask-specialist.php', extraFields: { sessid: BX.bitrix_sessid() } });
+```
+
+Отличия от полной формы:
+
+- Нет карточки сборки, «Add details», проблем (`data-nsl-ask-area` игнорируется), канала и срочности.
+- Бюджет сразу в форме, помечен «(optional)», 5 ступеней: `<$5k · $5–10k · $10–20k · $20–50k · $50k+`. Если слайдер не трогали, `budget` уходит пустым.
+- Телефон всегда необязательный; если введён, в нём должно быть хотя бы 6 цифр.
+- Email называется просто «Email», без подзаголовка под названием панели.
+- Успех: «Request sent — A NewServerLife specialist will reply within one business hour.», кнопка «Back to results».
+- В запросе `variant=simple`, `channel` и `timing` пустые. `bitrix/ask-specialist.php` из архива это учитывает.
+
+Всё это можно переопределить обычными опциями (`budgets`, `labels` и т. д.).
+
 ## Как открыть
 
 Любой элемент с атрибутом `data-nsl-ask` открывает форму, ничего вешать не нужно:
@@ -59,6 +78,7 @@
 
 | опция | по умолчанию | что делает |
 | --- | --- | --- |
+| `variant` | `'full'` | `'full'` — форма конфигуратора; `'simple'` — короткая форма (см. выше) |
 | `endpoint` | `''` | URL для POST. Пусто и нет `submit` — демо-режим, отправка всегда «успешна» |
 | `encoding` | `'multipart'` | `'multipart'` (FormData, с файлом) или `'json'` (без файла) |
 | `extraFields` | `null` | Доп. поля в запрос, например `{ sessid }` |
@@ -95,12 +115,13 @@ POST на `endpoint`. По умолчанию `multipart/form-data` с поля�
 
 | поле | пример |
 | --- | --- |
+| `variant` | `full` / `simple` |
 | `message` | `Need 28 drives for backups, RAID 6?` |
 | `areas` | `storage,ram` |
-| `budget` | `$10–20k` или `none` |
+| `budget` | `$10–20k`, `none` или пусто (simple: слайдер не трогали) |
 | `name`, `email`, `phone` | |
-| `channel` | `phone` / `email` / `whatsapp` |
-| `timing` | `today` / `norush` |
+| `channel` | `phone` / `email` / `whatsapp` (пусто в simple) |
+| `timing` | `today` / `norush` (пусто в simple) |
 | `from` | `Drive cage` (откуда открыли, если из секции) |
 | `build` | JSON из опции `build` |
 | `page` | URL страницы |

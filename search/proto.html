@@ -34,6 +34,9 @@ button { font: inherit; }
 /* ---------- below 1024: mobile pattern ---------- */
 .mhead { position: relative; z-index: 41; background: var(--bg-default); }
 .sband { position: sticky; top: 0; z-index: 40; padding: 8px 16px; background: var(--bg-default); border-bottom: 1px solid var(--border-default); }
+/* predictive search under the sticky band: panel spans the band, list scrolls if the screen is short */
+.sband .nsl-search-combo { max-width: none; }
+.sband .nsl-psearch { max-height: calc(100dvh - 140px); overflow-y: auto; }
 .more { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .more__count { margin: 0; font: var(--text-body-xs); color: var(--text-secondary); }
 @media (max-width: 1023px) {
@@ -81,6 +84,43 @@ button { font: inherit; }
   /* 47 results, 10 per page. Prototype: every page shows the same 10 rows in its own order, so a page switch feels like new results. */
   var ORDERS = [[0,1,2,3,4,5,6,7,8,9], [5,7,2,9,0,3,8,4,6,1], [8,3,6,0,9,2,1,7,4,5], [3,9,4,6,1,8,0,5,2,7], [6,0,8,1,5,9,3,2,7,4]];
   function pageRows(n) { var len = Math.min(PER_PAGE, TOTAL - (n - 1) * PER_PAGE); return ORDERS[n - 1].slice(0, len).map(function (i) { return Object.assign({ id: n + '-' + i }, BASE[i]); }); }
+  /* Predictive search. Bitrix: the dropdown is a separate request (≈10 hits) and CAN be grouped by type, unlike search.page.
+     Every word of the query must occur in the label; the first contiguous match is highlighted (DS PredictiveSearch). */
+  var CATALOG = [
+    { title: 'Server models', noun: 'server models', items: ['HPE ProLiant DL380 Gen10', 'HPE ProLiant DL380 Gen10 Plus', 'HPE ProLiant DL360 Gen10', 'HPE ProLiant DL380 Gen9', 'HPE ProLiant DL560 Gen10', 'Dell PowerEdge R740xd', 'Dell PowerEdge R740', 'Dell PowerEdge R640', 'Dell PowerEdge R750'] },
+    { title: 'Chassis', noun: 'chassis', items: ['HPE ProLiant DL380 Gen10 8SFF', 'HPE ProLiant DL380 Gen10 16SFF (8x NVMe)', 'HPE ProLiant DL380 Gen10 24SFF (24x NVMe)', 'HPE ProLiant DL380 Gen10 12LFF', 'HPE ProLiant DL380 Gen10 Plus 8SFF NVMe', 'HPE ProLiant DL360 Gen10 10SFF (10x NVMe)', 'Dell PowerEdge R740xd 24SFF (24x NVMe)', 'Dell PowerEdge R640 10SFF (8x NVMe)'] },
+    { title: 'Storages', noun: 'storages', items: ['HPE 1.92TB NVMe U.2 SFF Drive', 'HPE 3.84TB NVMe U.2 SFF Drive', 'HPE 960GB NVMe U.2 SFF Drive', 'HPE DL380 Gen10 8SFF NVMe Drive Cage Kit', 'HPE DL380 Gen10 Secondary NVMe Riser', 'Samsung PM983 1.92TB NVMe U.2', 'Intel P4510 4TB NVMe U.2', 'Dell 1.92TB NVMe U.2 SFF Drive'] },
+    { title: 'Articles', noun: 'articles', items: ['NVMe in the DL380 Gen10: which cages and risers you need for 8, 16 and 24 drives', 'Gen10 or Gen10 Plus: what changed in the storage subsystem', 'How we test NVMe drives before shipping', 'Dell R740xd vs HPE DL380 Gen10 for storage-heavy builds'] }
+  ];
+  function norm(t) { return t.toLowerCase().replace(/\u0445/g, 'x'); }   /* Cyrillic "х" in "8х" counts as Latin x */
+  function suggest(q) {
+    var words = norm(q || '').split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+    return CATALOG.map(function (g) {
+      var hits = g.items.filter(function (l) { var n = norm(l); return words.every(function (w) { return n.indexOf(w) >= 0; }); });
+      return hits.length && { title: g.title, items: hits.slice(0, 3).map(function (l) { return { label: l, href: '#' }; }),
+        more: hits.length > 3 ? { label: 'Show all ' + g.noun + ' (' + hits.length + ')', href: '#' } : undefined };
+    }).filter(Boolean);
+  }
+
+  /* Mobile: SearchField + PredictiveSearch in .nsl-search-combo; opens while typing (2+ chars), closes on Esc, outside tap, submit. */
+  function MobileSearch(p) {
+    var vs = useState(p.query), v = vs[0];
+    var os = useState(false), open = os[0];
+    var ref = useRef(null);
+    useEffect(function () {
+      if (!open) return;
+      function down(e) { if (ref.current && !ref.current.contains(e.target)) os[1](false); }
+      function key(e) { if (e.key === 'Escape') os[1](false); }
+      document.addEventListener('pointerdown', down); document.addEventListener('keydown', key);
+      return function () { document.removeEventListener('pointerdown', down); document.removeEventListener('keydown', key); };
+    }, [open]);
+    var groups = v.trim().length >= 2 ? suggest(v) : [];
+    return h('div', { className: 'nsl-search-combo', ref: ref, onFocus: function () { os[1](true); } },
+      h(N.SearchField, { value: v, onChange: function (x) { vs[1](x); os[1](true); }, onSearch: function (x) { os[1](false); p.onSearch(x); }, 'aria-label': 'Search NewServerLife' }),
+      open && groups.length > 0 && h(N.PredictiveSearch, { query: v.trim(), groups: groups }));
+  }
+
   var BUDGET = ['<$5k', '$5–10k', '$10–20k', '$20–50k', '$50k+'];
 
   function useMedia(q) {
@@ -135,6 +175,18 @@ button { font: inherit; }
     var firstNew = useRef(null);
     var listRef = useRef(null);
 
+    /* prototype: a suggestion click runs that search; "Show all…" and "All Results" search for the typed text */
+    useEffect(function () {
+      function click(e) {
+        var a = e.target.closest && e.target.closest('.nsl-psearch a'); if (!a) return;
+        e.preventDefault();
+        var box = a.closest('.nsl-header__searchwrap, .nsl-search-combo'), inp = box && box.querySelector('input');
+        search(a.classList.contains('nsl-psearch__item') ? a.textContent : (inp ? inp.value : ''));
+      }
+      document.addEventListener('click', click);
+      return function () { document.removeEventListener('click', click); };
+    }, []);
+
     function search(q) { q = (q || '').trim(); if (!q) return; qs[1](q); ps[1](1); ms[1]([1, 1]); firstNew.current = null; window.scrollTo(0, 0); }
     function goPage(n) { ps[1](n); if (listRef.current) listRef.current.scrollIntoView({ block: 'start' }); }
     function more() { firstNew.current = (to - from + 1) * PER_PAGE; ms[1]([from, Math.min(PAGES, to + 1)]); }
@@ -149,10 +201,10 @@ button { font: inherit; }
 
     return h(React.Fragment, null,
       desktop
-        ? h(N.Header, { active: 'Hardware', cartCount: 2, searchValue: query, onSearch: search, key: 'h-' + query })
+        ? h(N.Header, { active: 'Hardware', cartCount: 2, searchValue: query, onSearch: search, searchSuggestions: suggest, minQuery: 2, key: 'h-' + query })
         : h(React.Fragment, null,
             h('div', { className: 'mhead' }, h(N.MobileHeader, { cartCount: 2 })),
-            h('div', { className: 'sband' }, h(N.SearchField, { defaultValue: query, onSearch: search, key: 's-' + query, 'aria-label': 'Search NewServerLife' }))),
+            h('div', { className: 'sband' }, h(MobileSearch, { query: query, onSearch: search, key: 's-' + query }))),
 
       h('main', { className: 'nsl-container page' },
         h(N.Breadcrumbs, { items: crumbs }),

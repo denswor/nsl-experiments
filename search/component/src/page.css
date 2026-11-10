@@ -1,0 +1,59 @@
+/* Search results page layout. Desktop ≥1024: results (8 cols) + help card (4 cols), numbered pagination.
+   Below 1024: one column, sticky search band, "Show 10 more" + compact pagination. */
+.nsl-srp-body { margin: 0; background: var(--bg-default); color: var(--text-primary); font: var(--text-body-md); -webkit-font-smoothing: antialiased; }
+.nsl-srp, .nsl-srp *, .nsl-srp *::before, .nsl-srp *::after, .nsl-srp__band, .nsl-srp__band * { box-sizing: border-box; }
+
+.nsl-srp { display: flex; flex-direction: column; gap: 24px; padding-block: 24px 64px; }
+.nsl-srp__layout { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: 30px; align-items: start; }
+.nsl-srp__results { display: flex; flex-direction: column; gap: 24px; min-width: 0; scroll-margin-top: 16px; }
+.nsl-srp__list { border: 1px solid var(--border-default); border-radius: var(--radius-md); overflow: hidden; }
+.nsl-srp__list > .nsl-sres:last-child { border-bottom: 0; }
+.nsl-srp__pager { display: flex; justify-content: center; }
+.nsl-srp__aside { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+.nsl-srp__help { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: var(--radius-md); background: var(--bg-subtle); }
+.nsl-srp__help h2 { margin: 0; font: var(--text-heading-sm); letter-spacing: -0.01em; text-wrap: balance; color: var(--text-heading, var(--text-primary)); }
+.nsl-srp__help p { margin: 0; font: var(--text-body-sm); color: var(--text-secondary); }
+
+/* nothing found */
+.nsl-srp__empty { padding: 32px 24px; border: 1px dashed var(--border-default); border-radius: var(--radius-md); color: var(--text-secondary); font: var(--text-body-md); }
+.nsl-srp__empty p { margin: 0; max-width: 56ch; }
+
+/* predictive search in any container (e.g. the live site's own header): mark it with data-nsl-suggest */
+[data-nsl-suggest] { position: relative; }
+[data-nsl-suggest] > .nsl-psearch { position: absolute; top: calc(100% + var(--space-4)); left: 0; right: 0; z-index: 50; max-width: none; }
+
+/* closed suggestion panel (nsl-search.js toggles [hidden]; the DS gives the panel display:flex) */
+.nsl-psearch[hidden], .nsl-header__suggest[hidden] { display: none; }
+
+/* pagination as links: same look as the DS buttons */
+a.nsl-page { text-decoration: none; }
+.nsl-page[aria-disabled="true"] { color: var(--text-disabled); cursor: not-allowed; }
+.nsl-page[aria-disabled="true"]:hover { background: transparent; color: var(--text-disabled); }
+
+/* phones and tablets: sticky search band, "Show 10 more" */
+.nsl-srp__band { display: none; }
+.nsl-srp__more { display: none; flex-direction: column; align-items: center; gap: 12px; }
+.nsl-srp__count { margin: 0; font: var(--text-body-xs); color: var(--text-secondary); }
+.nsl-srp__more .nsl-btn[aria-busy="true"] { opacity: .7; cursor: progress; }
+@media (max-width: 1023px) {
+  .nsl-srp { padding-block: 16px 40px; gap: 16px; }
+  .nsl-srp__layout { grid-template-columns: 1fr; gap: 24px; }
+  .nsl-srp__results { scroll-margin-top: 72px; }
+  .nsl-srp__aside { position: static; }
+  .nsl-srp__list { margin-inline: calc(-1 * var(--grid-margin-tablet-portrait)); border-inline: 0; border-radius: 0; }
+  .nsl-srp__help { padding: 20px; }
+  .nsl-srp__pager { display: none; }
+  .nsl-srp__more { display: flex; }
+  .nsl-srp__band { display: block; position: sticky; top: 0; z-index: 40; padding: 8px 16px; background: var(--bg-default); border-bottom: 1px solid var(--border-default); }
+  .nsl-srp__band .nsl-search-combo { max-width: none; }
+  .nsl-srp__band .nsl-psearch { max-height: calc(100dvh - 140px); overflow-y: auto; }
+}
+@media (max-width: 719px) {
+  .nsl-srp__list { margin-inline: calc(-1 * var(--grid-margin-mobile)); }
+}
+
+/* rows added by "Show 10 more" get a short highlight */
+@keyframes nsl-sres-in { from { background: var(--bg-subtle); } to { background: var(--bg-default); } }
+.nsl-sres.is-new { animation: nsl-sres-in 1.2s ease-out; }
+@media (prefers-reduced-motion: reduce) { .nsl-sres.is-new { animation: none; } }

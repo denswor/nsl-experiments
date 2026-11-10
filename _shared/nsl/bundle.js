@@ -89,11 +89,15 @@ function SearchField(p) {
     h('input', { type: 'search', 'aria-label': p['aria-label'] || 'Search', placeholder: p.placeholder || 'Search here...', value: c[0], disabled: p.disabled, onChange: function (e) { c[1](e.target.value); } }),
     !left && h('button', { type: 'submit', className: 'nsl-search__go', 'aria-label': 'Search', disabled: p.disabled }, h(Icon, { name: 'nsl-search', size: 20 })));
 }
-function highlight(text, q) {
-  if (!q) return text;
-  var i = text.toLowerCase().indexOf(q.toLowerCase());
-  if (i < 0) return text;
-  return [text.slice(0, i), h('mark', { key: 'm', className: 'nsl-psearch__match' }, text.slice(i, i + q.length)), text.slice(i + q.length)];
+/* every word of the query is marked on its own, as in SearchResult: "dl380 nvme" marks both DL380 and NVMe */
+function highlight(text, q) { return markTerms(text, q, 'nsl-psearch__match'); }
+function markTerms(text, q, cls) {
+  if (!q || typeof text !== 'string') return text;
+  var words = String(q).split(/\s+/).filter(Boolean);
+  var terms = words.filter(function (t) { return t.length > 1 || words.length === 1; }).sort(function (a, b) { return b.length - a.length; }).map(function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+  if (!terms.length) return text;
+  var re = new RegExp('(' + terms.join('|') + ')', 'ig');
+  return text.split(re).map(function (part, i) { return i % 2 ? h('mark', { key: i, className: cls }, part) : part; });
 }
 function PredictiveSearch(p) {
   var groups = p.groups || [];
@@ -849,13 +853,7 @@ function FilterPanel(p) {
 }
 
 /* ---------- Search ---------- */
-function highlightTerms(text, q) {
-  if (!q || typeof text !== 'string') return text;
-  var terms = String(q).split(/\s+/).filter(function (t) { return t.length > 1; }).map(function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
-  if (!terms.length) return text;
-  var re = new RegExp('(' + terms.join('|') + ')', 'ig');
-  return text.split(re).map(function (part, i) { return i % 2 ? h('mark', { key: i, className: 'nsl-sres__match' }, part) : part; });
-}
+function highlightTerms(text, q) { return markTerms(text, q, 'nsl-sres__match'); }
 function SearchSummary(p) {
   var n = p.count, vars = p.variants || [];
   return h('div', { className: cx('nsl-ssum', p.className) },

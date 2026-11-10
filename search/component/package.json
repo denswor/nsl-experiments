@@ -1,0 +1,8 @@
+{
+  "name": "nsl-search",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Search results page for newserverlife.com on the NSL Design System: predictive search, show more, help panel. Plain JS, no React.",
+  "scripts": { "build": "node tools/build.js" },
+  "devDependencies": { "react": "18.3.1", "react-dom": "18.3.1", "cheerio": "1.0.0", "postcss": "8.4.47", "terser": "5.36.0" }
+}
