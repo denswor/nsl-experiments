@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header · Catalog navigation motion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../_shared/nsl/tokens.css">
+<link rel="stylesheet" href="../_shared/nsl/bundle.css">
+<style>
+html,body{margin:0;background:var(--bg-subtle);font-family:var(--font-sans);color:var(--text-primary)}
+*{box-sizing:border-box}
+
+/* ---------- prototype shell (not part of the site) ---------- */
+.tb{position:relative;z-index:60;display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:10px 20px;background:#1b1724;color:#fff;font:400 12px/16px var(--font-mono)}
+.tb__t{font-weight:600;letter-spacing:.02em;margin-right:6px}
+.tb__k{color:rgba(255,255,255,.55);margin-right:8px}
+.seg{display:inline-flex;border:1px solid rgba(255,255,255,.18);border-radius:6px;overflow:hidden}
+.seg button{border:0;border-right:1px solid rgba(255,255,255,.18);background:transparent;color:#fff;padding:5px 10px;font:500 12px/16px var(--font-mono);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:rgba(255,255,255,.08)}
+.seg button.on{background:#fff;color:#1b1724}
+.tb__hint{margin-left:auto;color:rgba(255,255,255,.5)}
+.tb__btn{border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;border-radius:6px;padding:5px 10px;font:500 12px/16px var(--font-mono);cursor:pointer}
+.tb__btn:hover{background:rgba(255,255,255,.08)}
+
+.notes{position:relative;z-index:59;background:#241f30;color:#ece9f3;font:400 13px/19px var(--font-sans);border-top:1px solid rgba(255,255,255,.08)}
+.notes__h{display:flex;align-items:center;gap:10px;padding:8px 20px;font:600 12px/16px var(--font-mono);cursor:pointer;color:#fff}
+.notes__h span{margin-left:auto;color:rgba(255,255,255,.5);font-weight:400}
+.notes__b{display:grid;grid-template-columns:1fr 1.5fr 1.2fr;gap:28px;padding:4px 20px 16px;align-items:start}
+.notes p{margin:0 0 8px}
+.notes dl{display:grid;grid-template-columns:104px 1fr;gap:6px 10px;margin:0}
+.notes dt{font:500 11px/19px var(--font-mono);color:rgba(255,255,255,.55);text-transform:uppercase}
+.notes dd{margin:0}
+.notes code{font:400 12px/18px var(--font-mono);color:#f9b3d6}
+.notes h4{margin:0 0 6px;font:600 11px/16px var(--font-mono);text-transform:uppercase;color:rgba(255,255,255,.55)}
+.notes h4+p{margin-top:0}
+.notes .lead{font:400 14px/21px var(--font-sans);color:#fff}
+.notes.is-min .notes__b{display:none}
+
+/* ---------- page ---------- */
+.site{position:relative;min-height:100vh;background:var(--bg-default)}
+.hwrap{position:sticky;top:0;z-index:40}
+.page{transform-origin:50% 0;padding-bottom:120px}
+.hero{max-width:1170px;margin:0 auto;padding:72px 0 56px;display:grid;grid-template-columns:7fr 5fr;gap:30px;align-items:center}
+.hero h1{margin:0 0 16px;font:var(--text-heading-display);color:var(--text-primary)}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,#2e67b1,#92278e 60%,#cb1c68);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;font:var(--text-body-lg);color:var(--text-secondary)}
+.hero__img{aspect-ratio:4/3;border-radius:8px;background:var(--bg-subtle);display:flex;align-items:center;justify-content:center;color:var(--icon-default)}
+.cards{max-width:1170px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
+.sec-t{max-width:1170px;margin:0 auto 24px;font:var(--text-heading-xl)}
+
+.scrim{position:fixed;left:0;right:0;bottom:0;z-index:30;pointer-events:none;opacity:0;background:rgba(17,12,28,.38)}
+.scrim.is-blur{backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+
+/* brand tab labels: mono bold like DS tab labels (heading-xs). In the bundle they share .nsl-catmenu__bname with bestseller names and pick up sans 14/16 */
+.nsl-catmenu__brand .nsl-catmenu__bname{font:var(--text-heading-xs);letter-spacing:0}
+
+/* wide container from 1680: page and catalog panel content go 1530 */
+@media (min-width:1680px){
+  .nsl-catmenu__in{max-width:var(--container-wide)}
+  .hero,.cards,.sec-t{max-width:var(--container-wide)}
+}
+
+/* shared motion polish */
+.nsl-catmenu__cat{transition:background-color calc(160ms*var(--slow)),color calc(160ms*var(--slow)),border-color calc(160ms*var(--slow))}
+.nsl-catmenu__brand{transition:color calc(160ms*var(--slow)),border-color calc(160ms*var(--slow))}
+.cx-clone{position:fixed!important;left:0!important;top:0!important;right:auto!important;width:0;height:0;overflow:visible;z-index:41;pointer-events:none;background:transparent!important;box-shadow:none!important}
+.cx-clone>*{position:fixed!important;margin:0!important;box-sizing:border-box}
+.cx-ghost{position:fixed;z-index:39;pointer-events:none;will-change:left,top,width,height}
+
+/* concept B: travelling indicators */
+.cx-b .nsl-catmenu__brands,.cx-b .nsl-catmenu__cats{position:relative}
+.cx-b .nsl-catmenu__brand.is-active{border-bottom-color:transparent!important}
+.cx-b .nsl-catmenu__cat{position:relative;z-index:1}
+.cx-b .nsl-catmenu__cat.is-active{background:transparent!important}
+.cx-ind{position:absolute;left:0;pointer-events:none}
+.cx-ind--bar{bottom:-1px;height:2px;background:var(--brand-default);z-index:2}
+.cx-ind--pill{top:0;height:32px;border-radius:var(--radius-sm);background:var(--brand-default);z-index:0}
+.cx-a .cx-ind,.cx-c .cx-ind{display:none}
+
+/* ---------- Black Friday: only the catalog panel goes dark and fills the viewport ---------- */
+.bf{--bf-panel:#140b22;--bf-raise:#1e1231;--bf-line:rgba(255,255,255,.12);--bf-glow:146,39,142}
+.bf .nsl-catmenu,.bf .cx-clone{
+  --bg-default:var(--bf-panel);--bg-subtle:var(--bf-raise);--bg-muted:#2a1a42;
+  --text-primary:#f3eefb;--text-secondary:rgba(243,238,251,.62);--icon-default:rgba(243,238,251,.62);
+  --border-default:var(--bf-line);--border-secondary-subtle:rgba(255,255,255,.18);--border-strong:rgba(255,255,255,.4);
+  --secondary-default:#ff8fc8;--text-link:#ff8fc8;--neutral-400:rgba(243,238,251,.4);
+  color-scheme:dark}
+/* full-viewport panel in both themes; page scroll is not locked (no scrollbar jump), wheel over the panel is contained in JS */
+.nsl-catmenu{height:calc(100vh - var(--hb,112px));height:calc(100dvh - var(--hb,112px));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.nsl-catmenu__in{min-height:calc(100% - 16px)}
+.nsl-catmenu__all{margin-bottom:24px}
+.nsl-catmenu__foot{margin-top:auto}
+.bf .nsl-catmenu{
+  background:
+   radial-gradient(520px 320px at var(--mx,30%) var(--my,0%),rgba(var(--bf-glow),.30),transparent 70%),
+   radial-gradient(900px 260px at 50% 0,rgba(203,28,104,.10),transparent 70%),
+   var(--bf-panel);
+  background-attachment:local;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent;
+  box-shadow:none}
+.cx-bf-banner{display:block;flex:none;align-self:center;margin:0 0 0 auto;height:64px;border-radius:6px;overflow:hidden;line-height:0;outline-offset:2px;transition:box-shadow calc(200ms*var(--slow)),transform calc(200ms*var(--slow))}
+.cx-bf-banner img{display:block;height:100%;width:auto}
+.cx-bf-banner:hover{box-shadow:0 0 0 1px rgba(203,28,104,.6),0 8px 28px rgba(203,28,104,.25)}
+.cx-bf-banner:focus-visible{outline:2px solid #ff8fc8}
+.bf .nsl-catmenu::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,#cb1c68 30%,#92278e 70%,transparent)}
+.bf .nsl-catmenu__logo svg{filter:brightness(0) invert(1);opacity:.7;transition:opacity .2s}
+.bf .nsl-catmenu__brand.is-active .nsl-catmenu__logo svg,.bf .nsl-catmenu__brand:hover .nsl-catmenu__logo svg{opacity:1}
+.bf .nsl-catmenu__brand{color:rgba(243,238,251,.7)}
+.bf .nsl-catmenu__brand.is-active,.bf .nsl-catmenu__brand:hover{color:#fff!important}
+.bf .nsl-catmenu__brand.is-active{border-image:linear-gradient(90deg,#cb1c68,#92278e) 1!important;border-bottom-style:solid!important}
+.bf.cx-b .nsl-catmenu__brand.is-active{border-image:none!important}
+.bf .cx-ind--bar{background:linear-gradient(90deg,#cb1c68,#92278e)}
+.bf .cx-ind--pill{background:linear-gradient(90deg,#cb1c68,#92278e);box-shadow:0 0 18px rgba(203,28,104,.45)}
+.bf .nsl-catmenu__cat{border-color:rgba(255,255,255,.18)!important;color:#f3eefb}
+.bf .nsl-catmenu__cat:hover{border-color:#ff8fc8!important;color:#ff8fc8}
+.bf .nsl-catmenu__cat.is-active{background:linear-gradient(90deg,#cb1c68,#92278e)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 0 18px rgba(203,28,104,.35)}
+.bf.cx-b .nsl-catmenu__cat.is-active{background:transparent!important;box-shadow:none}
+.bf .nsl-catmenu__foot{border-top-color:rgba(255,255,255,.14)}
+.bf .nsl-catmenu__help b{color:#fff}
+.bf .nsl-catmenu__contacts a.nsl-catmenu__tel{color:#fff}
+.bf .nsl-navhead:hover{border-bottom-color:rgba(203,28,104,.6)}
+.bf .nsl-navhead:hover .nsl-navhead__title{color:#ff8fc8}
+.bf .nsl-catmenu .nsl-mtag{color:rgba(243,238,251,.7)}
+.bf .nsl-mtag.nsl-mtag--discount{background:rgba(203,28,104,.22);border-color:#cb1c68!important;color:#ffb3d8;box-shadow:0 0 10px rgba(203,28,104,.35)}
+.bf .nsl-mtag.nsl-mtag--sale{border-color:#ff6b6b!important;color:#ff8a8a}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="../_shared/nsl/bundle.js"></script>
+<script>
+(function(){
+var h = React.createElement, N = window.NSL, useState = React.useState, useRef = React.useRef, useLayoutEffect = React.useLayoutEffect, useEffect = React.useEffect;
+
+/* ---------- motion helpers ---------- */
+var S = { concept: 'a', theme: 'light', slow: 1, rm: false };
+var RM_MQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+function rm(){ return S.rm || RM_MQ.matches; }
+function d(ms){ return ms * S.slow; }
+var EASE = {
+  out: 'cubic-bezier(.2,.8,.2,1)',        /* standard decelerate */
+  in: 'cubic-bezier(.4,0,1,1)',           /* exit accelerate */
+  emph: 'cubic-bezier(.3,0,0,1)',         /* emphasized */
+  std: 'cubic-bezier(.4,0,.2,1)'
+};
+/* spring → CSS linear() easing (Chrome/Safari/Firefox current) */
+function spring(stiff, damp, mass){
+  mass = mass || 1; var w0 = Math.sqrt(stiff / mass), z = damp / (2 * Math.sqrt(stiff * mass));
+  var wd = w0 * Math.sqrt(Math.max(1e-6, 1 - z * z)), T = 0, pts = [];
+  function x(t){ return z < 1 ? 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)) : 1 - Math.exp(-w0 * t) * (1 + w0 * t); }
+  /* find settle time */
+  for (T = 0.05; T < 4; T += 0.01) { var ok = true; for (var k = 0; k < 20; k++) if (Math.abs(1 - x(T + k * 0.01)) > 0.002) { ok = false; break; } if (ok) break; }
+  for (var i = 0; i <= 48; i++) pts.push(+x(T * i / 48).toFixed(4));
+  pts[48] = 1;
+  return { easing: 'linear(' + pts.join(',') + ')', ms: Math.round(T * 1000) };
+}
+var SPR_PANEL = spring(260, 24), SPR_IND = spring(380, 30), SPR_H = spring(300, 30);
+var supportsLinear = (function(){ try { return CSS.supports('animation-timing-function', 'linear(0, 1)'); } catch (e) { return false; } })();
+function sp(s, fallbackMs){ return supportsLinear ? s : { easing: EASE.emph, ms: fallbackMs }; }
+
+function $(s, r){ return (r || document).querySelector(s); }
+function menuEl(){ return $('.nsl-catmenu'); }
+function inner(m){ return m.querySelector('.nsl-catmenu__in'); }
+/* the rows of the panel, with the column grid split into its columns */
+function rows(m){
+  var out = [];
+  Array.prototype.forEach.call(inner(m).children, function(c){
+    if (c.classList.contains('nsl-catmenu__cols')) Array.prototype.forEach.call(c.children, function(col){ out.push(col); });
+    else out.push(c);
+  });
+  return out;
+}
+function cancelAll(el){ if (!el) return; el.getAnimations({ subtree: true }).forEach(function(a){ a.cancel(); }); }
+function headerBottom(){ var hd = $('.nsl-header'); return hd ? hd.getBoundingClientRect().bottom : 112; }
+function scrim(){ return $('.scrim'); }
+function pageEl(){ return $('.page'); }
+
+function scrimIn(blur){
+  var s = scrim(); s.style.top = headerBottom() + 'px'; s.classList.toggle('is-blur', !!blur);
+  return s.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d(rm() ? 150 : 280), easing: EASE.out, fill: 'forwards' });
+}
+function scrimOut(){
+  var s = scrim(); var a = s.animate([{ opacity: getComputedStyle(s).opacity }, { opacity: 0 }], { duration: d(rm() ? 120 : 200), easing: EASE.in, fill: 'forwards' });
+  return a.finished;
+}
+
+/* ---------- B: travelling indicators ---------- */
+function ensureInd(m){
+  var br = m.querySelector('.nsl-catmenu__brands'), ct = m.querySelector('.nsl-catmenu__cats');
+  if (br && !br.querySelector('.cx-ind--bar')) { var b = document.createElement('i'); b.className = 'cx-ind cx-ind--bar'; br.appendChild(b); }
+  if (ct && !ct.querySelector('.cx-ind--pill')) { var p = document.createElement('i'); p.className = 'cx-ind cx-ind--pill'; ct.appendChild(p); }
+}
+function placeInd(m, animate){
+  if (!m) return; ensureInd(m);
+  var pairs = [['.nsl-catmenu__brands', '.nsl-catmenu__brand.is-active', '.cx-ind--bar'], ['.nsl-catmenu__cats', '.nsl-catmenu__cat.is-active', '.cx-ind--pill']];
+  pairs.forEach(function(p){
+    var box = m.querySelector(p[0]), act = m.querySelector(p[1]), ind = box && box.querySelector(p[2]);
+    if (!box || !ind) return;
+    if (!act) { ind.style.opacity = 0; return; }
+    var x = act.offsetLeft, w = act.offsetWidth, y = act.offsetTop;
+    var prev = ind.dataset.x != null ? { x: +ind.dataset.x, w: +ind.dataset.w, y: +ind.dataset.y } : null;
+    ind.style.opacity = 1; ind.style.width = w + 'px'; ind.style.transform = 'translate(' + x + 'px,' + (p[2] === '.cx-ind--pill' ? y : 0) + 'px)';
+    ind.dataset.x = x; ind.dataset.w = w; ind.dataset.y = y;
+    if (animate && prev && !rm()) {
+      var s = sp(SPR_IND, 320);
+      var ty = p[2] === '.cx-ind--pill';
+      /* stretch: the leading edge goes first, then the trailing edge catches up */
+      ind.animate([
+        { transform: 'translate(' + prev.x + 'px,' + (ty ? prev.y : 0) + 'px)', width: prev.w + 'px' },
+        { transform: 'translate(' + x + 'px,' + (ty ? y : 0) + 'px)', width: w + 'px' }
+      ], { duration: d(s.ms), easing: s.easing });
+    }
+  });
+}
+
+/* ---------- BF banner at the top of the dark panel ---------- */
+function syncBanner(m){
+  if (!m) return;
+  var inn = m.querySelector('.nsl-catmenu__brands'), b = m.querySelector('.cx-bf-banner');
+  if (!inn) return;
+  if (S.theme !== 'bf') { if (b) b.remove(); return; }
+  if (b) return;
+  b = document.createElement('a'); b.className = 'cx-bf-banner'; b.href = '#'; b.setAttribute('aria-label', 'Black Friday: free 5-year warranty on Dell Gen 15, 16 and 17 — view details');
+  b.addEventListener('click', function(e){ e.preventDefault(); });
+  var img = document.createElement('img'); img.src = 'bf-banner.png'; img.alt = ''; img.width = 1144; img.height = 128;
+  b.appendChild(img); inn.appendChild(b);
+}
+
+/* ---------- ENTER ---------- */
+function enter(){
+  var m = menuEl(); if (!m) return;
+  syncBanner(m);
+  cancelAll(m);
+  var btnIcon = $('.nsl-catalog .nsl-icon');
+  if (btnIcon && !rm()) btnIcon.animate([{ transform: 'rotate(-90deg) scale(.6)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: d(240), easing: EASE.out });
+  if (S.concept === 'b') placeInd(m, false);
+  if (rm()) { m.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d(150), easing: 'linear' }); if (S.concept !== 'a') scrimIn(false); return; }
+
+  var R = rows(m);
+  if (S.concept === 'a') {
+    m.animate([{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 -64px 0)' }], { duration: d(320), easing: EASE.out });
+    R.forEach(function(r, i){
+      r.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: d(260), delay: d(40 + i * 28), easing: EASE.out, fill: 'backwards' });
+    });
+  }
+
+  if (S.concept === 'b') {
+    var btn = $('.nsl-catalog'), br = btn.getBoundingClientRect(), mr = m.getBoundingClientRect();
+    var g = document.createElement('div'); g.className = 'cx-ghost'; document.body.appendChild(g);
+    var from = getComputedStyle(btn).backgroundColor, to = getComputedStyle(m).backgroundColor;
+    if (S.theme === 'bf') to = '#140b22';
+    var T = d(460);
+    var ga = g.animate([
+      { left: br.left + 'px', top: br.top + 'px', width: br.width + 'px', height: br.height + 'px', borderRadius: '8px', background: from, opacity: 1, boxShadow: '0 0 0 rgba(0,0,0,0)' },
+      { left: mr.left + 'px', top: mr.top + 'px', width: mr.width + 'px', height: mr.height + 'px', borderRadius: '0px', background: to, opacity: 1, offset: .78, boxShadow: '0 24px 48px -12px rgba(0,0,0,.25)' },
+      { left: mr.left + 'px', top: mr.top + 'px', width: mr.width + 'px', height: mr.height + 'px', borderRadius: '0px', background: to, opacity: 0, boxShadow: '0 24px 48px -12px rgba(0,0,0,.25)' }
+    ], { duration: T, easing: EASE.emph, fill: 'forwards' });
+    ga.finished.then(function(){ g.remove(); }, function(){ g.remove(); });
+    m.animate([{ opacity: 0 }, { opacity: 0, offset: .55 }, { opacity: 1 }], { duration: T, easing: 'linear' });
+    R.forEach(function(r, i){
+      var isCol = r.classList.contains('nsl-catmenu__col');
+      r.animate([{ opacity: 0, transform: isCol ? 'translateY(14px)' : 'translateY(6px)', filter: 'blur(4px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }],
+        { duration: d(320), delay: T * .5 + d(i * 36), easing: EASE.out, fill: 'backwards' });
+    });
+    scrimIn(false);
+  }
+
+  if (S.concept === 'c') {
+    var s = sp(SPR_PANEL, 420);
+    m.animate([{ opacity: 0, transform: 'translateY(-20px)' }, { opacity: 1, transform: 'none' }], { duration: d(s.ms), easing: s.easing });
+    m.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d(160), easing: 'linear', composite: 'add' });
+    inner(m).animate([{ opacity: 0 }, { opacity: 1 }], { duration: d(220), delay: d(90), easing: EASE.out, fill: 'backwards' });
+    var pg = pageEl();
+    pg.animate([{ transform: 'none', filter: 'none' }, { transform: 'scale(.985)', filter: 'saturate(.7)' }], { duration: d(380), easing: EASE.emph, fill: 'forwards' });
+    scrimIn(true);
+  }
+}
+
+/* ---------- EXIT ---------- */
+function exit(){
+  var m = menuEl(); if (!m) return Promise.resolve();
+  cancelAll(m);
+  var jobs = [];
+  if (rm()) {
+    jobs.push(m.animate([{ opacity: 1 }, { opacity: 0 }], { duration: d(120), fill: 'forwards' }).finished);
+    if (S.concept !== 'a') jobs.push(scrimOut());
+    return Promise.all(jobs);
+  }
+  if (S.concept === 'a') {
+    jobs.push(m.animate([{ clipPath: 'inset(0 0 -64px 0)' }, { clipPath: 'inset(0 0 100% 0)' }], { duration: d(200), easing: EASE.in, fill: 'forwards' }).finished);
+    jobs.push(inner(m).animate([{ opacity: 1 }, { opacity: 0 }], { duration: d(140), easing: EASE.in, fill: 'forwards' }).finished);
+  }
+  if (S.concept === 'b') {
+    var btn = $('.nsl-catalog'), br = btn.getBoundingClientRect(), mr = m.getBoundingClientRect();
+    var g = document.createElement('div'); g.className = 'cx-ghost'; document.body.appendChild(g);
+    var bg = S.theme === 'bf' ? '#140b22' : getComputedStyle(m).backgroundColor, brand = getComputedStyle(btn).backgroundColor;
+    var fade = inner(m).animate([{ opacity: 1 }, { opacity: 0 }], { duration: d(90), easing: EASE.in, fill: 'forwards' });
+    jobs.push(fade.finished.then(function(){
+      m.style.visibility = 'hidden';
+      return g.animate([
+        { left: mr.left + 'px', top: mr.top + 'px', width: mr.width + 'px', height: mr.height + 'px', borderRadius: '0px', background: bg },
+        { left: br.left + 'px', top: br.top + 'px', width: br.width + 'px', height: br.height + 'px', borderRadius: '8px', background: brand }
+      ], { duration: d(300), easing: EASE.emph, fill: 'forwards' }).finished;
+    }).then(function(){ setTimeout(function(){ g.remove(); }, 30); }));
+    jobs.push(scrimOut());
+  }
+  if (S.concept === 'c') {
+    jobs.push(m.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-10px)' }], { duration: d(200), easing: EASE.in, fill: 'forwards' }).finished);
+    var pg = pageEl(); cancelAll(pg);
+    pg.animate([{ transform: 'scale(.985)', filter: 'saturate(.7)' }, { transform: 'none', filter: 'none' }], { duration: d(260), easing: EASE.out });
+    jobs.push(scrimOut());
+  }
+  return Promise.all(jobs);
+}
+
+/* ---------- SWITCH (brand / category) ---------- */
+function switchBefore(kind, target){
+  var m = menuEl(); if (!m) return;
+  var siblings = Array.prototype.slice.call(target.parentNode.querySelectorAll(kind === 'brand' ? '.nsl-catmenu__brand' : '.nsl-catmenu__cat'));
+  var cur = target.parentNode.querySelector('.is-active');
+  var dir = siblings.indexOf(target) > siblings.indexOf(cur) ? 1 : -1;
+  var inn = inner(m), kids = Array.prototype.slice.call(inn.children);
+  var startCls = kind === 'brand' ? 'nsl-catmenu__cats' : 'nsl-catmenu__best';
+  var start = kids.findIndex(function(k){ return k.classList.contains(startCls); });
+  if (start < 0) start = kids.findIndex(function(k){ return k.classList.contains('nsl-catmenu__cols'); });
+  var region = kids.slice(start).filter(function(k){ return !k.classList.contains('nsl-catmenu__foot'); });
+  var oldH = m.offsetHeight;
+
+  /* snapshot of the outgoing content, laid over the panel */
+  var clone = null;
+  if (!rm() || true) {
+    clone = document.createElement('div'); clone.className = 'nsl-catmenu cx-clone';
+    region.forEach(function(el){
+      var r = el.getBoundingClientRect(), c = el.cloneNode(true);
+      c.style.left = r.left + 'px'; c.style.top = r.top + 'px'; c.style.width = r.width + 'px'; c.style.height = r.height + 'px';
+      clone.appendChild(c);
+    });
+    $('.root').appendChild(clone);
+    region.forEach(function(el){ el.style.opacity = 0; });
+  }
+  cancelAll(inn);
+
+  requestAnimationFrame(function(){
+    var m2 = menuEl(); if (!m2) { clone && clone.remove(); return; }
+    var inn2 = inner(m2), kids2 = Array.prototype.slice.call(inn2.children);
+    var s2 = kids2.findIndex(function(k){ return k.classList.contains(startCls); });
+    if (s2 < 0) s2 = kids2.findIndex(function(k){ return k.classList.contains('nsl-catmenu__cols'); });
+    var fresh = [];
+    kids2.slice(s2).forEach(function(k){
+      k.style.opacity = '';
+      if (k.classList.contains('nsl-catmenu__foot')) return;
+      if (k.classList.contains('nsl-catmenu__cols')) Array.prototype.forEach.call(k.children, function(c){ fresh.push(c); });
+      else fresh.push(k);
+    });
+    kids2.forEach(function(k){ k.style.opacity = ''; });
+    var newH = m2.offsetHeight;
+    var olds = clone ? Array.prototype.slice.call(clone.children) : [];
+    var killClone = function(){ clone && clone.remove(); };
+
+    if (S.concept === 'b') placeInd(m2, true);
+
+    if (rm()) {
+      olds.forEach(function(o){ o.animate([{ opacity: 1 }, { opacity: 0 }], { duration: d(120), fill: 'forwards' }); });
+      fresh.forEach(function(f){ f.animate([{ opacity: 0 }, { opacity: 1 }], { duration: d(150), fill: 'backwards' }); });
+      setTimeout(killClone, d(160)); return;
+    }
+
+    var hEase, hDur;
+    if (S.concept === 'a') { hEase = EASE.std; hDur = d(260); }
+    if (S.concept === 'b') { hEase = EASE.emph; hDur = d(360); }
+    if (S.concept === 'c') { var s = sp(SPR_H, 360); hEase = s.easing; hDur = d(s.ms); }
+    if (Math.abs(newH - oldH) > 2) {
+      m2.style.overflow = 'hidden';
+      var ha = m2.animate([{ height: oldH + 'px' }, { height: newH + 'px' }], { duration: hDur, easing: hEase });
+      ha.finished.then(function(){ m2.style.overflow = ''; }, function(){ m2.style.overflow = ''; });
+    }
+
+    if (S.concept === 'a') {
+      olds.forEach(function(o){ o.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(' + (-24 * dir) + 'px)' }], { duration: d(110), easing: EASE.in, fill: 'forwards' }); });
+      fresh.forEach(function(f, i){ f.animate([{ opacity: 0, transform: 'translateX(' + (24 * dir) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: d(240), delay: d(100 + i * 12), easing: EASE.out, fill: 'backwards' }); });
+      setTimeout(killClone, d(130));
+    }
+    if (S.concept === 'b') {
+      olds.forEach(function(o){ o.animate([{ opacity: 1 }, { opacity: 0 }], { duration: d(110), easing: EASE.in, fill: 'forwards' }); });
+      var order = fresh.slice(); if (dir < 0) order.reverse();
+      order.forEach(function(f, i){
+        f.animate([{ opacity: 0, transform: 'translateY(10px)', filter: 'blur(4px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }],
+          { duration: d(300), delay: d(60 + i * 40), easing: EASE.out, fill: 'backwards' });
+      });
+      setTimeout(killClone, d(130));
+    }
+    if (S.concept === 'c') {
+      olds.forEach(function(o){ o.animate([{ opacity: 1, transform: 'none', filter: 'blur(0)' }, { opacity: 0, transform: 'scale(.98)', filter: 'blur(2px)' }], { duration: d(140), easing: EASE.in, fill: 'forwards' }); });
+      fresh.forEach(function(f){ f.style.transformOrigin = '50% 0'; f.animate([{ opacity: 0, transform: 'scale(1.015)' }, { opacity: 1, transform: 'none' }], { duration: d(280), delay: d(80), easing: EASE.out, fill: 'backwards' }); });
+      setTimeout(killClone, d(160));
+    }
+  });
+}
+
+document.addEventListener('click', function(e){
+  var t = e.target.closest && e.target.closest('.nsl-catmenu__brand, .nsl-catmenu__cat');
+  if (!t || t.classList.contains('is-active')) return;
+  switchBefore(t.classList.contains('nsl-catmenu__brand') ? 'brand' : 'cat', t);
+}, true);
+
+/* Black Friday rim light follows the cursor */
+document.addEventListener('mousemove', function(e){
+  if (S.theme !== 'bf') return;
+  var m = menuEl(); if (!m) return;
+  var r = m.getBoundingClientRect();
+  m.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+  m.style.setProperty('--my', Math.max(-120, Math.min(r.height, e.clientY - r.top)) + 'px');
+});
+/* keep the wheel inside the full-screen panel without hiding the page scrollbar */
+document.addEventListener('wheel', function(e){
+  var m = e.target.closest && e.target.closest('.nsl-catmenu'); if (!m) return;
+  var up = e.deltaY < 0, atTop = m.scrollTop <= 0, atEnd = m.scrollTop + m.clientHeight >= m.scrollHeight - 1;
+  if ((up && atTop) || (!up && atEnd)) e.preventDefault();
+}, { passive: false });
+window.addEventListener('resize', function(){ if (S.concept === 'b') placeInd(menuEl(), false); });
+
+/* ---------- notes ---------- */
+var NOTES = {
+  a: { t: 'A · Шторка', lead: 'Панель раскрывается сверху вниз как продолжение шапки, контент доезжает каскадом: бренды → категории → бестселлеры → колонки слева направо. Страницу не затемняем — самая лёгкая и «тихая» концепция.',
+    rows: [['Открытие', 'clip-path сверху вниз 320 мс, ease-out (.2,.8,.2,1). Строки и колонки — fade + 8px, шаг 28 мс.'], ['Закрытие', '200 мс ease-in (.4,0,1,1), без каскада: закрытие всегда быстрее открытия.'], ['Переключение', 'Общая ось X: старое уходит на 24px в сторону, обратную выбору (110 мс), новое приходит с другой стороны (240 мс, после ухода старого). Панель всегда на весь экран, высота не меняется.'], ['Когда', 'Базовый вариант на каждый день. Дешёвый: CSS + немного JS для высоты.']] },
+  b: { t: 'B · Из кнопки', lead: 'Кнопка Catalog «вырастает» в панель (container transform): видно, откуда появилось меню. Страница приглушается. Внутри — «живые» индикаторы: подчёркивание бренда и заливка категории перетекают к выбранной вкладке.',
+    rows: [['Открытие', '460 мс, emphasized (.3,0,0,1): прямоугольник и цвет кнопки → панель. Контент с середины морфа волной по колонкам, fade + 14px + blur 4→0.'], ['Закрытие', 'Контент гаснет за 90 мс, затем панель схлопывается обратно в кнопку, 300 мс.'], ['Переключение', 'Индикаторы на пружине (k 380, d 30). Колонки обновляются волной от стороны клика, шаг 40 мс.'], ['Когда', 'Самая выразительная. При частом использовании может утомлять — компромисс: морф только при первом открытии за сессию, дальше как A.']] },
+  c: { t: 'C · Слой', lead: 'Каталог — отдельный слой: панель мягко «падает» из-под шапки на пружине (страница за ней чуть отступает назад, это видно в первые миллисекунды). Переключение по оси Z — без боковых сдвигов.',
+    rows: [['Открытие', 'Пружина k 260, d 24 (~' + SPR_PANEL.ms + ' мс), −20px → 0. Контент целиком, fade 220 мс с задержкой 90.'], ['Закрытие', '200 мс ease-in, панель уходит вверх на 10px, страница возвращается за 260 мс.'], ['Переключение', 'Старое: scale .98 + blur 2px + fade. Новое: scale 1.015 → 1.'], ['Когда', 'Спокойный «премиальный» характер, весь фокус на каталоге. Blur и scale страницы дороги на слабых машинах — можно оставить только затемнение.']] }
+};
+var BF_NOTE = ['Тёмное только выпадающее меню, шапка и сайт остаются светлыми. Работает с любой концепцией, меняются только токены внутри .nsl-catmenu.', 'Фиолетовый rim light за курсором (как в BF-hero), градиентная линия сверху; подчёркивание бренда и активная категория — градиент magenta → violet. Hover ссылок — светло-розовый, логотипы вендоров белые, скидки подсвечены, бейдж Black Friday в строке брендов.'];
+
+function Seg(p){
+  return h('span', null, h('span', { className: 'tb__k' }, p.k), h('span', { className: 'seg' }, p.opts.map(function(o){
+    return h('button', { key: o[0], className: p.v === o[0] ? 'on' : '', onClick: function(){ p.on(o[0]); } }, o[1]);
+  })));
+}
+
+function App(){
+  var st = useState({ concept: 'a', theme: 'light', slow: 1, rm: false }), cfg = st[0], setCfg = st[1];
+  var o = useState(null), open = o[0], setOpenRaw = o[1];
+  var openRef = useRef(null), busy = useRef(false);
+  var nm = useState(false), notesMin = nm[0], setNotesMin = nm[1];
+  S.concept = cfg.concept; S.theme = cfg.theme; S.slow = cfg.slow; S.rm = cfg.rm;
+  document.documentElement.style.setProperty('--slow', cfg.slow);
+
+  function setOpen(v){ openRef.current = v; setOpenRaw(v); }
+  function onOpenChange(v){
+    if (busy.current) return;
+    if (v === 'catalog' && openRef.current !== 'catalog') {
+      var site = document.querySelector('.site'), top = site.getBoundingClientRect().top + window.scrollY;
+      if (Math.abs(window.scrollY - top) > 2) window.scrollTo(0, top);
+    }
+    if (openRef.current === 'catalog' && v !== 'catalog') {
+      busy.current = true;
+      exit().then(function(){ busy.current = false; setOpen(v); if (cfg.concept === 'c') cancelAll(pageEl()); });
+      return;
+    }
+    setOpen(v);
+  }
+  useLayoutEffect(function(){
+    var m = menuEl(); if (m) m.style.setProperty('--hb', headerBottom() + 'px');
+    if (open === 'catalog') enter();
+  }, [open]);
+
+  /* reopen to show the new concept/theme right away */
+  var first = useRef(true);
+  useEffect(function(){
+    if (first.current) { first.current = false; return; }
+    if (openRef.current === 'catalog') { cancelAll(pageEl()); scrim().getAnimations().forEach(function(a){ a.cancel(); }); setOpen(null); setTimeout(function(){ setOpen('catalog'); }, 60); }
+  }, [cfg.concept, cfg.theme]);
+
+  function set(k, v){ var n = Object.assign({}, cfg); n[k] = v; setCfg(n); }
+  var note = NOTES[cfg.concept];
+
+  return h('div', { className: 'root cx-' + cfg.concept + (cfg.theme === 'bf' ? ' bf' : '') },
+    h('div', { className: 'tb' },
+      h('span', { className: 'tb__t' }, 'Header · Catalog motion'),
+      h(Seg, { k: 'Концепция', v: cfg.concept, on: function(v){ set('concept', v); }, opts: [['a', 'A · Шторка'], ['b', 'B · Из кнопки'], ['c', 'C · Слой']] }),
+      h(Seg, { k: 'Тема', v: cfg.theme, on: function(v){ set('theme', v); }, opts: [['light', 'Обычная'], ['bf', 'Black Friday']] }),
+      h(Seg, { k: 'Скорость', v: cfg.slow, on: function(v){ set('slow', v); }, opts: [[1, '1×'], [4, 'Слоу-мо ×4']] }),
+      h(Seg, { k: 'Reduced motion', v: cfg.rm, on: function(v){ set('rm', v); }, opts: [[false, 'Выкл'], [true, 'Вкл']] }),
+      h('button', { className: 'tb__btn', onClick: function(){ onOpenChange(openRef.current === 'catalog' ? null : 'catalog'); } }, open === 'catalog' ? 'Закрыть каталог' : 'Открыть каталог'),
+      h('span', { className: 'tb__hint' }, 'Esc / клик вне — закрыть · переключай бренды и категории · описание — прокрути вверх')
+    ),
+    h('div', { className: 'notes' + (notesMin ? ' is-min' : '') },
+      h('div', { className: 'notes__h', onClick: function(){ setNotesMin(!notesMin); } }, note.t + (cfg.theme === 'bf' ? ' + Black Friday' : ''), h('span', null, notesMin ? 'развернуть' : 'свернуть')),
+      h('div', { className: 'notes__b' },
+        h('div', null, h('p', { className: 'lead' }, note.lead)),
+        h('dl', null, note.rows.map(function(r){ return [h('dt', { key: r[0] + 't' }, r[0]), h('dd', { key: r[0] + 'd' }, r[1])]; })),
+        h('div', null,
+          cfg.theme === 'bf' ? h(React.Fragment, null, h('h4', null, 'Black Friday'), BF_NOTE.map(function(t, i){ return h('p', { key: i }, t); })) : null,
+          h('h4', null, 'Общее для всех'),
+          h('p', null, 'Панель на весь вьюпорт под шапкой (100dvh − высота шапки), свой скролл, контакты прижаты к низу. Прокрутку body не отключаем (скроллбар не пропадает, контент не прыгает): колесо над панелью гасится, когда ей некуда скроллиться.'),
+          h('p', null, 'Reduced motion: только кроссфейд 120–150 мс, без смещений, размытия и анимации высоты. Иконка кнопки gear → × с поворотом. Чипы и вкладки меняют цвет за 160 мс.'),
+          h('p', null, 'Motion-токенов в ДС пока нет. Предложение: ', h('code', null, '--duration-fast 120 / -base 200 / -slow 320 / -emph 460'), ', ', h('code', null, '--ease-standard / -decelerate / -accelerate / -emphasized'), ', пружины через ', h('code', null, 'linear()'), '.'))
+      )),
+    h('div', { className: 'site' },
+      h('div', { className: 'hwrap' }, h(N.Header, { cartCount: 3, open: open, onOpenChange: onOpenChange, active: 'Hardware' })),
+      h('div', { className: 'page' },
+        h('section', { className: 'hero' },
+          h('div', null,
+            h('h1', null, h(React.Fragment, null, 'Refurbished servers built for ', h('em', null, 'value'), ' and ', h('em', null, 'reliability'))),
+            h('p', null, 'Enterprise-class performance at a fraction of OEM prices. Fully tested, ships in 7–10 days.')),
+          h('div', { className: 'hero__img' }, h(N.Icon, { name: 'server', size: 64 }))),
+        h('h2', { className: 'sec-t' }, 'Bestsellers'),
+        h('div', { className: 'cards' }, ['DELL PowerEdge R640', 'DELL PowerEdge R740xd', 'HPE ProLiant DL380 Gen10', 'DELL PowerEdge R750'].map(function(t, i){
+          return h(N.ProductCard, { key: t, title: t, price: [990, 1540, 1890, 3870][i], oldPrice: i === 0 ? 1290 : undefined, badges: ['in-stock'], specs: [{ icon: 'form', text: i === 1 ? '2U Rackmount' : '1U Rackmount' }, { icon: 'cpu', text: '2x Xeon Gold 6140' }, { icon: 'ram', text: '256GB DDR4' }], maxSpecs: 3, ctaType: 'configure' });
+        })))
+    ),
+    h('div', { className: 'scrim' })
+  );
+}
+ReactDOM.createRoot(document.getElementById('app')).render(h(App));
+})();
+</script>
+</body>
+</html>
