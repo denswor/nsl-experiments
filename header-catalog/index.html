@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Header · Catalog navigation motion</title>
+<title>Header · Catalog menu (A)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../_shared/nsl/tokens.css">
@@ -129,7 +129,7 @@ html,body{margin:0;background:var(--bg-subtle);font-family:var(--font-sans);colo
 </head>
 <body>
 <div id="app"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>window.NSL_EXP = true;</script><script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="../_shared/nsl/bundle.js"></script>
 <script>
 (function(){
@@ -221,7 +221,6 @@ function syncBanner(m){
   if (!m) return;
   var inn = m.querySelector('.nsl-catmenu__brands'), b = m.querySelector('.cx-bf-banner');
   if (!inn) return;
-  if (S.theme !== 'bf') { if (b) b.remove(); return; }
   if (b) return;
   b = document.createElement('a'); b.className = 'cx-bf-banner'; b.href = '#'; b.setAttribute('aria-label', 'Black Friday: free 5-year warranty on Dell Gen 15, 16 and 17 — view details');
   b.addEventListener('click', function(e){ e.preventDefault(); });
@@ -440,7 +439,9 @@ function Seg(p){
 }
 
 function App(){
-  var st = useState({ concept: 'a', theme: 'light', slow: 1, rm: false }), cfg = st[0], setCfg = st[1];
+  var EXP = !!window.NSL_EXP;
+  function hashTheme(){ return location.hash === '#black-friday' ? 'bf' : 'light'; }
+  var st = useState({ concept: 'a', theme: EXP ? hashTheme() : 'light', slow: 1, rm: false }), cfg = st[0], setCfg = st[1];
   var o = useState(null), open = o[0], setOpenRaw = o[1];
   var openRef = useRef(null), busy = useRef(false);
   var nm = useState(false), notesMin = nm[0], setNotesMin = nm[1];
@@ -474,10 +475,15 @@ function App(){
   }, [cfg.concept, cfg.theme]);
 
   function set(k, v){ var n = Object.assign({}, cfg); n[k] = v; setCfg(n); }
+  useEffect(function(){
+    if (!EXP) return;
+    function onHash(){ setCfg(function(c){ return Object.assign({}, c, { theme: hashTheme() }); }); }
+    window.addEventListener('hashchange', onHash); return function(){ window.removeEventListener('hashchange', onHash); };
+  }, []);
   var note = NOTES[cfg.concept];
 
   return h('div', { className: 'root cx-' + cfg.concept + (cfg.theme === 'bf' ? ' bf' : '') },
-    h('div', { className: 'tb' },
+    EXP ? null : h('div', { className: 'tb' },
       h('span', { className: 'tb__t' }, 'Header · Catalog motion'),
       h(Seg, { k: 'Концепция', v: cfg.concept, on: function(v){ set('concept', v); }, opts: [['a', 'A · Шторка'], ['b', 'B · Из кнопки'], ['c', 'C · Слой']] }),
       h(Seg, { k: 'Тема', v: cfg.theme, on: function(v){ set('theme', v); }, opts: [['light', 'Обычная'], ['bf', 'Black Friday']] }),
@@ -486,7 +492,7 @@ function App(){
       h('button', { className: 'tb__btn', onClick: function(){ onOpenChange(openRef.current === 'catalog' ? null : 'catalog'); } }, open === 'catalog' ? 'Закрыть каталог' : 'Открыть каталог'),
       h('span', { className: 'tb__hint' }, 'Esc / клик вне — закрыть · переключай бренды и категории · описание — прокрути вверх')
     ),
-    h('div', { className: 'notes' + (notesMin ? ' is-min' : '') },
+    EXP ? null : h('div', { className: 'notes' + (notesMin ? ' is-min' : '') },
       h('div', { className: 'notes__h', onClick: function(){ setNotesMin(!notesMin); } }, note.t + (cfg.theme === 'bf' ? ' + Black Friday' : ''), h('span', null, notesMin ? 'развернуть' : 'свернуть')),
       h('div', { className: 'notes__b' },
         h('div', null, h('p', { className: 'lead' }, note.lead)),
