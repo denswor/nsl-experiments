@@ -1,0 +1,55 @@
+/* Black Friday hero.
+   Layers, back to front: radial background → server photo (decor, at most 1440px, never stretched) → NSL mark with rim light → copy.
+   ≥720: centered stack in a 648px band, the photo behind everything.
+   <720: copy, then a strip with the photo, then the CTA, all in flow (the note under the CTA never sits on the photo). */
+
+.nsl-bf { position: relative; isolation: isolate; overflow: hidden; height: 648px; touch-action: pan-y; color: #fff;
+  background: radial-gradient(ellipse 820px 560px at 50% 48%, #0b0714 0%, #0d0819 45%, #170c2e 78%, #22113f 100%);
+  font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+.nsl-bf *, .nsl-bf *::before, .nsl-bf *::after { box-sizing: border-box; }
+
+.nsl-bf__media { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.nsl-bf__server { position: absolute; left: 50%; top: 360px; width: 1440px; max-width: none; height: auto; transform: translateX(-50%);
+  display: block; user-select: none; opacity: .6;
+  -webkit-mask-image: radial-gradient(ellipse 62% 70% at 50% 62%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(ellipse 62% 70% at 50% 62%, #000 30%, transparent 78%); }
+
+.nsl-bf__mark { position: absolute; left: 50%; top: 50px; width: 360px; height: 535px; margin-left: -180px; overflow: visible; pointer-events: none; }
+.nsl-bf__rim-base { stroke-width: 2.5; }
+.nsl-bf__rim-glow { stroke-width: 12; }
+.nsl-bf__rim-line { stroke-width: 3.5; }
+
+.nsl-bf__stack { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+  padding: 0 24px; text-align: center; pointer-events: none; }
+.nsl-bf__text { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.nsl-bf__action { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 12px; pointer-events: auto; }
+
+.nsl-bf__eyebrow { margin: 0; font: 500 14px/20px "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .4em; text-transform: uppercase; color: rgba(255, 255, 255, .78); }
+.nsl-bf__title { margin: 0; font: 900 clamp(64px, 7.8vw, 112px)/.93 Montserrat, "IBM Plex Sans", sans-serif; letter-spacing: -.04em; color: #fff; white-space: nowrap; }
+.nsl-bf__lead { margin: 0; width: min(600px, 100%); font-size: 18px; line-height: 28px; color: rgba(255, 255, 255, .8); }
+.nsl-bf__fine { margin: 0; font: 400 13px/20px "IBM Plex Mono", ui-monospace, monospace; color: rgba(255, 255, 255, .66); }
+.nsl-bf__m { display: none; }
+
+@media (max-width: 719px) {
+  .nsl-bf { height: auto; background: radial-gradient(ellipse 300px 420px at 50% 40%, #0b0714 0%, #0d0819 45%, #170c2e 78%, #22113f 100%); }
+  .nsl-bf__mark { top: 48px; width: 279px; height: 424px; margin-left: -139.5px; }
+  .nsl-bf__rim-base { stroke-width: 3.5; }
+  .nsl-bf__rim-glow { stroke-width: 16; }
+  .nsl-bf__rim-line { stroke-width: 5; }
+  .nsl-bf__stack { height: auto; justify-content: flex-start; gap: 0; padding: 145px 16px 32px; }
+  .nsl-bf__text { gap: 12px; }
+  .nsl-bf__eyebrow { font-size: 12px; line-height: 16px; letter-spacing: .28em; color: rgba(255, 255, 255, .8); }
+  .nsl-bf__title { font-size: 60px; line-height: 56px; letter-spacing: -.05em; }
+  .nsl-bf__lead { margin-top: 12px; font-size: 14px; line-height: 20px; color: rgba(255, 255, 255, .82); }
+  .nsl-bf__media { position: relative; inset: auto; height: 150px; margin: 8px -16px 0; }
+  .nsl-bf__server { top: -70px; width: 795px;
+    -webkit-mask-image: radial-gradient(ellipse 48% 52% at 50% 56%, #000 40%, transparent 85%);
+    mask-image: radial-gradient(ellipse 48% 52% at 50% 56%, #000 40%, transparent 85%); }
+  .nsl-bf__action { align-self: stretch; align-items: stretch; gap: 12px; margin-top: 0; }
+  .nsl-bf__fine { font-size: 12px; line-height: 16px; color: rgba(255, 255, 255, .7); }
+  .nsl-bf__m { display: inline; }
+  .nsl-bf__d { display: none; }
+  /* the CTA is DS Button xl; on phones it takes the lg size, full width */
+  .nsl-bf .nsl-btn--xl { width: 100%; height: 56px; padding: 0 24px; gap: 8px; font-size: 16px; line-height: 24px; }
+  .nsl-bf .nsl-btn--xl .nsl-icon { width: 24px; height: 24px; }
+}
