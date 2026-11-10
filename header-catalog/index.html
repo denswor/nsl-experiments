@@ -505,7 +505,7 @@ function App(){
           h('p', null, 'Motion-токенов в ДС пока нет. Предложение: ', h('code', null, '--duration-fast 120 / -base 200 / -slow 320 / -emph 460'), ', ', h('code', null, '--ease-standard / -decelerate / -accelerate / -emphasized'), ', пружины через ', h('code', null, 'linear()'), '.'))
       )),
     h('div', { className: 'site' },
-      h('div', { className: 'hwrap' }, h(N.Header, { cartCount: 3, open: open, onOpenChange: onOpenChange, active: 'Hardware' })),
+      h('div', { className: 'hwrap' }, h(N.Header, { cartCount: 3, open: open, onOpenChange: onOpenChange, active: 'Hardware', catalogBestsellers: false })),
       h('div', { className: 'page' },
         h('section', { className: 'hero' },
           h('div', null,
