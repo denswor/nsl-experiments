@@ -37,6 +37,7 @@ black-friday/     Black Friday home hero, variant C (dark band, mark with rim li
 header-catalog/   Header catalog menu, motion concept A (curtain), full-viewport, wide container from 1680
   index.html      light menu; #black-friday = dark Black Friday menu (React 18, real Header / CatalogMenu from the NSL bundle, motion with WAAPI)
   bf-banner.png   Black Friday banner in the brand row (both themes)
+  review/         the same page with the review toolbar: concepts A/B/C, theme, slow-mo, reduced motion, Sale / discount badge variants
 ```
 
 ## Adding an experiment
