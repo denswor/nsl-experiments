@@ -150,7 +150,9 @@ ${rows.map(row).join('\n')}
 </main>
 
 <!-- ===== demo chrome: footer ===== -->
-<div class="demo-desk">${footer('desktop')}</div>
+<!-- the footer goes wide (≥1680) together with .nsl-container -->
+<div class="demo-desk demo-std">${footer('desktop')}</div>
+<div class="demo-desk demo-wide">${footer('wide')}</div>
 <div class="demo-mob">${footer('mobile')}</div>
 
 <script src="../dist/nsl-ask.js" defer></script>
@@ -202,8 +204,8 @@ function subset(css, used) {
   for (let n = 1; n <= PAGES; n++) { pages.push(page(n)); out('demo/' + pageUrl(n), pages[n - 1]); }
 
   /* split the markup: page content vs demo chrome */
-  const content = pages.map(p => { const $ = cheerio.load(p); $('.demo-desk, .demo-mob, script').remove(); return $('body').html(); }).join('');
-  const chrome = header() + mobileHeader() + footer('desktop') + footer('mobile');
+  const content = pages.map(p => { const $ = cheerio.load(p); $('.demo-desk, .demo-mob, .demo-wide, script').remove(); return $('body').html(); }).join('');
+  const chrome = header() + mobileHeader() + footer('desktop') + footer('wide') + footer('mobile');
   const JS_CLASSES = ['nsl-search-combo', 'nsl-psearch', 'nsl-psearch__row', 'nsl-psearch__row--all', 'nsl-psearch__cat', 'nsl-psearch__items', 'nsl-psearch__item', 'nsl-psearch__meta', 'nsl-psearch__match', 'is-active', 'is-new'];
   const used = classesOf(content); JS_CLASSES.forEach(c => used.add(c));
   const chromeUsed = classesOf(chrome); ['nsl-header__suggest', 'nsl-psearch'].forEach(c => chromeUsed.add(c));
@@ -223,7 +225,7 @@ function subset(css, used) {
     '\n/* ---------- components (from the DS bundle) ---------- */\n' + contentCss +
     '\n/* ---------- search page ---------- */\n' + pageCss);
   out('demo/demo-chrome.css', '/* Demo only: DS Header, MobileHeader and Footer rules. The live site keeps its own header and footer. */\n' + chromeCss +
-    '\n.demo-mob { display: none; }\n@media (max-width: 1023px) { .demo-desk { display: none; } .demo-mob { display: block; } .demo-mob .nsl-mheader { position: relative; z-index: 41; } }\n');
+    '\n.demo-mob, .demo-wide { display: none; }\n@media (min-width: 1680px) { .demo-std { display: none; } .demo-wide { display: block; } }\n@media (max-width: 1023px) { .demo-desk { display: none; } .demo-mob { display: block; } .demo-mob .nsl-mheader { position: relative; z-index: 41; } }\n');
 
   /* scripts */
   const src = fs.readFileSync(path.join(PKG, 'src/nsl-search.js'), 'utf8');

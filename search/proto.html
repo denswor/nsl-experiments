@@ -166,6 +166,7 @@ button { font: inherit; }
 
   function App() {
     var desktop = useMedia('(min-width: 1024px)');
+    var wide = useMedia('(min-width: 1680px)');   /* .nsl-container goes wide here, so the footer does too */
     var qs = useState('dl380 8x nvme'), query = qs[0];
     var ps = useState(1), page = ps[0];          /* desktop: page number */
     var ms = useState([1, 1]), from = ms[0][0], to = ms[0][1];   /* mobile: loaded pages, from..to */
@@ -221,7 +222,7 @@ button { font: inherit; }
                   h(N.Pagination, { total: PAGES, page: to, compact: true, onChange: jump }))),
           h('aside', { className: 'aside', 'aria-label': 'Help' }, h(Help, { desktop: desktop, open: helpOpen, onOpen: openHelp })))),
 
-      h(N.Footer, { variant: desktop ? 'desktop' : 'mobile' }),
+      h(N.Footer, { variant: !desktop ? 'mobile' : wide ? 'wide' : 'desktop' }),
 
       /* help: EdgeTab + Drawer on desktop, BottomSheet on mobile (as in the configurator) */
       desktop && h(N.EdgeTab, { open: helpOpen, controls: 'help-drawer', top: '42%', onClick: function () { helpOpen ? closeHelp() : openHelp(); }, style: helpOpen ? { right: '440px' } : undefined }),
