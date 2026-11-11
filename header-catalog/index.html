@@ -55,7 +55,10 @@ html,body{margin:0;background:var(--bg-subtle);font-family:var(--font-sans);colo
 .scrim.is-blur{backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 
 /* brand tab labels: mono bold like DS tab labels (heading-xs). In the bundle they share .nsl-catmenu__bname with bestseller names and pick up sans 14/16 */
-.nsl-catmenu__brand .nsl-catmenu__bname{font:var(--text-heading-xs);letter-spacing:0}
+.nsl-catmenu__brand .nsl-catmenu__bname{font:var(--text-heading-xs);letter-spacing:0;color:inherit;transition:color calc(160ms*var(--slow))}
+/* current brand = primary (the bestseller-name color on the shared class used to override it) */
+.nsl-catmenu__brand.is-active .nsl-catmenu__bname,.nsl-catmenu__brand:hover .nsl-catmenu__bname{color:var(--brand-default)}
+.bf .nsl-catmenu__brand.is-active .nsl-catmenu__bname,.bf .nsl-catmenu__brand:hover .nsl-catmenu__bname{color:#f77fb8}
 
 /* wide container from 1680: page and catalog panel content go 1530 */
 @media (min-width:1680px){
@@ -82,7 +85,7 @@ html,body{margin:0;background:var(--bg-subtle);font-family:var(--font-sans);colo
 
 /* ---------- Black Friday: only the catalog panel goes dark and fills the viewport ---------- */
 .bf{--bf-panel:#140b22;--bf-raise:#1e1231;--bf-line:rgba(255,255,255,.12);--bf-glow:146,39,142}
-.bf .nsl-catmenu,.bf .cx-clone{
+.bf .nsl-catmenu,.bf .cx-clone,.bf .cx-darktok{
   --bg-default:var(--bf-panel);--bg-subtle:var(--bf-raise);--bg-muted:#2a1a42;
   --text-primary:#f3eefb;--text-secondary:rgba(243,238,251,.62);--icon-default:rgba(243,238,251,.62);
   --border-default:var(--bf-line);--border-secondary-subtle:rgba(255,255,255,.18);--border-strong:rgba(255,255,255,.4);
@@ -125,6 +128,34 @@ html,body{margin:0;background:var(--bg-subtle);font-family:var(--font-sans);colo
 .bf .nsl-catmenu .nsl-mtag{color:rgba(243,238,251,.7)}
 .bf .nsl-mtag.nsl-mtag--discount{background:rgba(203,28,104,.22);border-color:#cb1c68!important;color:#ffb3d8;box-shadow:0 0 10px rgba(203,28,104,.35)}
 .bf .nsl-mtag.nsl-mtag--sale{border-color:#ff6b6b!important;color:#ff8a8a}
+
+/* ---------- Sale / discount badge variants (review) ---------- */
+.bdg-1 .nsl-mtag.nsl-mtag--sale,.bdg-1 .nsl-mtag.nsl-mtag--discount,.bdg-2 .nsl-mtag.nsl-mtag--sale,.bdg-2 .nsl-mtag.nsl-mtag--discount,.bdg-3 .nsl-mtag.nsl-mtag--sale,.bdg-3 .nsl-mtag.nsl-mtag--discount,.bdg-4 .nsl-mtag.nsl-mtag--sale,.bdg-4 .nsl-mtag.nsl-mtag--discount,.bdg-5 .nsl-mtag.nsl-mtag--sale,.bdg-5 .nsl-mtag.nsl-mtag--discount{height:18px;padding:0 6px;font:600 11px/16px var(--font-mono);border:0!important;border-radius:var(--radius-xs);box-shadow:none}
+.bdg-1 .nsl-mtag--sale,.bdg-2 .nsl-mtag--sale,.bdg-3 .nsl-mtag--sale,.bdg-4 .nsl-mtag--sale,.bdg-5 .nsl-mtag--sale{text-transform:uppercase;letter-spacing:.04em}
+.bdg-1 .nsl-mtag.nsl-mtag--sale{background:#b91c1c;color:#fff}
+.bdg-1 .nsl-mtag.nsl-mtag--discount{background:#b91f69;color:#fff}
+.bdg-2 .nsl-mtag.nsl-mtag--sale{background:#fee2e2;color:#b91c1c}
+.bdg-2 .nsl-mtag.nsl-mtag--discount{background:#fce7f1;color:#b91f69}
+.bf .bdg-2 .nsl-mtag.nsl-mtag--sale{background:#3a1424;color:#ffb4b4}
+.bf .bdg-2 .nsl-mtag.nsl-mtag--discount{background:#3d0f2e;color:#ffb3d8}
+.bdg-3 .nsl-mtag.nsl-mtag--sale{background:#fbbf24;color:#1f2937}
+.bdg-3 .nsl-mtag.nsl-mtag--discount{background:#b91c1c;color:#fff}
+.bdg-4 .nsl-mtag.nsl-mtag--sale{background:#b91c1c;color:#fff}
+.bdg-4 .nsl-mtag.nsl-mtag--discount{background:#047857;color:#fff}
+.bdg-5 .nsl-mtag.nsl-mtag--sale,.bdg-5 .nsl-mtag.nsl-mtag--discount{background:#b91c1c;color:#fff}
+
+/* badge comparison table in the notes */
+.bdg-tab{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding-top:12px}
+.bdg-grid{display:grid;grid-template-columns:150px 1fr 1fr 210px;gap:6px 12px;align-items:stretch}
+.bdg-row{display:contents;cursor:pointer}
+.bdg-name{font:600 12px/16px var(--font-mono);color:#fff;align-self:center}
+.bdg-row.on .bdg-name{color:#f9b3d6}
+.bdg-row.on .bdg-cell{outline:2px solid #f77fb8;outline-offset:-2px}
+.bdg-cell{display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px;padding:6px 12px;border-radius:6px;background:#fff}
+.bdg-cell.cx-darktok{background:#140b22}
+.bdg-cell .nsl-navlink{padding:2px 0}
+.bdg-meta{font:400 12px/16px var(--font-sans);color:rgba(255,255,255,.65);align-self:center}
+.bdg-head{font:500 11px/16px var(--font-mono);color:rgba(255,255,255,.5);text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -337,7 +368,7 @@ function switchBefore(kind, target){
       c.style.left = r.left + 'px'; c.style.top = r.top + 'px'; c.style.width = r.width + 'px'; c.style.height = r.height + 'px';
       clone.appendChild(c);
     });
-    $('.root').appendChild(clone);
+    $('.site').appendChild(clone);
     region.forEach(function(el){ el.style.opacity = 0; });
   }
   cancelAll(inn);
@@ -430,6 +461,14 @@ var NOTES = {
   c: { t: 'C · Слой', lead: 'Каталог — отдельный слой: панель мягко «падает» из-под шапки на пружине (страница за ней чуть отступает назад, это видно в первые миллисекунды). Переключение по оси Z — без боковых сдвигов.',
     rows: [['Открытие', 'Пружина k 260, d 24 (~' + SPR_PANEL.ms + ' мс), −20px → 0. Контент целиком, fade 220 мс с задержкой 90.'], ['Закрытие', '200 мс ease-in, панель уходит вверх на 10px, страница возвращается за 260 мс.'], ['Переключение', 'Старое: scale .98 + blur 2px + fade. Новое: scale 1.015 → 1.'], ['Когда', 'Спокойный «премиальный» характер, весь фокус на каталоге. Blur и scale страницы дороги на слабых машинах — можно оставить только затемнение.']] }
 };
+var BADGES = [
+  ['0 · Сейчас', 'Красный контур, скидка — розовый тинт с контуром. Тонкие 1px линии и 11px текст тонут в списке; красный #DC2626 на белом 4.8:1.'],
+  ['1 · Заливка', 'Sale — белый на red-700 (6.5:1), скидка — белый на brand (6.1:1). Плотные плашки, читаются с первого взгляда.'],
+  ['2 · Тинт', 'Sale — red-700 на red-50 (5.3:1), скидка — brand на primary-50 (5.2:1). Спокойнее, но мягче как сигнал.'],
+  ['3 · Ценник', 'Sale — тёмный на amber-400 (8.8:1), скидка — белый на red-700. Привычный «ценник» ритейла, самый заметный.'],
+  ['4 · Выгода зелёным', 'Sale — белый на red-700, скидка — белый на green-700 (5.5:1): процент читается как экономия.'],
+  ['5 · Один промо-цвет', 'Оба — белый на red-700. Одна семантика «акция», меньше цветов в меню.']
+];
 var BF_NOTE = ['Тёмное только выпадающее меню, шапка и сайт остаются светлыми. Работает с любой концепцией, меняются только токены внутри .nsl-catmenu.', 'Фиолетовый rim light за курсором (как в BF-hero), градиентная линия сверху; подчёркивание бренда и активная категория — градиент magenta → violet. Hover ссылок — светло-розовый, логотипы вендоров белые, скидки подсвечены, бейдж Black Friday в строке брендов.'];
 
 function Seg(p){
@@ -441,7 +480,7 @@ function Seg(p){
 function App(){
   var EXP = !!window.NSL_EXP;
   function hashTheme(){ return location.hash === '#black-friday' ? 'bf' : 'light'; }
-  var st = useState({ concept: 'a', theme: EXP ? hashTheme() : 'light', slow: 1, rm: false }), cfg = st[0], setCfg = st[1];
+  var st = useState({ concept: 'a', theme: EXP ? hashTheme() : 'light', slow: 1, rm: false, bdg: EXP ? 0 : 1 }), cfg = st[0], setCfg = st[1];
   var o = useState(null), open = o[0], setOpenRaw = o[1];
   var openRef = useRef(null), busy = useRef(false);
   var nm = useState(false), notesMin = nm[0], setNotesMin = nm[1];
@@ -488,6 +527,7 @@ function App(){
       h(Seg, { k: 'Концепция', v: cfg.concept, on: function(v){ set('concept', v); }, opts: [['a', 'A · Шторка'], ['b', 'B · Из кнопки'], ['c', 'C · Слой']] }),
       h(Seg, { k: 'Тема', v: cfg.theme, on: function(v){ set('theme', v); }, opts: [['light', 'Обычная'], ['bf', 'Black Friday']] }),
       h(Seg, { k: 'Скорость', v: cfg.slow, on: function(v){ set('slow', v); }, opts: [[1, '1×'], [4, 'Слоу-мо ×4']] }),
+      h(Seg, { k: 'Бейджи', v: cfg.bdg, on: function(v){ set('bdg', v); }, opts: BADGES.map(function(b, i){ return [i, i === 0 ? 'Сейчас' : String(i)]; }) }),
       h(Seg, { k: 'Reduced motion', v: cfg.rm, on: function(v){ set('rm', v); }, opts: [[false, 'Выкл'], [true, 'Вкл']] }),
       h('button', { className: 'tb__btn', onClick: function(){ onOpenChange(openRef.current === 'catalog' ? null : 'catalog'); } }, open === 'catalog' ? 'Закрыть каталог' : 'Открыть каталог'),
       h('span', { className: 'tb__hint' }, 'Esc / клик вне — закрыть · переключай бренды и категории · описание — прокрути вверх')
@@ -502,9 +542,21 @@ function App(){
           h('h4', null, 'Общее для всех'),
           h('p', null, 'Панель на весь вьюпорт под шапкой (100dvh − высота шапки), свой скролл, контакты прижаты к низу. Прокрутку body не отключаем (скроллбар не пропадает, контент не прыгает): колесо над панелью гасится, когда ей некуда скроллиться.'),
           h('p', null, 'Reduced motion: только кроссфейд 120–150 мс, без смещений, размытия и анимации высоты. Иконка кнопки gear → × с поворотом. Чипы и вкладки меняют цвет за 160 мс.'),
-          h('p', null, 'Motion-токенов в ДС пока нет. Предложение: ', h('code', null, '--duration-fast 120 / -base 200 / -slow 320 / -emph 460'), ', ', h('code', null, '--ease-standard / -decelerate / -accelerate / -emphasized'), ', пружины через ', h('code', null, 'linear()'), '.'))
+          h('p', null, 'Motion-токенов в ДС пока нет. Предложение: ', h('code', null, '--duration-fast 120 / -base 200 / -slow 320 / -emph 460'), ', ', h('code', null, '--ease-standard / -decelerate / -accelerate / -emphasized'), ', пружины через ', h('code', null, 'linear()'), '.')),
+        h('div', { className: 'bdg-tab' },
+          h('h4', null, 'Бейджи Sale / скидка — варианты (клик по строке применяет в меню)'),
+          h('div', { className: 'bdg-grid' },
+            h('span', { className: 'bdg-head' }, 'Вариант'), h('span', { className: 'bdg-head' }, 'Обычная'), h('span', { className: 'bdg-head' }, 'Black Friday'), h('span', { className: 'bdg-head' }, 'Почему'),
+            BADGES.map(function(b, i){
+              var links = function(){ return [h(N.NavModelLink, { key: 's', name: 'DELL PowerEdge R640', tag: '1U', sale: true }), h(N.NavModelLink, { key: 'd', name: 'DELL PowerEdge R750', tag: '2U', discount: 15 })]; };
+              return h('div', { key: i, className: 'bdg-row' + (cfg.bdg === i ? ' on' : ''), onClick: function(){ set('bdg', i); } },
+                h('span', { className: 'bdg-name' }, b[0]),
+                h('div', { className: 'bdg-' + i }, h('div', { className: 'bdg-cell' }, links())),
+                h('div', { className: 'bf' }, h('div', { className: 'bdg-' + i }, h('div', { className: 'bdg-cell cx-darktok' }, links()))),
+                h('span', { className: 'bdg-meta' }, b[1]));
+            })))
       )),
-    h('div', { className: 'site' },
+    h('div', { className: 'site bdg-' + cfg.bdg },
       h('div', { className: 'hwrap' }, h(N.Header, { cartCount: 3, open: open, onOpenChange: onOpenChange, active: 'Hardware', catalogBestsellers: false })),
       h('div', { className: 'page' },
         h('section', { className: 'hero' },
