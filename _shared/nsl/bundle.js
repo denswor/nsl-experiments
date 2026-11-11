@@ -872,6 +872,11 @@ function SectionHeader(p) {
     (p.action || p.children) && h('div', { className: 'nsl-shead__aside' }, p.children,
       p.action && h(Link, { href: p.action.href, iconRight: 'arrow-right' }, p.action.label)));
 }
+/* the picture links to the same page as the title; it is a duplicate link, so it stays out of the tab order and the accessibility tree */
+function srMedia(p, icon) {
+  var img = h(ImageFrame, { ratio: '3:2', src: p.image, placeholderIcon: p.icon || icon });
+  return p.href ? h('a', { className: 'nsl-sres__media', href: p.href, tabIndex: -1, 'aria-hidden': 'true' }, img) : h('div', { className: 'nsl-sres__media' }, img);
+}
 function SearchResult(p) {
   var kind = p.kind || 'product';
   var title = h('a', { href: p.href || '#' }, highlightTerms(p.title, p.query));
@@ -887,14 +892,14 @@ function SearchResult(p) {
         }))));
   }
   if (kind === 'article') return h('article', { className: cx('nsl-sres', 'nsl-sres--article', p.className) },
-    h('div', { className: 'nsl-sres__media' }, h(ImageFrame, { ratio: '3:2', src: p.image, placeholderIcon: p.icon || 'file-text' })),
+    srMedia(p, 'file-text'),
     h('div', { className: 'nsl-sres__body' },
       h('div', { className: 'nsl-sres__meta' }, h('span', { className: 'nsl-sres__type' }, p.typeLabel || 'Blog'), p.meta && h('span', null, p.meta)),
       h('h3', { className: 'nsl-sres__title nsl-sres__title--sans' }, title),
       p.excerpt && h('p', { className: 'nsl-sres__excerpt' }, p.excerpt)));
   var preset = CTA_PRESETS[p.ctaType || 'cart'] || CTA_PRESETS.cart;
   return h('article', { className: cx('nsl-sres', 'nsl-sres--product', p.className) },
-    h('div', { className: 'nsl-sres__media' }, h(ImageFrame, { ratio: '3:2', src: p.image, placeholderIcon: p.icon || 'hard-drive' })),
+    srMedia(p, 'hard-drive'),
     h('div', { className: 'nsl-sres__body' },
       h('div', { className: 'nsl-sres__meta' }, p.typeLabel && h('span', { className: 'nsl-sres__type' }, p.typeLabel), (p.badges || []).map(function (b) { return h(ProductBadge, { key: b, type: b }); })),
       h('h3', { className: 'nsl-sres__title' }, title),
