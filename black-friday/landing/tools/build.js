@@ -164,9 +164,15 @@ ${RUNTIME}
 
 build('desktop.dc.html', 'desktop.html', {
   title: 'Black Friday 2026 · desktop · NewServerLife',
-  viewport: 'width=1440',
+  viewport: 'width=device-width, initial-scale=1',
   width: 1440,
   bodyClass: 'bf bf--desktop'
+});
+build('light.dc.html', 'light.html', {
+  title: 'Black Friday 2026 · light experiment · NewServerLife',
+  viewport: 'width=device-width, initial-scale=1',
+  width: 1440,
+  bodyClass: 'bf bf--desktop bf--light'
 });
 build('mobile.dc.html', 'mobile.html', {
   title: 'Black Friday 2026 · mobile · NewServerLife',

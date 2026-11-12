@@ -61,6 +61,10 @@ iframe { display: block; border: 0; transform-origin: 0 0; background: #fff; }
 <div class="app">
   <header class="bar">
     <div class="bar__name"><b>Black Friday · landing</b><span>Full promo page on NSL Design System · desktop 1440 and mobile 375</span></div>
+    <div class="seg" role="group" aria-label="Variant" id="variants">
+      <button type="button" data-v="desktop" aria-pressed="true">Тёмная</button>
+      <button type="button" data-v="light" aria-pressed="false">Светлая</button>
+    </div>
     <div class="seg" role="group" aria-label="Frame width" id="widths">
       <button type="button" data-w="fit" aria-pressed="true">Fit</button>
       <button type="button" data-w="1440" aria-pressed="false">1440</button>
@@ -76,10 +80,12 @@ iframe { display: block; border: 0; transform-origin: 0 0; background: #fff; }
     <aside class="notes" id="notes" aria-label="Notes">
       <h2>Что это</h2>
       <ul>
-        <li>Полный промо-лендинг Black Friday 2026, тёмная версия с холста: hero, Warranty Terms, Eligible Generations, What 5 year means, How It Works, For Business, FAQ, финальный CTA с Terms и футер.</li>
+        <li>Полный промо-лендинг Black Friday 2026 с холста, тёмная версия и светлый эксперимент: hero, Warranty Terms, Eligible Generations, What 5 year means, How It Works, For Business, FAQ, финальный CTA с Terms и футер.</li>
         <li>Все компоненты — из NSL DS: <code>Header</code>/<code>MobileHeader</code>, <code>Button</code>, <code>ProductCard</code>, <code>Accordion</code>, <code>Link</code>, <code>Icon</code>, <code>Footer</code>. Разметка отрендерена заранее, на странице нет React.</li>
-        <li>Две страницы: <a href="desktop.html" target="_blank">desktop.html</a> (макет 1440) и <a href="mobile.html" target="_blank">mobile.html</a> (макет 375). В режиме Fit шелл сам берёт мобильную, если ширина меньше 720 px.</li>
+        <li>Три страницы: <a href="desktop.html" target="_blank">desktop.html</a> (тёмная, 1440), <a href="light.html" target="_blank">light.html</a> (светлый эксперимент, 1440) и <a href="mobile.html" target="_blank">mobile.html</a> (375). Переключатель «Тёмная / Светлая» сверху. В режиме Fit шелл сам берёт мобильную, если ширина меньше 720 px.</li>
+        <li>Мобильная версия пока одна, тёмная: светлой доски 375 на холсте нет, поэтому на 375 обе версии показывают её.</li>
         <li>Страница масштабирует макет под окно, поэтому на 1024 десктоп просто уменьшен. Промежуточной планшетной вёрстки пока нет.</li>
+        <li>Светлая версия: лесенка гарантий 3/4/5 колонки, светлые поколения с градиентной цифрой на hover, бенто What 5 year / How It Works / For Business, FAQ карточками в две колонки, финальный CTA карточкой с контактами.</li>
         <li>Отступы секций сверху и снизу — 64 px.</li>
       </ul>
 
@@ -113,11 +119,13 @@ iframe { display: block; border: 0; transform-origin: 0 0; background: #fff; }
   var stage = document.getElementById('stage'), box = document.getElementById('box'), frame = document.getElementById('frame'), scaleTag = document.getElementById('scale');
   var notes = document.getElementById('notes'), notesBtn = document.getElementById('notesBtn');
   var mode = 'fit';
+  var variant = /[?&]v=light/.test(location.search) ? 'light' : 'desktop';
+  try { if (!/[?&]v=/.test(location.search) && localStorage.getItem('bf-landing-v')) variant = localStorage.getItem('bf-landing-v'); } catch (e) {}
   try { var saved = localStorage.getItem('bf-landing-w'); if (saved) mode = saved; } catch (e) {}
   if (window.innerWidth < 1100) { notes.hidden = true; notesBtn.setAttribute('aria-pressed', 'false'); }
   function layout() {
     var sw = stage.clientWidth, sh = stage.clientHeight;
-    var want = (mode === '375' || (mode === 'fit' && sw < 720)) ? 'mobile.html' : 'desktop.html';
+    var want = (mode === '375' || (mode === 'fit' && sw < 720)) ? 'mobile.html' : variant + '.html';
     if (frame.getAttribute('src') !== want) frame.setAttribute('src', want);
     stage.classList.toggle('is-fit', mode === 'fit');
     box.classList.toggle('is-phone', mode === '375');
@@ -137,6 +145,14 @@ iframe { display: block; border: 0; transform-origin: 0 0; background: #fff; }
   }
   document.getElementById('widths').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setMode(b.dataset.w); });
   notesBtn.addEventListener('click', function () { notes.hidden = !notes.hidden; notesBtn.setAttribute('aria-pressed', String(!notes.hidden)); layout(); });
+  function setVariant(v) {
+    variant = v;
+    try { localStorage.setItem('bf-landing-v', v); } catch (e) {}
+    document.querySelectorAll('#variants button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === v)); });
+    layout();
+  }
+  document.getElementById('variants').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setVariant(b.dataset.v); });
+  setVariant(variant);
   new ResizeObserver(layout).observe(stage);
   setMode(mode);
 })();
