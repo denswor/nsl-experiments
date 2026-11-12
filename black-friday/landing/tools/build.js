@@ -118,13 +118,36 @@ function node($, n, scope) {
   return '<' + tag + attrs + '>' + inner + '</' + tag + '>';
 }
 
+// ---- fixed board → fluid page ----
+const FLUID = [
+  // desktop: root, header, footer
+  ["width: 1440px; display: flex; flex-direction: column", "width: 100%; display: flex; flex-direction: column"],
+  ["style=\"width: 1440px; height: 112px; flex-shrink: 0\"", "style=\"width: 100%; height: 112px; flex-shrink: 0\""],
+  ["style=\"width: 1440px; flex-shrink: 0\"", "style=\"width: 100%; flex-shrink: 0\""],
+  // desktop decor: server photo stays 1440 and centred, mark centred
+  ["left: 0; top: 360px; width: 1440px", "left: 50%; margin-left: -720px; top: 360px; width: 1440px"],
+  ["left: 0; top: -300px; width: 1440px", "left: 50%; margin-left: -720px; top: -300px; width: 1440px"],
+  ["left: 540px; top: 50px; width: 360px", "left: 50%; margin-left: -180px; top: 50px; width: 360px"],
+  // mobile: root, header, footer
+  ["width: 375px; display: flex; flex-direction: column", "width: 100%; display: flex; flex-direction: column"],
+  ["style=\"width: 375px; height: 48px;", "style=\"width: 100%; height: 48px;"],
+  ["variant=\"mobile\" style=\"width: 375px; flex-shrink: 0\"", "variant=\"mobile\" style=\"width: 100%; max-width: none; flex-shrink: 0\""],
+  // mobile decor centred
+  ["left: 48px; top: 48px; width: 279px", "left: 50%; margin-left: -139.5px; top: 48px; width: 279px"],
+  ["left: -210px; top: -70px; width: 795px", "left: 50%; margin-left: -397.5px; top: -70px; width: 795px"],
+  ["left: -210px; top: -170px; width: 795px", "left: 50%; margin-left: -397.5px; top: -170px; width: 795px"]
+];
+
 // ---- page ----
 const FONTS = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Montserrat:wght@900&display=swap';
 const RUNTIME = fs.readFileSync(path.join(ROOT, 'src/landing.js'), 'utf8');
 const BASE_CSS = fs.readFileSync(path.join(ROOT, 'src/landing.css'), 'utf8');
 
 function build(srcFile, outFile, opts) {
-  const src = fs.readFileSync(path.join(ROOT, 'src', srcFile), 'utf8');
+  let src = fs.readFileSync(path.join(ROOT, 'src', srcFile), 'utf8');
+  // Full-width layout: the canvas boards are fixed-width; on the page the bands stretch
+  // to the window, content stays in the 1170 container, decor stays centred.
+  for (const [a, z] of FLUID) src = src.split(a).join(z);
   const vals = boardVals(src);
   const $ = cheerio.load(src);
   const css = $('x-dc helmet style').map((_, s) => $(s).html()).get().join('\n');

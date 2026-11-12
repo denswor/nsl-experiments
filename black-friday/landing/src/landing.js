@@ -10,11 +10,12 @@
     location.replace('mobile.html' + location.hash); return;
   }
 
-  /* 2. Scale the fixed-width board to the window. */
+  /* 2. The layout is full width. Only below the 1170 container + margins (1230) is the desktop page scaled down. */
+  var MIN = 1230;
   function fit() {
+    if (isMobile) return;
     var vw = document.documentElement.clientWidth;
-    var k = isMobile ? (vw < 720 ? vw / W : 1) : Math.min(1, vw / W);
-    board.style.zoom = k === 1 ? '' : String(k);
+    board.style.zoom = vw < MIN ? String(vw / MIN) : '';
   }
   fit(); window.addEventListener('resize', fit);
 
