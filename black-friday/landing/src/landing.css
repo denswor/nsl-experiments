@@ -1,0 +1,8 @@
+/* Demo page chrome: the board is a fixed-width canvas (1440 or 375) scaled to the window with CSS zoom. */
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #ffffff; -webkit-text-size-adjust: 100%; }
+.bf-board { margin: 0 auto; }
+.bf-board a[href^="#"] { scroll-margin-top: 24px; }
+/* All FAQ panels are in the markup; closed ones are hidden. */
+[data-bf-acc] .nsl-acc__item:not(.is-open) .nsl-acc__panel { display: none; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
