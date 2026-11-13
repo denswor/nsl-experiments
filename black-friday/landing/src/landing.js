@@ -7,7 +7,7 @@
 
   /* 1. Desktop page on a phone → mobile page (only when opened directly, not inside the review shell). */
   if (!isMobile && window.top === window.self && document.documentElement.clientWidth < 720 && !/[?&]stay\b/.test(location.search)) {
-    location.replace('mobile.html' + location.hash); return;
+    location.replace((body.classList.contains('bf--light') ? 'light-mobile.html' : 'mobile.html') + location.hash); return;
   }
 
   /* 2. The layout is full width. Only below the 1170 container + margins (1230) is the desktop page scaled down. */

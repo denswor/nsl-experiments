@@ -7,3 +7,12 @@ body { margin: 0; background: #ffffff; -webkit-text-size-adjust: 100%; }
 /* All FAQ panels are in the markup; closed ones are hidden. */
 [data-bf-acc] .nsl-acc__item:not(.is-open) .nsl-acc__panel { display: none; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* DS layout: 1170 container on desktop, wide 1530 container from the 1680 breakpoint. */
+:root { --bf-container: var(--container-desktop, 1170px); }
+.bf-foot--w { display: none; }
+@media (min-width: 1680px) {
+  :root { --bf-container: var(--container-wide, 1530px); }
+  .bf-foot--d { display: none; }
+  .bf-foot--w { display: block; }
+}

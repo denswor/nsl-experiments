@@ -21,6 +21,15 @@ body { margin: 0; background: #ffffff; -webkit-text-size-adjust: 100%; }
 [data-bf-acc] .nsl-acc__item:not(.is-open) .nsl-acc__panel { display: none; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
+/* DS layout: 1170 container on desktop, wide 1530 container from the 1680 breakpoint. */
+:root { --bf-container: var(--container-desktop, 1170px); }
+.bf-foot--w { display: none; }
+@media (min-width: 1680px) {
+  :root { --bf-container: var(--container-wide, 1530px); }
+  .bf-foot--d { display: none; }
+  .bf-foot--w { display: block; }
+}
+
 
 /* from the canvas board */
 body{margin:0}
@@ -274,7 +283,7 @@ body{margin:0}
 
   /* 1. Desktop page on a phone → mobile page (only when opened directly, not inside the review shell). */
   if (!isMobile && window.top === window.self && document.documentElement.clientWidth < 720 && !/[?&]stay\b/.test(location.search)) {
-    location.replace('mobile.html' + location.hash); return;
+    location.replace((body.classList.contains('bf--light') ? 'light-mobile.html' : 'mobile.html') + location.hash); return;
   }
 
   /* 2. The layout is full width. Only below the 1170 container + margins (1230) is the desktop page scaled down. */

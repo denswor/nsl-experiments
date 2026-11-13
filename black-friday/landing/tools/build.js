@@ -69,6 +69,11 @@ function renderImport($, el, scope) {
     props.multiple = true;
   }
   let html = S.renderToStaticMarkup(React.createElement(Comp, props));
+  if (name === 'Footer' && props.variant === 'desktop') {
+    // Wide screens get the DS wide footer (1530 container); CSS switches at 1680.
+    const wide = S.renderToStaticMarkup(React.createElement(Comp, Object.assign({}, props, { variant: 'wide' })));
+    return '<div class="bf-foot bf-foot--d">' + html + '</div><div class="bf-foot bf-foot--w">' + wide + '</div>';
+  }
   const frag = cheerio.load(html, null, false);
   const root = frag.root().children().first();
   if (style) root.attr('style', ((root.attr('style') || '') + ';' + style).replace(/^;/, ''));
@@ -128,6 +133,8 @@ const FLUID = [
   ["left: 0; top: 360px; width: 1440px", "left: 50%; margin-left: -720px; top: 360px; width: 1440px"],
   ["left: 0; top: -300px; width: 1440px", "left: 50%; margin-left: -720px; top: -300px; width: 1440px"],
   ["left: 540px; top: 50px; width: 360px", "left: 50%; margin-left: -180px; top: 50px; width: 360px"],
+  // desktop: content container follows the DS breakpoints (1170, wide 1530 from 1680)
+  ["width: 1170px", "width: var(--bf-container)"],
   // mobile: root, header, footer
   ["width: 375px; display: flex; flex-direction: column", "width: 100%; display: flex; flex-direction: column"],
   ["style=\"width: 375px; height: 48px;", "style=\"width: 100%; height: 48px;"],
@@ -196,6 +203,12 @@ build('light.dc.html', 'light.html', {
   viewport: 'width=device-width, initial-scale=1',
   width: 1440,
   bodyClass: 'bf bf--desktop bf--light'
+});
+build('light-mobile.dc.html', 'light-mobile.html', {
+  title: 'Black Friday 2026 · light · mobile · NewServerLife',
+  viewport: 'width=device-width, initial-scale=1',
+  width: 375,
+  bodyClass: 'bf bf--mobile bf--light'
 });
 build('mobile.dc.html', 'mobile.html', {
   title: 'Black Friday 2026 · mobile · NewServerLife',
