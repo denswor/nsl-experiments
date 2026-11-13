@@ -71,8 +71,8 @@ body { margin: 0; background: #fff; color: var(--text-primary); font-family: "IB
 <body>
 <div id="header"></div>
 
-<section class="bf nsl-on-dark" id="hero" aria-labelledby="bf-title">
-  <svg class="bf__mark" id="mark" viewBox="0 0 461 685" aria-hidden="true">
+<section class="bf nsl-on-dark" id="hero" data-nsl-bf aria-labelledby="bf-title">
+  <svg class="bf__mark" id="mark" data-nsl-bf-mark viewBox="0 0 461 685" aria-hidden="true">
     <defs>
       <path id="mk" d="M21.9512 685C18.1566 685 14.374 684.016 10.9756 682.06C4.19091 678.136 0 670.901 0 663.053V433.646C0 379.924 28.1595 332.441 75.3043 306.642C122.473 280.843 177.663 282.715 222.971 311.646L261.698 336.377C293.268 356.548 331.742 357.856 364.609 339.869C397.476 321.882 417.098 288.787 417.098 251.348V59.9317L252.451 154.908V255.668C252.451 267.788 242.628 277.603 230.5 277.603C218.372 277.603 208.549 267.788 208.549 255.668V142.249C208.549 134.413 212.74 127.165 219.524 123.253L428.073 2.93389C434.87 -0.977963 443.24 -0.977963 450.024 2.93389C456.821 6.85774 461 14.0935 461 21.9292V251.336C461 305.058 432.84 352.541 385.696 378.352C338.539 404.151 283.337 402.279 238.029 373.348L199.302 348.617C167.732 328.458 129.246 327.15 96.3789 345.125C63.5121 363.1 43.8905 396.195 43.8905 433.646V625.062L208.525 530.074V429.314C208.525 417.194 218.348 407.379 230.476 407.379C242.604 407.379 252.427 417.194 252.427 429.314V542.733C252.427 550.569 248.236 557.817 241.452 561.729L32.9269 682.06C29.5405 684.016 25.7459 685 21.9512 685Z"/>
       <linearGradient id="lg" x1="230" y1="685" x2="230" y2="0" gradientUnits="userSpaceOnUse">
@@ -91,8 +91,8 @@ body { margin: 0; background: #fff; color: var(--text-primary); font-family: "IB
     </defs>
     <use href="#mk" fill="url(#lg)" opacity=".22" filter="url(#au)"/>
     <use class="rim-base" href="#mk" fill="#0e0919" stroke="url(#lg)" stroke-opacity=".5"/>
-    <use class="rim rim-glow" href="#mk" fill="none" stroke="url(#spotIdle)" filter="url(#bl)"/>
-    <use class="rim rim-line" href="#mk" fill="none" stroke="url(#spotIdle)"/>
+    <use class="rim rim-glow" data-nsl-bf-rim href="#mk" fill="none" stroke="url(#spotIdle)" filter="url(#bl)"/>
+    <use class="rim rim-line" data-nsl-bf-rim href="#mk" fill="none" stroke="url(#spotIdle)"/>
   </svg>
 
   <div class="bf__stack">
@@ -140,27 +140,9 @@ body { margin: 0; background: #fff; color: var(--text-primary); font-family: "IB
   ReactDOM.createRoot(document.getElementById('header')).render(h(Head));
   ReactDOM.createRoot(document.getElementById('cta')).render(h(Cta));
 
-  /* Rim light: follows the pointer (mouse, or a finger while it touches the hero); otherwise drifts on its own. */
-  var hero = document.getElementById('hero'), mark = document.getElementById('mark');
-  var spot = document.getElementById('spotMouse'), rims = mark.querySelectorAll('.rim');
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce && mark.pauseAnimations) mark.pauseAnimations();
-  function use(id) { rims.forEach(function (r) { r.setAttribute('stroke', 'url(#' + id + ')'); }); }
-  var pt = mark.createSVGPoint(), raf = 0, last = null;
-  function apply() {
-    raf = 0;
-    var m = mark.getScreenCTM(); if (!m || !last) return;
-    pt.x = last.x; pt.y = last.y;
-    var p = pt.matrixTransform(m.inverse());
-    spot.setAttribute('cx', Math.round(p.x)); spot.setAttribute('cy', Math.round(p.y));
-  }
-  hero.addEventListener('pointermove', function (e) { last = { x: e.clientX, y: e.clientY }; use('spotMouse'); if (!raf) raf = requestAnimationFrame(apply); });
-  hero.addEventListener('pointerdown', function (e) { last = { x: e.clientX, y: e.clientY }; use('spotMouse'); apply(); });
-  function release() { use('spotIdle'); }
-  hero.addEventListener('pointerleave', release);
-  hero.addEventListener('pointercancel', release);
-  hero.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') release(); });
+  /* Rim light: the same code as the developer package (component/dist/nsl-bf.min.js), works in Safari too. */
 })();
 </script>
+<script src="component/dist/nsl-bf.min.js"></script>
 </body>
 </html>

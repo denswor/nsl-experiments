@@ -183,29 +183,34 @@ function renderBoard(srcFile, cls, idSuffix) {
 }
 
 // One page: the desktop board, plus an optional mobile board swapped in below 720px.
+// Writes the demo page (inline CSS/JS, links the repo DS) and, with opts.pkg, the developer copy in dist/.
+const PKG_PAGES = [];
 function build(outFile, opts) {
   const parts = [renderBoard(opts.desktop, 'bf-board--d', '')];
   if (opts.mobile) parts.push(renderBoard(opts.mobile, 'bf-board--m', '-m'));
-  const html = `<!doctype html>
+  const boardCss = parts.map((p) => p.css.trim()).join('\n');
+  const bodyHtml = parts.map((p) => p.body).join('\n');
+  const head = (title, links) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${opts.title}</title>
+<title>${title}</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${FONTS}">
-<link rel="stylesheet" href="../../_shared/nsl/tokens.css">
+${links}`;
+  const html = head(opts.title, `<link rel="stylesheet" href="../../_shared/nsl/tokens.css">
 <link rel="stylesheet" href="../../_shared/nsl/bundle.css">
 <style>
 ${BASE_CSS}
 /* from the canvas boards */
-${parts.map((p) => p.css.trim()).join('\n')}
+${boardCss}
 </style>
-</head>
+</head>`) + `
 <body class="bf${opts.mobile ? ' bf--responsive' : ''}">
-${parts.map((p) => p.body).join('\n')}
+${bodyHtml}
 <script>
 ${RUNTIME}
 </script>
@@ -214,7 +219,70 @@ ${RUNTIME}
 `;
   fs.writeFileSync(path.join(ROOT, outFile), html);
   console.log(outFile, (html.length / 1024).toFixed(1) + ' KB');
+  if (opts.pkg) PKG_PAGES.push({ name: opts.pkg, title: opts.title, css: BASE_CSS + '\n/* sections (from the canvas boards) */\n' + boardCss, body: bodyHtml, head });
 }
 
-build('desktop.html', { title: 'Black Friday 2026 · NewServerLife', desktop: 'desktop.dc.html', mobile: 'mobile.dc.html' });
-build('light.html', { title: 'Black Friday 2026 · light · NewServerLife', desktop: 'light.dc.html', mobile: 'light-mobile.dc.html' });
+// Developer package: plain HTML + CSS + vanilla JS, no React, no build step needed to use it.
+function writePackage() {
+  const { execSync } = require('child_process');
+  const terser = require('terser');
+  const VERSION = require(path.join(ROOT, 'package.json')).version;
+  const DIST = path.join(ROOT, 'dist');
+  fs.rmSync(DIST, { recursive: true, force: true });
+  ['css', 'js', 'assets'].forEach((d) => fs.mkdirSync(path.join(DIST, d), { recursive: true }));
+  const fix = (s) => s.split('../assets/').join('assets/');
+  // DS: tokens in full, components only what the pages use
+  const used = new Set();
+  PKG_PAGES.forEach((p) => (p.body.match(/class="([^"]+)"/g) || []).forEach((m) => m.slice(7, -1).split(/\s+/).forEach((c) => used.add(c))));
+  ['is-open', 'is-active'].forEach((c) => used.add(c));
+  const ds = fs.readFileSync(path.join(DS, 'tokens.css'), 'utf8') + '\n' + subset(fs.readFileSync(path.join(DS, 'bundle.css'), 'utf8'), used);
+  fs.writeFileSync(path.join(DIST, 'css/nsl-ds.css'), '/* NSL Design System: tokens + the component styles this landing uses (subset of bundle.css) */\n' + ds);
+  fs.writeFileSync(path.join(DIST, 'js/bf-landing.js'), '/*! nsl-bf-landing v' + VERSION + ' */\n' + RUNTIME);
+  return terser.minify(RUNTIME, { compress: true, mangle: true }).then((min) => {
+    fs.writeFileSync(path.join(DIST, 'js/bf-landing.min.js'), '/*! nsl-bf-landing v' + VERSION + ' */\n' + min.code);
+    fs.copyFileSync(path.join(ROOT, '../assets/server-r740xd-lit.webp'), path.join(DIST, 'assets/server-r740xd-lit.webp'));
+    for (const p of PKG_PAGES) {
+      fs.writeFileSync(path.join(DIST, 'css/' + p.name + '.css'), '/* Black Friday landing · ' + p.name + ' */\n' + p.css);
+      const html = p.head(p.title, `<link rel="stylesheet" href="css/nsl-ds.css">
+<link rel="stylesheet" href="css/${p.name}.css">
+</head>`) + `
+<body class="bf bf--responsive">
+${fix(p.body)}
+<script src="js/bf-landing.min.js" defer></script>
+</body>
+</html>
+`;
+      fs.writeFileSync(path.join(DIST, p.name + '.html'), html);
+    }
+    for (const f of ['README.md', 'CHANGELOG.md']) fs.copyFileSync(path.join(ROOT, 'package', f), path.join(DIST, f));
+    const zip = 'nsl-bf-landing-' + VERSION + '.zip';
+    fs.readdirSync(ROOT).filter((f) => /^nsl-bf-landing-.*\.zip$/.test(f)).forEach((f) => fs.unlinkSync(path.join(ROOT, f)));
+    execSync('zip -qr -X ../' + zip + ' .', { cwd: DIST });
+    console.log(zip, (fs.statSync(path.join(ROOT, zip)).size / 1024).toFixed(1) + ' KB');
+  });
+}
+
+function subset(css, used) {
+  const root = postcss.parse(css);
+  root.walkComments(c => c.remove());
+  root.walkAtRules('font-face', r => r.remove());
+  root.walkRules(rule => {
+    if (rule.parent && rule.parent.type === 'atrule' && /keyframes/.test(rule.parent.name)) return;
+    const keep = rule.selectors.filter(sel => {
+      const where = sel.match(/:where\(([^)]*)\)/g);
+      const plain = sel.replace(/:where\([^)]*\)/g, '');
+      const cls = (plain.match(/\.(nsl-[\w-]+)/g) || []).map(c => c.slice(1));
+      const wcls = where ? where.join(' ').match(/\.(nsl-[\w-]+)/g).map(c => c.slice(1)) : [];
+      if (!cls.length && !wcls.length) return false;
+      return cls.every(c => used.has(c)) && (!wcls.length || wcls.some(c => used.has(c)));
+    });
+    if (!keep.length) rule.remove(); else rule.selectors = keep;
+  });
+  root.walkAtRules(a => { if (!/keyframes|font-face/.test(a.name) && !a.nodes.length) a.remove(); });
+  root.walkAtRules(a => { if (!/keyframes|font-face/.test(a.name) && !a.nodes.length) a.remove(); });
+  return root.toString().replace(/\n{2,}/g, '\n');
+}
+
+build('desktop.html', { title: 'Black Friday 2026 · NewServerLife', desktop: 'desktop.dc.html', mobile: 'mobile.dc.html', pkg: 'dark' });
+build('light.html', { title: 'Black Friday 2026 · NewServerLife', desktop: 'light.dc.html', mobile: 'light-mobile.dc.html', pkg: 'light' });
+writePackage();

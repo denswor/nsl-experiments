@@ -1,0 +1,79 @@
+/* Black Friday landing · dark */
+/* Demo page chrome. One page holds two boards from the canvas:
+   .bf-board--d (desktop, 1170 / wide 1530 container) and .bf-board--m (mobile, under 720px). */
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+body { margin: 0; background: #ffffff; -webkit-text-size-adjust: 100%; }
+.bf-board { margin: 0; overflow: clip !important; }
+.bf-board a[href^="#"] { scroll-margin-top: 24px; }
+
+/* Responsive switch: the same URL works on any screen. */
+.bf-board--m { display: none !important; }
+@media (max-width: 719px) {
+  html { scroll-padding-top: 56px; }
+  .bf-board--d { display: none !important; }
+  .bf-board--m { display: flex !important; }
+}
+
+/* FAQ: all panels are in the markup. Height and bottom padding animate, the chevron turns with the same easing. */
+[data-bf-acc] .nsl-acc__panel { overflow: hidden; transition: height .4s cubic-bezier(.65, 0, .2, 1), padding-bottom .4s cubic-bezier(.65, 0, .2, 1), opacity .3s ease, visibility 0s; }
+[data-bf-acc] .nsl-acc__item:not(.is-open) .nsl-acc__panel { height: 0; padding-bottom: 0 !important; opacity: 0; visibility: hidden; transition: height .4s cubic-bezier(.65, 0, .2, 1), padding-bottom .4s cubic-bezier(.65, 0, .2, 1), opacity .25s ease, visibility 0s .4s; }
+[data-bf-acc] .nsl-acc__head .nsl-icon { transition: transform .4s cubic-bezier(.65, 0, .2, 1); }
+@media (prefers-reduced-motion: reduce) { [data-bf-acc] .nsl-acc__panel, [data-bf-acc] .nsl-acc__head .nsl-icon { transition: none !important; } }
+
+/* DS layout: 1170 container on desktop, wide 1530 container from the 1680 breakpoint. */
+:root { --bf-container: var(--container-desktop, 1170px); }
+.bf-foot--w { display: none; }
+@media (min-width: 1680px) {
+  :root { --bf-container: var(--container-wide, 1530px); }
+  .bf-foot--d { display: none; }
+  .bf-foot--w { display: block; }
+}
+
+/* Fixed headers. */
+/* Desktop: the whole header shows at the top; on scroll the gradient strip (40px) slides away
+   and the white main bar stays pinned. Done with sticky + negative top, no JS. */
+.bf-board--d .nsl-header { position: sticky !important; top: -40px; z-index: 60; height: auto !important; background: #ffffff; box-shadow: 0 1px 0 #e5e7eb, 0 6px 16px -8px rgba(24, 48, 76, 0.18); }
+.bf-board--m .nsl-mshell { position: sticky !important; top: 0; z-index: 60; }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* sections (from the canvas boards) */
+body{margin:0}
+.bf-board--d .fade{animation:fd .9s ease-out both}
+@keyframes fd{from{opacity:0}to{opacity:1}}
+.bf-board--d .gen__head:focus-visible{outline:2px solid #f77fb8;outline-offset:4px;border-radius:4px}
+.bf-board--d .gen::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s ease;background:radial-gradient(ellipse 50% 100% at 50% 0%,rgba(255,255,255,.07) 0%,transparent 100%)}
+.bf-board--d .gen:hover::before{opacity:1}
+.bf-board--d .gen>*{position:relative}
+.bf-board--d .gen__num{color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.4);transition:color .35s ease,-webkit-text-stroke-color .35s ease,text-shadow .35s ease}
+.bf-board--d .gen__sfx{color:rgba(255,255,255,.45);transition:color .35s ease}
+.bf-board--d .gen:hover .gen__num,.bf-board--d .gen.is-open .gen__num{color:#fff;-webkit-text-stroke-color:transparent;text-shadow:0 0 40px rgba(247,127,184,.4)}
+.bf-board--d .gen:hover .gen__sfx,.bf-board--d .gen.is-open .gen__sfx{color:#f77fb8}
+.bf-board--d .gen__go{background:#b91f69;color:#fff;opacity:0;transform:scale(.8);transition:opacity .25s ease,transform .35s cubic-bezier(.3,1.5,.5,1),background-color .2s}
+.bf-board--d .gen:hover .gen__go,.bf-board--d .gen__head:focus-visible .gen__go{opacity:1;transform:scale(1)}
+.bf-board--d .gen.is-open .gen__go{opacity:1;transform:rotate(180deg);background:rgba(255,255,255,.12)}
+.bf-board--d .gen__body{max-height:72px;overflow:hidden;transition:max-height .6s cubic-bezier(.65,0,.2,1);-webkit-mask-image:linear-gradient(#000 0,transparent 100%);mask-image:linear-gradient(#000 0,transparent 100%)}
+.bf-board--d .gen:hover .gen__body{max-height:150px}
+.bf-board--d .gen.is-open .gen__body{max-height:720px;-webkit-mask-image:none;mask-image:none}
+@media (prefers-reduced-motion:reduce){.bf-board--d .gen__body,.bf-board--d .gen__go,.bf-board--d .gen__num{transition:none}}
+@media (prefers-reduced-motion:reduce){.bf-board--d .fade{animation:none}}
+.bf-board--d .bf-faq .nsl-acc__head{padding:20px 16px 20px 0;gap:32px}
+.bf-board--d .bf-faq .nsl-acc__head .nsl-icon{flex-shrink:0}
+.bf-board--d .bf-faq .nsl-acc__panel{padding:0 72px 24px 0}
+body{margin:0}
+.bf-board--m .mg__head{width:100%;display:flex;flex-direction:column;gap:12px;padding:20px 16px 16px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.bf-board--m .mg__head:focus-visible{outline:2px solid #f77fb8;outline-offset:-2px}
+.bf-board--m .mg__num{font-family:Montserrat,sans-serif;font-size:56px;line-height:48px;font-weight:900;letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1.25px rgba(255,255,255,.45);transition:color .3s ease,-webkit-text-stroke-color .3s ease}
+.bf-board--m .mg__sfx{margin-top:4px;font:600 10px/12px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.bf-board--m .mg.is-open .mg__num{color:#fff;-webkit-text-stroke-color:transparent;text-shadow:0 0 32px rgba(247,127,184,.4)}
+.bf-board--m .mg.is-open .mg__sfx{color:#f77fb8}
+.bf-board--m .mg__go{flex-shrink:0;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:9999px;background:#b91f69;color:#fff;transition:transform .3s ease,background-color .2s}
+.bf-board--m .mg.is-open .mg__go{transform:rotate(180deg);background:rgba(255,255,255,.12)}
+.bf-board--m .mg__body{max-height:64px;overflow:hidden;transition:max-height .5s cubic-bezier(.65,0,.2,1);-webkit-mask-image:linear-gradient(#000 0,transparent 100%);mask-image:linear-gradient(#000 0,transparent 100%)}
+.bf-board--m .mg.is-open .mg__body{max-height:640px;-webkit-mask-image:none;mask-image:none}
+.bf-board--m .mg__strip{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 16px;padding:0 16px 24px}
+.bf-board--m .mg__strip::-webkit-scrollbar{display:none}
+.bf-board--m .bf-faq .nsl-acc__head{padding:16px 4px 16px 0;gap:24px;font-size:16px;line-height:22px}
+.bf-board--m .bf-faq .nsl-acc__head .nsl-icon{flex-shrink:0}
+.bf-board--m .bf-faq .nsl-acc__panel{padding:0 32px 20px 0;font-size:14px;line-height:20px}
+@media (prefers-reduced-motion:reduce){.bf-board--m .mg__body,.bf-board--m .mg__go,.bf-board--m .mg__num{transition:none}}

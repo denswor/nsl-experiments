@@ -35,7 +35,8 @@ black-friday/     Black Friday home hero, variant C (dark band, mark with rim li
   assets/         server photo with transparent background
   component/      nsl-bf — the same hero in vanilla JS for the live site: CSS, JS, HTML snippet, Bitrix include, demo, ZIP for developers
   landing/        full Black Friday landing: review shell, desktop.html (dark) and light.html (light), each responsive:
-                  desktop board + mobile board in one page, switched at 720px (src/*.dc.html → tools/build.js; src/landing.js)
+                  desktop board + mobile board in one page, switched at 720px (src/*.dc.html → tools/build.js; src/landing.js);
+                  dist/ + nsl-bf-landing-<version>.zip — the same pages for developers: HTML, CSS, vanilla JS, no React
 header-catalog/   Header catalog menu, motion concept A (curtain), full-viewport, wide container from 1680
   index.html      light menu; #black-friday = dark Black Friday menu (React 18, real Header / CatalogMenu from the NSL bundle, motion with WAAPI)
   bf-banner.png   Black Friday banner in the brand row (both themes)

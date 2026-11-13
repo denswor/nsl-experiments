@@ -1,8 +1,16 @@
 {
   "name": "nsl-bf",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Black Friday hero for newserverlife.com on the NSL Design System: NSL mark with rim light that follows the pointer, server photo as decor. Plain JS, no React.",
-  "scripts": { "build": "node tools/build.js" },
-  "devDependencies": { "react": "18.3.1", "react-dom": "18.3.1", "cheerio": "1.0.0", "postcss": "8.4.47", "terser": "5.36.0" }
+  "scripts": {
+    "build": "node tools/build.js"
+  },
+  "devDependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "cheerio": "1.0.0",
+    "postcss": "8.4.47",
+    "terser": "5.36.0"
+  }
 }
