@@ -638,53 +638,77 @@ body{margin:0}
   });
 
   /* 4. Rim light on the NSL mark: follows the cursor or finger, otherwise circles the contour by itself.
-     The idle loop used to be SMIL <animate> on the gradient; Safari does not repaint strokes whose gradient
-     is animated that way (the mark is drawn through <use>), so the loop now runs on requestAnimationFrame
-     with the same keyframes and works the same in every browser. */
-  var loops = [];
-  document.querySelectorAll('radialGradient[id^="spotIdle"]').forEach(function (g) {
-    var anim = {};
+     Safari does not repaint a stroke when the gradient it uses changes (neither SMIL nor setAttribute,
+     and not at all through <use>). So the light is rebuilt as geometry: a soft radial "dot" that moves
+     under a mask cut from the mark's outline. Moving a circle repaints everywhere, Safari included. */
+  var NS = 'http://www.w3.org/2000/svg', uid = 0, spots = [], kfCache = {};
+  function keyframes(g) {
+    if (kfCache[g.id]) return kfCache[g.id];
+    var k = { cx: null, cy: null, dur: 9000, x: +g.getAttribute('cx') || 230, y: +g.getAttribute('cy') || 340, r: +g.getAttribute('r') || 210, stops: [] };
     g.querySelectorAll('animate').forEach(function (a) {
-      anim[a.getAttribute('attributeName')] = a.getAttribute('values').split(';').map(Number);
-      anim.dur = parseFloat(a.getAttribute('dur')) * 1000 || 9000;
-      a.remove();
+      k[a.getAttribute('attributeName')] = a.getAttribute('values').split(';').map(Number);
+      k.dur = parseFloat(a.getAttribute('dur')) * 1000 || k.dur;
     });
-    if (anim.cx && anim.cy && !reduce) loops.push({ g: g, cx: anim.cx, cy: anim.cy, dur: anim.dur });
+    g.querySelectorAll('stop').forEach(function (s) { k.stops.push([s.getAttribute('offset') || '0', s.getAttribute('stop-color'), s.getAttribute('stop-opacity')]); });
+    return (kfCache[g.id] = k);
+  }
+  function el(tag, attrs) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  document.querySelectorAll('svg').forEach(function (svg) {
+    var uses = [].filter.call(svg.querySelectorAll('use'), function (u) { return /^url\(#spot/.test(u.getAttribute('stroke') || ''); });
+    if (!uses.length) return;
+    var gid = uses[0].getAttribute('stroke').slice(5, -1).replace(/^spot(Mouse|Touch)/, 'spotIdle');
+    var g = document.getElementById(gid), mk = document.getElementById((uses[0].getAttribute('href') || '').slice(1));
+    if (!g || !mk) return;
+    var k = keyframes(g), n = ++uid, d = mk.getAttribute('d');
+    var defs = el('defs', {});
+    var dot = el('radialGradient', { id: 'bfDot' + n });
+    k.stops.forEach(function (s) { var st = el('stop', { offset: s[0], 'stop-color': s[1] }); if (s[2] != null) st.setAttribute('stop-opacity', s[2]); dot.appendChild(st); });
+    var mask = el('mask', { id: 'bfMask' + n, maskUnits: 'userSpaceOnUse', x: -300, y: -300, width: 1100, height: 1300 });
+    uses.forEach(function (u) {
+      var p = el('path', { d: d, fill: 'none', stroke: '#fff', 'stroke-width': u.getAttribute('stroke-width') || 3 });
+      if (u.getAttribute('filter')) p.setAttribute('filter', u.getAttribute('filter'));
+      mask.appendChild(p);
+    });
+    defs.appendChild(dot); defs.appendChild(mask); svg.insertBefore(defs, svg.firstChild);
+    var grp = el('g', { mask: 'url(#bfMask' + n + ')' });
+    var c = el('circle', { cx: k.x, cy: k.y, r: k.r, fill: 'url(#bfDot' + n + ')' });
+    grp.appendChild(c);
+    uses[0].parentNode.insertBefore(grp, uses[0]);
+    uses.forEach(function (u) { u.remove(); });
+    spots.push({ svg: svg, c: c, k: k, follow: null });
   });
+  document.querySelectorAll('radialGradient[id^="spotIdle"] animate').forEach(function (a) { a.remove(); });
   function lerpVals(v, t) {                 // values spread evenly over the loop, linear like calcMode="linear"
     var n = v.length - 1, x = t * n, i = Math.min(Math.floor(x), n - 1), f = x - i;
     return v[i] + (v[i + 1] - v[i]) * f;
   }
-  if (loops.length) {
+  if (spots.length) {
     var t0 = performance.now();
     (function tick(now) {
-      if (!document.hidden) loops.forEach(function (l) {
-        var t = (((now - t0) % l.dur + l.dur) % l.dur) / l.dur;   // rAF time can be a hair before t0
-        l.g.setAttribute('cx', lerpVals(l.cx, t).toFixed(1));
-        l.g.setAttribute('cy', lerpVals(l.cy, t).toFixed(1));
+      if (!document.hidden) spots.forEach(function (s) {
+        var x, y;
+        if (s.follow) { x = s.follow.x; y = s.follow.y; }
+        else if (!reduce && s.k.cx && s.k.cy) {
+          var t = (((now - t0) % s.k.dur + s.k.dur) % s.k.dur) / s.k.dur;   // rAF time can be a hair before t0
+          x = lerpVals(s.k.cx, t); y = lerpVals(s.k.cy, t);
+        } else return;
+        s.c.setAttribute('cx', x.toFixed(1)); s.c.setAttribute('cy', y.toFixed(1));
       });
       requestAnimationFrame(tick);
     })(t0);
   }
   document.querySelectorAll('[data-bf-hero]').forEach(function (hero) {
-    var uses = hero.querySelectorAll('[data-bf-spot]');
-    var grad = hero.querySelector('radialGradient[id^="spotMouse"], radialGradient[id^="spotTouch"]');
-    var idle = hero.querySelector('radialGradient[id^="spotIdle"]');
-    if (!uses.length || !grad || !idle) return;
-    var svg = uses[0].ownerSVGElement, pt = svg.createSVGPoint(), raf = 0, last = null;
-    function paint() {
-      raf = 0; if (!last) return;
-      var m = svg.getScreenCTM(); if (!m) return;
-      pt.x = last.x; pt.y = last.y;
-      var p = pt.matrixTransform(m.inverse());
-      grad.setAttribute('cx', Math.round(p.x)); grad.setAttribute('cy', Math.round(p.y));
-    }
+    var own = spots.filter(function (s) { return hero.contains(s.svg); });
+    if (!own.length) return;
     function on(e) {
-      last = { x: e.clientX, y: e.clientY };
-      uses.forEach(function (u) { u.setAttribute('stroke', 'url(#' + grad.id + ')'); });
-      if (!raf) raf = requestAnimationFrame(paint);
+      own.forEach(function (s) {
+        var m = s.svg.getScreenCTM(); if (!m) return;
+        var pt = s.svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+        var p = pt.matrixTransform(m.inverse());
+        s.follow = { x: p.x, y: p.y };
+      });
     }
-    function off() { last = null; uses.forEach(function (u) { u.setAttribute('stroke', 'url(#' + idle.id + ')'); }); }
+    function off() { own.forEach(function (s) { s.follow = null; }); }
     hero.addEventListener('pointermove', on);
     hero.addEventListener('pointerdown', on);
     hero.addEventListener('pointerleave', off);
