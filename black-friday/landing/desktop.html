@@ -26,8 +26,11 @@ body { margin: 0; background: #ffffff; -webkit-text-size-adjust: 100%; }
   .bf-board--m { display: flex !important; }
 }
 
-/* All FAQ panels are in the markup; closed ones are hidden. */
-[data-bf-acc] .nsl-acc__item:not(.is-open) .nsl-acc__panel { display: none; }
+/* FAQ: all panels are in the markup. Height and bottom padding animate, the chevron turns with the same easing. */
+[data-bf-acc] .nsl-acc__panel { overflow: hidden; transition: height .4s cubic-bezier(.65, 0, .2, 1), padding-bottom .4s cubic-bezier(.65, 0, .2, 1), opacity .3s ease, visibility 0s; }
+[data-bf-acc] .nsl-acc__item:not(.is-open) .nsl-acc__panel { height: 0; padding-bottom: 0 !important; opacity: 0; visibility: hidden; transition: height .4s cubic-bezier(.65, 0, .2, 1), padding-bottom .4s cubic-bezier(.65, 0, .2, 1), opacity .25s ease, visibility 0s .4s; }
+[data-bf-acc] .nsl-acc__head .nsl-icon { transition: transform .4s cubic-bezier(.65, 0, .2, 1); }
+@media (prefers-reduced-motion: reduce) { [data-bf-acc] .nsl-acc__panel, [data-bf-acc] .nsl-acc__head .nsl-icon { transition: none !important; } }
 
 /* DS layout: 1170 container on desktop, wide 1530 container from the 1680 breakpoint. */
 :root { --bf-container: var(--container-desktop, 1170px); }
@@ -611,11 +614,26 @@ body{margin:0}
 
   /* 3. FAQ (NSL Accordion markup). */
   document.querySelectorAll('[data-bf-acc] .nsl-acc__head').forEach(function (head) {
+    var item = head.parentElement, panel = item.querySelector('.nsl-acc__panel');
+    function done(e) { if (e.target === panel && e.propertyName === 'height') panel.style.height = ''; }
+    if (panel) panel.addEventListener('transitionend', done);
     head.addEventListener('click', function () {
-      var item = head.parentElement, open = !item.classList.contains('is-open');
-      item.classList.toggle('is-open', open);
+      var open = !item.classList.contains('is-open');
       head.setAttribute('aria-expanded', String(open));
-      if (open) track('faq_open', { q: head.textContent.trim() });
+      if (!panel || reduce) { item.classList.toggle('is-open', open); return; }
+      if (open) {
+        item.classList.add('is-open');               // padding and visibility come back
+        var h = panel.scrollHeight;                   // full height with padding
+        panel.style.height = '0px';
+        panel.offsetHeight;                           // commit the start frame
+        panel.style.height = h + 'px';                // animate to content; reset to auto on transitionend
+        track('faq_open', { q: head.textContent.trim() });
+      } else {
+        panel.style.height = panel.offsetHeight + 'px';
+        panel.offsetHeight;
+        item.classList.remove('is-open');
+        panel.style.height = '0px';
+      }
     });
   });
 

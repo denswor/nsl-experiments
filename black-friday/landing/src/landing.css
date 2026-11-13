@@ -13,8 +13,11 @@ body { margin: 0; background: #ffffff; -webkit-text-size-adjust: 100%; }
   .bf-board--m { display: flex !important; }
 }
 
-/* All FAQ panels are in the markup; closed ones are hidden. */
-[data-bf-acc] .nsl-acc__item:not(.is-open) .nsl-acc__panel { display: none; }
+/* FAQ: all panels are in the markup. Height and bottom padding animate, the chevron turns with the same easing. */
+[data-bf-acc] .nsl-acc__panel { overflow: hidden; transition: height .4s cubic-bezier(.65, 0, .2, 1), padding-bottom .4s cubic-bezier(.65, 0, .2, 1), opacity .3s ease, visibility 0s; }
+[data-bf-acc] .nsl-acc__item:not(.is-open) .nsl-acc__panel { height: 0; padding-bottom: 0 !important; opacity: 0; visibility: hidden; transition: height .4s cubic-bezier(.65, 0, .2, 1), padding-bottom .4s cubic-bezier(.65, 0, .2, 1), opacity .25s ease, visibility 0s .4s; }
+[data-bf-acc] .nsl-acc__head .nsl-icon { transition: transform .4s cubic-bezier(.65, 0, .2, 1); }
+@media (prefers-reduced-motion: reduce) { [data-bf-acc] .nsl-acc__panel, [data-bf-acc] .nsl-acc__head .nsl-icon { transition: none !important; } }
 
 /* DS layout: 1170 container on desktop, wide 1530 container from the 1680 breakpoint. */
 :root { --bf-container: var(--container-desktop, 1170px); }

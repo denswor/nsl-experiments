@@ -24,11 +24,26 @@
 
   /* 3. FAQ (NSL Accordion markup). */
   document.querySelectorAll('[data-bf-acc] .nsl-acc__head').forEach(function (head) {
+    var item = head.parentElement, panel = item.querySelector('.nsl-acc__panel');
+    function done(e) { if (e.target === panel && e.propertyName === 'height') panel.style.height = ''; }
+    if (panel) panel.addEventListener('transitionend', done);
     head.addEventListener('click', function () {
-      var item = head.parentElement, open = !item.classList.contains('is-open');
-      item.classList.toggle('is-open', open);
+      var open = !item.classList.contains('is-open');
       head.setAttribute('aria-expanded', String(open));
-      if (open) track('faq_open', { q: head.textContent.trim() });
+      if (!panel || reduce) { item.classList.toggle('is-open', open); return; }
+      if (open) {
+        item.classList.add('is-open');               // padding and visibility come back
+        var h = panel.scrollHeight;                   // full height with padding
+        panel.style.height = '0px';
+        panel.offsetHeight;                           // commit the start frame
+        panel.style.height = h + 'px';                // animate to content; reset to auto on transitionend
+        track('faq_open', { q: head.textContent.trim() });
+      } else {
+        panel.style.height = panel.offsetHeight + 'px';
+        panel.offsetHeight;
+        item.classList.remove('is-open');
+        panel.style.height = '0px';
+      }
     });
   });
 
