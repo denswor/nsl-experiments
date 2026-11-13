@@ -38,9 +38,10 @@ body { margin: 0; background: #ffffff; -webkit-text-size-adjust: 100%; }
   .bf-foot--w { display: block; }
 }
 
-/* Fixed headers: white desktop header without the gradient strip, mobile header pinned too. */
-.bf-board--d .nsl-header { position: sticky !important; top: 0; z-index: 60; height: auto !important; background: #ffffff; box-shadow: 0 1px 0 #e5e7eb, 0 6px 16px -8px rgba(24, 48, 76, 0.18); }
-.bf-board--d .nsl-header__top { display: none; }
+/* Fixed headers. */
+/* Desktop: the whole header shows at the top; on scroll the gradient strip (40px) slides away
+   and the white main bar stays pinned. Done with sticky + negative top, no JS. */
+.bf-board--d .nsl-header { position: sticky !important; top: -40px; z-index: 60; height: auto !important; background: #ffffff; box-shadow: 0 1px 0 #e5e7eb, 0 6px 16px -8px rgba(24, 48, 76, 0.18); }
 .bf-board--m .nsl-mshell { position: sticky !important; top: 0; z-index: 60; }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
