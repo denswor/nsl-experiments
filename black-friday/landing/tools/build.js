@@ -150,22 +150,47 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;5
 const RUNTIME = fs.readFileSync(path.join(ROOT, 'src/landing.js'), 'utf8');
 const BASE_CSS = fs.readFileSync(path.join(ROOT, 'src/landing.css'), 'utf8');
 
-function build(srcFile, outFile, opts) {
+const postcss = require('postcss');
+
+// Render one canvas board to static markup + its own CSS.
+function renderBoard(srcFile, cls, idSuffix) {
   let src = fs.readFileSync(path.join(ROOT, 'src', srcFile), 'utf8');
   // Full-width layout: the canvas boards are fixed-width; on the page the bands stretch
-  // to the window, content stays in the 1170 container, decor stays centred.
+  // to the window, content stays in the DS container, decor stays centred.
   for (const [a, z] of FLUID) src = src.split(a).join(z);
   const vals = boardVals(src);
   const $ = cheerio.load(src);
-  const css = $('x-dc helmet style').map((_, s) => $(s).html()).get().join('\n');
+  let css = $('x-dc helmet style').map((_, s) => $(s).html()).get().join('\n');
   const root = $('x-dc').children().filter((_, c) => c.name !== 'helmet').first();
   let body = node($, root[0], vals);
-  body = body.replace(/^<div /, '<div class="bf-board" ');
+  body = body.replace(/^<div /, '<div class="bf-board ' + cls + '" ');
+  if (idSuffix) {
+    // SVG defs are per board: rename them so the hidden board never owns the gradients the visible one uses.
+    const ids = ['mk', 'lg', 'spotIdle', 'spotTouch', 'spotMouse', 'bl', 'au'];
+    for (const id of ids) {
+      body = body.split('id="' + id + '"').join('id="' + id + idSuffix + '"')
+        .split('url(#' + id + ')').join('url(#' + id + idSuffix + ')')
+        .split('href="#' + id + '"').join('href="#' + id + idSuffix + '"');
+    }
+  }
+  // Scope the board's CSS to its own wrapper, so desktop and mobile overrides never collide.
+  const ast = postcss.parse(css);
+  ast.walkRules((r) => {
+    if (r.parent && r.parent.type === 'atrule' && /keyframes/.test(r.parent.name)) return;
+    r.selectors = r.selectors.map((s) => s.trim() === 'body' ? s : '.' + cls + ' ' + s);
+  });
+  return { body, css: ast.toString() };
+}
+
+// One page: the desktop board, plus an optional mobile board swapped in below 720px.
+function build(outFile, opts) {
+  const parts = [renderBoard(opts.desktop, 'bf-board--d', '')];
+  if (opts.mobile) parts.push(renderBoard(opts.mobile, 'bf-board--m', '-m'));
   const html = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="${opts.viewport}">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${opts.title}</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -175,13 +200,12 @@ function build(srcFile, outFile, opts) {
 <link rel="stylesheet" href="../../_shared/nsl/bundle.css">
 <style>
 ${BASE_CSS}
-${opts.css || ''}
-/* from the canvas board */
-${css.trim()}
+/* from the canvas boards */
+${parts.map((p) => p.css.trim()).join('\n')}
 </style>
 </head>
-<body class="${opts.bodyClass}" data-bf-width="${opts.width}">
-${body}
+<body class="bf${opts.mobile ? ' bf--responsive' : ''}">
+${parts.map((p) => p.body).join('\n')}
 <script>
 ${RUNTIME}
 </script>
@@ -192,27 +216,5 @@ ${RUNTIME}
   console.log(outFile, (html.length / 1024).toFixed(1) + ' KB');
 }
 
-build('desktop.dc.html', 'desktop.html', {
-  title: 'Black Friday 2026 · desktop · NewServerLife',
-  viewport: 'width=device-width, initial-scale=1',
-  width: 1440,
-  bodyClass: 'bf bf--desktop'
-});
-build('light.dc.html', 'light.html', {
-  title: 'Black Friday 2026 · light experiment · NewServerLife',
-  viewport: 'width=device-width, initial-scale=1',
-  width: 1440,
-  bodyClass: 'bf bf--desktop bf--light'
-});
-build('light-mobile.dc.html', 'light-mobile.html', {
-  title: 'Black Friday 2026 · light · mobile · NewServerLife',
-  viewport: 'width=device-width, initial-scale=1',
-  width: 375,
-  bodyClass: 'bf bf--mobile bf--light'
-});
-build('mobile.dc.html', 'mobile.html', {
-  title: 'Black Friday 2026 · mobile · NewServerLife',
-  viewport: 'width=device-width, initial-scale=1',
-  width: 375,
-  bodyClass: 'bf bf--mobile'
-});
+build('desktop.html', { title: 'Black Friday 2026 · NewServerLife', desktop: 'desktop.dc.html', mobile: 'mobile.dc.html' });
+build('light.html', { title: 'Black Friday 2026 · light · NewServerLife', desktop: 'light.dc.html', mobile: 'light-mobile.dc.html' });

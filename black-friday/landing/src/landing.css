@@ -1,12 +1,20 @@
-/* Demo page chrome: bands are full width, content sits in the DS container. */
-html { scroll-behavior: smooth; }
+/* Demo page chrome. One page holds two boards from the canvas:
+   .bf-board--d (desktop, 1170 / wide 1530 container) and .bf-board--m (mobile, under 720px). */
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
 body { margin: 0; background: #ffffff; -webkit-text-size-adjust: 100%; }
-.bf-board { margin: 0; overflow-x: clip; }
-.bf--mobile .nsl-footer--mobile { max-width: none; }
+.bf-board { margin: 0; overflow: clip !important; }
 .bf-board a[href^="#"] { scroll-margin-top: 24px; }
+
+/* Responsive switch: the same URL works on any screen. */
+.bf-board--m { display: none !important; }
+@media (max-width: 719px) {
+  html { scroll-padding-top: 56px; }
+  .bf-board--d { display: none !important; }
+  .bf-board--m { display: flex !important; }
+}
+
 /* All FAQ panels are in the markup; closed ones are hidden. */
 [data-bf-acc] .nsl-acc__item:not(.is-open) .nsl-acc__panel { display: none; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 /* DS layout: 1170 container on desktop, wide 1530 container from the 1680 breakpoint. */
 :root { --bf-container: var(--container-desktop, 1170px); }
@@ -16,3 +24,10 @@ body { margin: 0; background: #ffffff; -webkit-text-size-adjust: 100%; }
   .bf-foot--d { display: none; }
   .bf-foot--w { display: block; }
 }
+
+/* Fixed headers: white desktop header without the gradient strip, mobile header pinned too. */
+.bf-board--d .nsl-header { position: sticky !important; top: 0; z-index: 60; height: auto !important; background: #ffffff; box-shadow: 0 1px 0 #e5e7eb, 0 6px 16px -8px rgba(24, 48, 76, 0.18); }
+.bf-board--d .nsl-header__top { display: none; }
+.bf-board--m .nsl-mshell { position: sticky !important; top: 0; z-index: 60; }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
