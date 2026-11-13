@@ -844,8 +844,35 @@ body{margin:0}
     });
   });
 
-  /* 4. Rim light on the NSL mark: follows the cursor or finger, otherwise circles the contour by itself. */
-  if (reduce) document.querySelectorAll('radialGradient[id^="spotIdle"] animate').forEach(function (a) { a.remove(); });
+  /* 4. Rim light on the NSL mark: follows the cursor or finger, otherwise circles the contour by itself.
+     The idle loop used to be SMIL <animate> on the gradient; Safari does not repaint strokes whose gradient
+     is animated that way (the mark is drawn through <use>), so the loop now runs on requestAnimationFrame
+     with the same keyframes and works the same in every browser. */
+  var loops = [];
+  document.querySelectorAll('radialGradient[id^="spotIdle"]').forEach(function (g) {
+    var anim = {};
+    g.querySelectorAll('animate').forEach(function (a) {
+      anim[a.getAttribute('attributeName')] = a.getAttribute('values').split(';').map(Number);
+      anim.dur = parseFloat(a.getAttribute('dur')) * 1000 || 9000;
+      a.remove();
+    });
+    if (anim.cx && anim.cy && !reduce) loops.push({ g: g, cx: anim.cx, cy: anim.cy, dur: anim.dur });
+  });
+  function lerpVals(v, t) {                 // values spread evenly over the loop, linear like calcMode="linear"
+    var n = v.length - 1, x = t * n, i = Math.min(Math.floor(x), n - 1), f = x - i;
+    return v[i] + (v[i + 1] - v[i]) * f;
+  }
+  if (loops.length) {
+    var t0 = performance.now();
+    (function tick(now) {
+      if (!document.hidden) loops.forEach(function (l) {
+        var t = (((now - t0) % l.dur + l.dur) % l.dur) / l.dur;   // rAF time can be a hair before t0
+        l.g.setAttribute('cx', lerpVals(l.cx, t).toFixed(1));
+        l.g.setAttribute('cy', lerpVals(l.cy, t).toFixed(1));
+      });
+      requestAnimationFrame(tick);
+    })(t0);
+  }
   document.querySelectorAll('[data-bf-hero]').forEach(function (hero) {
     var uses = hero.querySelectorAll('[data-bf-spot]');
     var grad = hero.querySelector('radialGradient[id^="spotMouse"], radialGradient[id^="spotTouch"]');
