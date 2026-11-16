@@ -1,0 +1,16 @@
+{
+  "name": "nsl-catalog-menu-bf",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NSL catalog menu: Black Friday dark, full viewport, motion concept A, Sale / discount badges variant 4. Static package for developers.",
+  "scripts": {
+    "build": "node tools/build.js"
+  },
+  "devDependencies": {
+    "cheerio": "^1.0.0",
+    "postcss": "^8.4.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "terser": "^5.0.0"
+  }
+}

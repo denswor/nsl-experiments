@@ -1,0 +1,83 @@
+/*
+ * NSL catalog menu — Black Friday dark, full viewport, motion concept A ("curtain").
+ * Sits on top of css/nsl-ds.css (DS tokens + Header / CatalogMenu styles).
+ */
+
+/* ---------- Panel: full viewport under the header, own scroll ---------- */
+.nsl-catmenu[data-cm]{
+  height:calc(100vh - var(--cm-header-bottom,112px));
+  height:calc(100dvh - var(--cm-header-bottom,112px));
+  overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;
+}
+.nsl-catmenu[data-cm][hidden]{display:none}
+.nsl-catmenu[data-cm] .nsl-catmenu__in{min-height:calc(100% - 16px)}
+.nsl-catmenu[data-cm] .nsl-catmenu__all{margin-bottom:24px}
+.nsl-catmenu[data-cm] .nsl-catmenu__foot{margin-top:auto}
+
+/* brand and category panels: all rendered, only the active one shown; no extra boxes in the layout */
+[data-cm-brand-panel]:not([hidden]),[data-cm-cat-panel]:not([hidden]){display:contents}
+[data-cm-brand-panel][hidden],[data-cm-cat-panel][hidden]{display:none}
+
+/* wide container from 1680 (DS layout grid "wide") */
+@media (min-width:1680px){
+  .nsl-catmenu[data-cm] .nsl-catmenu__in{max-width:var(--container-wide,1530px)}
+}
+
+/* ---------- Catalog button: gear when closed, × when open ---------- */
+.nsl-catalog .cm-ic-close{display:none}
+.nsl-catalog[aria-expanded="true"] .cm-ic-open{display:none}
+.nsl-catalog[aria-expanded="true"] .cm-ic-close{display:inline-block}
+
+/* ---------- Brand tabs: Mono bold (DS heading-xs), current brand in primary ---------- */
+/* In the DS bundle the label shares .nsl-catmenu__bname with bestseller names; here it gets its own class. */
+.nsl-catmenu__brand .cm-brand-name{font:var(--text-heading-xs);letter-spacing:0;color:inherit;transition:color .16s}
+.nsl-catmenu__brand.is-active .cm-brand-name,.nsl-catmenu__brand:hover .cm-brand-name{color:var(--brand-default)}
+.nsl-catmenu__brand{transition:color .16s,border-color .16s}
+.nsl-catmenu__cat{transition:background-color .16s,color .16s,border-color .16s}
+
+/* ---------- Black Friday dark: tokens inside the panel only ---------- */
+.nsl-catmenu--bf{
+  --bg-default:#140b22;--bg-subtle:#1e1231;--bg-muted:#2a1a42;
+  --text-primary:#f3eefb;--text-secondary:rgba(243,238,251,.62);--icon-default:rgba(243,238,251,.62);
+  --border-default:rgba(255,255,255,.12);--border-secondary-subtle:rgba(255,255,255,.18);--border-strong:rgba(255,255,255,.4);
+  --secondary-default:#ff8fc8;--text-link:#ff8fc8;--neutral-400:rgba(243,238,251,.4);
+  color-scheme:dark;
+  /* rim light: --cm-mx / --cm-my are set by js/catalog-menu.js from the pointer */
+  background:
+    radial-gradient(520px 320px at var(--cm-mx,30%) var(--cm-my,0%),rgba(146,39,142,.30),transparent 70%),
+    radial-gradient(900px 260px at 50% 0,rgba(203,28,104,.10),transparent 70%),
+    #140b22;
+  background-attachment:local;
+  box-shadow:none;
+  scrollbar-color:rgba(255,255,255,.25) transparent;
+}
+.nsl-catmenu--bf::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,#cb1c68 30%,#92278e 70%,transparent);pointer-events:none}
+.nsl-catmenu--bf .nsl-catmenu__logo svg{filter:brightness(0) invert(1);opacity:.7;transition:opacity .2s}
+.nsl-catmenu--bf .nsl-catmenu__brand.is-active .nsl-catmenu__logo svg,.nsl-catmenu--bf .nsl-catmenu__brand:hover .nsl-catmenu__logo svg{opacity:1}
+.nsl-catmenu--bf .nsl-catmenu__brand{color:rgba(243,238,251,.7)}
+.nsl-catmenu--bf .nsl-catmenu__brand.is-active,.nsl-catmenu--bf .nsl-catmenu__brand:hover{color:#fff!important}
+.nsl-catmenu--bf .nsl-catmenu__brand.is-active{border-image:linear-gradient(90deg,#cb1c68,#92278e) 1!important;border-bottom-style:solid!important}
+/* brand-default (#B91F69) on the dark panel is ~3:1, so the current brand uses the lighter primary */
+.nsl-catmenu--bf .nsl-catmenu__brand.is-active .cm-brand-name,.nsl-catmenu--bf .nsl-catmenu__brand:hover .cm-brand-name{color:#f77fb8}
+.nsl-catmenu--bf .nsl-catmenu__cat{border-color:rgba(255,255,255,.18)!important;color:#f3eefb}
+.nsl-catmenu--bf .nsl-catmenu__cat:hover{border-color:#ff8fc8!important;color:#ff8fc8}
+.nsl-catmenu--bf .nsl-catmenu__cat.is-active{background:linear-gradient(90deg,#cb1c68,#92278e)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 0 18px rgba(203,28,104,.35)}
+.nsl-catmenu--bf .nsl-catmenu__foot{border-top-color:rgba(255,255,255,.14)}
+.nsl-catmenu--bf .nsl-catmenu__help b{color:#fff}
+.nsl-catmenu--bf .nsl-catmenu__contacts a.nsl-catmenu__tel{color:#fff}
+.nsl-catmenu--bf .nsl-navhead:hover{border-bottom-color:rgba(203,28,104,.6)}
+.nsl-catmenu--bf .nsl-navhead:hover .nsl-navhead__title{color:#ff8fc8}
+.nsl-catmenu--bf .nsl-mtag{color:rgba(243,238,251,.7)}
+
+/* ---------- Sale / discount badges: variant 4 "saving in green" ---------- */
+/* Sale: white on red-700 (6.5:1). Discount: white on green-700 (5.5:1). Same on light and dark. */
+.nsl-catmenu .nsl-mtag.nsl-mtag--sale,
+.nsl-catmenu .nsl-mtag.nsl-mtag--discount{height:18px;padding:0 6px;font:600 11px/16px var(--font-mono);border:0!important;border-radius:var(--radius-xs);box-shadow:none}
+.nsl-catmenu .nsl-mtag.nsl-mtag--sale{background:#b91c1c;color:#fff;text-transform:uppercase;letter-spacing:.04em}
+.nsl-catmenu .nsl-mtag.nsl-mtag--discount{background:#047857;color:#fff}
+
+/* ---------- Black Friday banner in the brand row ---------- */
+.cm-banner{display:block;flex:none;align-self:center;margin:0 0 0 auto;height:64px;border-radius:6px;overflow:hidden;line-height:0;transition:box-shadow .2s}
+.cm-banner img{display:block;height:100%;width:auto}
+.cm-banner:hover{box-shadow:0 0 0 1px rgba(203,28,104,.6),0 8px 28px rgba(203,28,104,.25)}
+.cm-banner:focus-visible{outline:2px solid #ff8fc8;outline-offset:2px}
