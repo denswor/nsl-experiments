@@ -37,6 +37,8 @@ black-friday/     Black Friday home hero, variant C (dark band, mark with rim li
   landing/        full Black Friday landing: review shell, desktop.html (dark) and light.html (light), each responsive:
                   desktop board + mobile board in one page, switched at 720px (src/*.dc.html → tools/build.js; src/landing.js);
                   dist/ + nsl-bf-landing-<version>.zip — the same pages for developers: HTML, CSS, vanilla JS, no React
+dell-pillar/      Refurbished Dell PowerEdge Servers pillar page, wide 1680 (static HTML + NSL components mounted with React 18;
+                  own copy of the NSL bundle, tokens and IBM Plex fonts in ds/nsl/, React UMD in vendor/)
 header-catalog/   Header catalog menu, motion concept A (curtain), full-viewport, wide container from 1680
   index.html      light menu; #black-friday = dark Black Friday menu (React 18, real Header / CatalogMenu from the NSL bundle, motion with WAAPI)
   bf-banner.png   Black Friday banner in the brand row (both themes)

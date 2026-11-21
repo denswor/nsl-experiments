@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Refurbished Dell PowerEdge Servers for Sale | NewServerLife</title>
+<meta name="description" content="Shop tested refurbished Dell PowerEdge servers with configurable CPU, RAM and storage options. Explore popular models and build a server for your workload.">
+<link rel="stylesheet" href="ds/nsl/tokens.css">
+<link rel="stylesheet" href="ds/nsl/components/bundle.css">
+<style>
+
+body{margin:0;background:var(--bg-default);color:var(--text-primary);font:var(--text-body-md);font-family:var(--font-sans)}
+.hero-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gutter);align-items:center}
+.hero-copy{grid-column:span 6;display:flex;flex-direction:column;gap:var(--space-24)}
+.hero-media{grid-column:span 6}
+.kick{font:var(--text-mono-xs);color:var(--text-secondary);text-transform:uppercase}
+.models{margin-top:var(--space-24);display:flex;flex-direction:column;gap:var(--space-32)}
+.models-lead{display:flex;flex-direction:column;gap:var(--space-16);max-width:calc((100% - 3 * var(--gutter)) / 12 * 8 + 7 * var(--gutter))}
+.models-lead p{margin:0;font:var(--text-body-md);color:var(--text-secondary)}
+.cards-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-32) var(--gutter);align-items:stretch}
+.notes-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--gutter)}
+/* Promo text placed in ProductCard's price slot (no description prop in DS yet) */
+.cards-4 .nsl-price--text .nsl-price__value{font:var(--text-body-sm);font-family:var(--font-sans);letter-spacing:0;color:var(--text-secondary)}
+.chips{display:flex;flex-wrap:wrap;gap:var(--space-4)}
+.meta{display:block;margin-top:var(--space-4);font:var(--text-mono-xs);color:var(--text-secondary)}
+.dash{color:var(--text-secondary)}
+.t2 tbody th{font-weight:400}
+.t2 .mname{font:var(--text-heading-xs);font-family:var(--font-mono)}
+.t2 .grp th{background:var(--bg-subtle);font:var(--text-mono-xs-medium);text-transform:uppercase;color:var(--text-secondary);padding:var(--space-8) var(--space-16)}
+.t2 td,.t2 tbody th{vertical-align:middle}
+.t2 .num{white-space:nowrap}
+.t2 .act{text-align:right;white-space:nowrap}
+.t2 th:nth-child(3),.t2 td:nth-child(3){width:34%}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.legend{display:flex;gap:var(--space-16);align-items:center;margin-top:var(--space-16);font:var(--text-body-xs);color:var(--text-secondary)}
+.compare{margin-top:var(--space-64)}
+/* How to choose — buyer's guide bento (variant D) */
+.guide .band{background:var(--bg-subtle);padding:var(--space-80) 0}
+.guide .eyebrow{display:flex;align-items:center;gap:var(--space-12);font:var(--text-label-sm-semibold);text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary)}
+.guide .eyebrow::before{content:"";width:24px;height:2px;background:var(--text-secondary)}
+.guide .head{display:flex;flex-direction:column;gap:var(--space-12);margin-bottom:var(--space-40)}
+.guide .head h2{margin:0}
+.guide .head p{margin:0;font:var(--text-body-lg);color:var(--text-secondary)}
+.guide .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter)}
+.guide .card{background:var(--bg-default);border-radius:var(--radius-xs);box-shadow:var(--shadow-md);padding:var(--space-40);display:flex;flex-direction:column;gap:var(--space-24);box-sizing:border-box;min-width:0}
+.guide .c6{grid-column:span 6}.c5{grid-column:span 5}.c7{grid-column:span 7}
+.guide .card h3{margin:0}
+.guide .card p{margin:0;font:var(--text-body-md);color:var(--text-secondary)}
+.guide .card p strong{color:var(--text-primary);font-weight:600}
+.guide .split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-32);align-items:start;flex:1}
+.guide .copy{display:flex;flex-direction:column;gap:var(--space-16)}
+.guide .art{min-height:280px}
+.guide .art--tall{min-height:320px}
+.guide .show-slots .art{outline:1px dashed var(--border-default);outline-offset:-1px;border-radius:var(--radius-md)}
+.guide .strip{display:grid;grid-template-columns:1fr 1fr;background:var(--bg-subtle);border-radius:var(--radius-md);padding:var(--space-16) var(--space-24);gap:var(--space-24)}
+.guide .strip>div+div{border-left:1px solid var(--border-default);padding-left:var(--space-24)}
+.guide .bi{display:flex;gap:var(--space-16);align-items:flex-start}
+.guide .bi__icon{flex:none;width:40px;height:40px;border-radius:var(--radius-md);background:var(--bg-default);display:grid;place-items:center;color:var(--text-primary)}
+.guide .bi b{display:block;font:var(--text-heading-xs);font-family:var(--font-mono);color:var(--text-primary)}
+.guide .bi span{font:var(--text-body-sm);color:var(--text-secondary)}
+.guide .drives{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.1fr);gap:var(--space-24);align-items:end}
+.guide .drive{display:flex;flex-direction:column;gap:var(--space-12)}
+.guide .drive .art{min-height:150px}
+.guide .drive p{font:var(--text-body-sm)}
+.guide .types{display:flex;flex-direction:column;border-left:1px solid var(--border-default);padding-left:var(--space-24)}
+.guide .types .bi{padding:var(--space-12) 0}
+.guide .types .bi+.bi{border-top:1px solid var(--border-default)}
+.guide .layouts{display:flex;align-items:center;gap:var(--space-12);flex-wrap:wrap}
+.guide .layouts b{font:var(--text-heading-xs);font-family:var(--font-mono);margin-right:var(--space-8)}
+.guide .cpus{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-24);align-items:end}
+.guide .cpu{display:flex;flex-direction:column;align-items:center;gap:var(--space-12)}
+.guide .cpu .art{min-height:220px;width:100%}
+/* Shop Dell servers by requirement (3 × 2) */
+.shopsec .shophead{display:flex;flex-direction:column;gap:var(--space-12);margin-bottom:var(--space-40)}
+.shopsec .shophead h2,.shopsec .shophead p{margin:0}
+.shopsec .shophead p{font:var(--text-body-lg);color:var(--text-secondary)}
+.shopsec .shopgrid{display:grid;gap:var(--gutter)}
+.shopsec .shop{position:relative;display:flex;flex-direction:column;gap:var(--space-16);padding:var(--space-24);background:var(--bg-default);border-radius:var(--radius-xs);box-shadow:var(--shadow-md);text-decoration:none;color:var(--text-primary);box-sizing:border-box;min-width:0;transition:box-shadow .15s}
+.shopsec .shop:hover{box-shadow:var(--shadow-lg)}
+.shopsec .shop:hover .shop__title,.shopsec .shop:hover .shop__arrow{color:var(--brand-default)}
+.shopsec .shop:focus-visible{outline:none;box-shadow:var(--shadow-focus)}
+.shopsec .shop__icon{width:48px;height:48px;border-radius:var(--radius-md);background:var(--bg-subtle);display:grid;place-items:center;flex:none}
+.shopsec .shop__body{display:flex;flex-direction:column;gap:var(--space-8);flex:1}
+.shopsec .shop__title{font:var(--text-heading-sm)}
+.shopsec .shop__text{font:var(--text-body-sm);color:var(--text-secondary)}
+.shopsec .shop__arrow{color:var(--text-secondary);align-self:flex-end}
+.shopsec .g6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.shopsec .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.shopsec .g3 .shop{flex-direction:row;align-items:flex-start;padding:var(--space-32)}
+.shopsec .g3 .shop__arrow{align-self:center}
+/* Popular chassis / configurations */
+.chassis{background:var(--bg-subtle);padding:var(--space-80) 0}
+.chassis .chead{display:flex;flex-direction:column;gap:var(--space-12);margin-bottom:var(--space-40)}
+.chassis .chead h2,.chassis .chead p{margin:0}
+.chassis .chead p{font:var(--text-body-lg);color:var(--text-secondary);max-width:860px}
+.chassis .cgrid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-32) var(--gutter);align-items:stretch}
+.chassis .blog-v{display:contents}
+.chassis .blog-h{grid-column:span 2;display:flex;flex-direction:column;gap:var(--gutter)}
+.chassis .blog-label{grid-column:1 / -1;font:var(--text-heading-sm);margin:0}
+.chassis .nsl-article__title{font:600 20px/24px var(--font-mono);letter-spacing:-0.01em}
+.chassis .blog-v>*{height:100%;min-width:0}
+.chassis .blog-v .nsl-article{height:100%;display:flex;flex-direction:column}
+.chassis .blog-v .nsl-article>.nsl-img{flex:0 0 66.667%;aspect-ratio:auto !important}
+.chassis .blog-v .nsl-article__body{flex:1}
+.chassis .blog-h .nsl-article{flex:1;display:grid;grid-template-columns:minmax(0,45%) minmax(0,1fr);align-items:center;gap:var(--space-24)}
+/* Why buy refurbished */
+.why{padding:var(--space-80) 0}
+.why .why__grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter);align-items:start}
+.why .why__lead{grid-column:span 4;display:flex;flex-direction:column;gap:var(--space-24);position:sticky;top:var(--space-24)}
+.why .why__lead h2{margin:0}
+.why .why__stat{background:var(--bg-subtle);border-radius:var(--radius-xs);padding:var(--space-32);display:flex;flex-direction:column;gap:var(--space-12)}
+.why .why__num{font:var(--text-heading-display);color:var(--text-primary);letter-spacing:-0.02em}
+.why .why__stat h3{margin:0}
+.why .why__stat p,.why .why__item p{margin:0;font:var(--text-body-sm);color:var(--text-secondary)}
+.why .why__items{grid-column:5 / span 8;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-48) var(--gutter)}
+.why .why__item{display:flex;flex-direction:column;gap:var(--space-12)}
+.why .why__item h3{margin:0}
+.why .why__icon{width:48px;height:48px;border-radius:var(--radius-md);background:var(--bg-subtle);display:grid;place-items:center;color:var(--text-primary);margin-bottom:var(--space-4)}
+/* Use cases */
+.uses{background:var(--bg-subtle);padding:var(--space-80) 0}
+.uses .uses__head{display:flex;flex-direction:column;gap:var(--space-12);margin-bottom:var(--space-40)}
+.uses .uses__head h2,.uses .uses__head p{margin:0}
+.uses .uses__head p{font:var(--text-body-lg);color:var(--text-secondary)}
+.uses .uses__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-32) var(--gutter);align-items:stretch}
+.uses .uses__card{background:var(--bg-default);border-radius:var(--radius-xs);box-shadow:var(--shadow-md);padding:var(--space-24);display:flex;flex-direction:column;gap:var(--space-12);min-width:0}
+.uses .uses__card h3{margin:0}
+.uses .uses__card p{margin:0;font:var(--text-body-sm);color:var(--text-secondary);flex:1}
+.uses .uses__icon{width:48px;height:48px;border-radius:var(--radius-md);background:var(--bg-subtle);display:grid;place-items:center;color:var(--text-primary);margin-bottom:var(--space-4)}
+.uses .uses__more{padding-top:var(--space-8)}
+.uses .uses__blog>*{height:100%;min-width:0}
+.uses .uses__blog .nsl-article{height:100%;display:flex;flex-direction:column}
+.uses .uses__blog .nsl-article>.nsl-img{flex:0 0 66.667%;aspect-ratio:auto !important}
+.uses .uses__blog .nsl-article__body{flex:1}
+.uses .nsl-article__title{font:600 20px/24px var(--font-mono);letter-spacing:-0.01em}
+.uses .uses__foot{margin-top:var(--space-40);font:var(--text-body-md);color:var(--text-secondary)}
+.uses .uses__foot b{color:var(--text-primary);font-weight:600}
+/* FAQ (bento, answers open) */
+.faqsec{padding:var(--space-80) 0}
+.faqsec .faqb__head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-24);margin-bottom:var(--space-40)}
+.faqsec .faqb__head h2{margin:0}
+.faqsec .faqb__grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter);align-items:stretch}
+.faqsec .faqb__card{background:var(--bg-subtle);border-radius:var(--radius-xs);padding:var(--space-32);display:flex;flex-direction:column;gap:var(--space-16);min-width:0}
+.faqsec .s4{grid-column:span 4}
+.faqsec .s5{grid-column:span 5}
+.faqsec .s7{grid-column:span 7}
+.faqsec .s8{grid-column:span 8}
+.faqsec .faqb__q{margin:0;font:600 20px/24px var(--font-mono);letter-spacing:-0.01em}
+.faqsec .faqb__card p{margin:0;font:var(--text-body-md);color:var(--text-secondary)}
+.faqsec .faqb__yes{font-weight:600;color:var(--text-primary)}
+.faqsec .faqb__gens{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--space-8);margin-top:auto}
+.faqsec .faqb__gen{background:var(--bg-default);border-radius:var(--radius-md);padding:var(--space-12);display:flex;flex-direction:column;gap:var(--space-4);font:var(--text-body-xs);color:var(--text-secondary)}
+.faqsec .faqb__gen b{font:var(--text-heading-sm);color:var(--text-primary)}
+
+body{overflow-x:clip}
+</style>
+</head>
+<body>
+
+
+<div style="width:100%;box-sizing:border-box">
+<span data-nsl="0" style="display:contents"></span>
+<div class="nsl-container" style="padding-top:var(--space-32);padding-bottom:var(--space-80)">
+<div style="margin-bottom:var(--space-32)"><span data-nsl="1" style="display:contents"></span></div>
+<div class="hero-grid">
+<div class="hero-copy">
+<h1 class="heading-display" style="margin: 0; letter-spacing: -2.5px; font-size: 56px; line-height: 1.14; font-weight: 600; font-style: normal; font-family: &quot;IBM Plex Mono&quot;, ui-monospace, &quot;SF Mono&quot;, Menlo, monospace">Refurbished Dell PowerEdge Servers</h1>
+<p style="font: var(--text-body-lg); color: var(--text-secondary); margin: 0; font-size: 24px; line-height: 1.33; font-weight: 400; letter-spacing: -0.5px; font-style: normal; font-family: &quot;IBM Plex Sans&quot;, system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif">Tested enterprise rack servers from 13th to 17th generation. Pick a popular model or build your own with the CPU, RAM, storage and networking your workload needs.</p>
+<div style="display:flex;gap:var(--space-16);flex-wrap:wrap">
+<span data-nsl="2" style="display:contents"></span>
+<span data-nsl="3" style="display:contents"></span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:var(--space-8)">
+<span data-nsl="4" style="display:contents"></span>
+<span data-nsl="5" style="display:contents"></span>
+<span data-nsl="6" style="display:contents"></span>
+<span data-nsl="7" style="display:contents"></span>
+</div>
+</div>
+<div class="hero-media">
+<div style="background:var(--bg-subtle);border-radius:var(--radius-xs);min-height:420px;display:flex;align-items:flex-end;padding:var(--space-24)">
+<span class="kick">Image placeholder · 2U chassis, front bays</span>
+</div>
+</div>
+</div>
+<section class="models" aria-labelledby="popular-models">
+<div class="models-lead" style="width: 750px">
+<h2 id="popular-models" class="heading-2xl" style="margin: 0">Popular Dell PowerEdge models</h2>
+<p style="width: 100%">Most orders come from 14th-generation PowerEdge servers, which offer the best balance of price and performance. 15th and 16th generation models add PCIe 4.0/5.0 and faster memory, and AMD EPYC platforms are the choice when you need high core counts, and the newest 17th generation brings Intel Xeon 6 processors and DDR5 memory.</p>
+<p style="width: 100%">Every model below is available in multiple chassis and drive configurations. Select a model to see available CPUs, memory, storage and pricing.</p>
+</div>
+<div class="cards-4">
+
+<span data-nsl="8" style="display:contents"></span>
+
+<span data-nsl="9" style="display:contents"></span>
+
+<span data-nsl="10" style="display:contents"></span>
+
+<span data-nsl="11" style="display:contents"></span>
+
+<span data-nsl="12" style="display:contents"></span>
+
+<span data-nsl="13" style="display:contents"></span>
+
+<span data-nsl="14" style="display:contents"></span>
+
+<span data-nsl="15" style="display:contents"></span>
+
+</div>
+<div class="notes-2">
+<span data-nsl="16" style="display:contents"></span>
+<span data-nsl="17" style="display:contents"></span>
+</div>
+</section>
+<section class="compare" aria-labelledby="compare-models">
+<h2 id="compare-models" class="heading-2xl" style="margin:0 0 var(--space-32)">Compare popular Dell PowerEdge models</h2>
+<div class="nsl-table-wrap"><table class="nsl-table t2"><thead><tr><th scope="col">Model</th><th scope="col">Max RAM</th><th scope="col">Drive bays</th><th scope="col">GPU</th><th scope="col">Best for</th><th scope="col"><span class="vh">Configure</span></th></tr></thead><tbody><tr class="grp"><th scope="rowgroup" colspan="6">14th generation · best price / performance</th></tr><tr><th scope="row"><span class="mname"><span data-nsl="18" style="display:contents"></span></span><span class="meta">14th Gen · 1U · 2 CPUs</span></th><td class="num">Up to 2TB</td><td><div class="chips"><span data-nsl="19" style="display:contents"></span><span data-nsl="20" style="display:contents"></span><span data-nsl="21" style="display:contents"></span><span data-nsl="22" style="display:contents"></span><span data-nsl="23" style="display:contents"></span></div></td><td><span class="dash" aria-label="Not supported">—</span></td><td>High-density virtualization, databases</td><td class="act"><span data-nsl="24" style="display:contents"></span></td></tr><tr><th scope="row"><span class="mname"><span data-nsl="25" style="display:contents"></span></span><span class="meta">14th Gen · 2U · 2 CPUs</span></th><td class="num">Up to 3TB</td><td><div class="chips"><span data-nsl="26" style="display:contents"></span><span data-nsl="27" style="display:contents"></span><span data-nsl="28" style="display:contents"></span></div></td><td><span data-nsl="29" style="display:contents"></span></td><td>General purpose, storage</td><td class="act"><span data-nsl="30" style="display:contents"></span></td></tr><tr><th scope="row"><span class="mname"><span data-nsl="31" style="display:contents"></span></span><span class="meta">14th Gen · 2U · 2 CPUs</span></th><td class="num">Up to 3TB</td><td><div class="chips"><span data-nsl="32" style="display:contents"></span><span data-nsl="33" style="display:contents"></span><span data-nsl="34" style="display:contents"></span><span data-nsl="35" style="display:contents"></span></div></td><td><span class="dash" aria-label="Not supported">—</span></td><td>Storage, SDS, backup</td><td class="act"><span data-nsl="36" style="display:contents"></span></td></tr></tbody><tbody><tr class="grp"><th scope="rowgroup" colspan="6">15th generation · PCIe 4.0</th></tr><tr><th scope="row"><span class="mname"><span data-nsl="37" style="display:contents"></span></span><span class="meta">15th Gen · 1U · 2 CPUs</span></th><td class="num">Up to 2TB</td><td><div class="chips"><span data-nsl="38" style="display:contents"></span><span data-nsl="39" style="display:contents"></span><span data-nsl="40" style="display:contents"></span><span data-nsl="41" style="display:contents"></span><span data-nsl="42" style="display:contents"></span></div></td><td><span class="dash" aria-label="Not supported">—</span></td><td>Virtualization</td><td class="act"><span data-nsl="43" style="display:contents"></span></td></tr><tr><th scope="row"><span class="mname"><span data-nsl="44" style="display:contents"></span></span><span class="meta">15th Gen · 2U · 2 AMD EPYC CPUs</span></th><td class="num">Up to 2TB</td><td><div class="chips"><span data-nsl="45" style="display:contents"></span><span data-nsl="46" style="display:contents"></span><span data-nsl="47" style="display:contents"></span><span data-nsl="48" style="display:contents"></span><span data-nsl="49" style="display:contents"></span></div></td><td><span data-nsl="50" style="display:contents"></span></td><td>Virtualization</td><td class="act"><span data-nsl="51" style="display:contents"></span></td></tr></tbody></table></div>
+<div class="legend"><span data-nsl="52" style="display:contents"></span><span>NVMe-capable layout</span><span data-nsl="53" style="display:contents"></span><span>Full-size GPUs supported</span></div>
+</section>
+</div>
+<div class="guide">
+<div class="band">
+<div class="nsl-container ">
+<section aria-labelledby="how-choose">
+<div class="head">
+<h2 id="how-choose" class="heading-2xl">How to choose a Dell PowerEdge server</h2>
+<p>Four key decisions to get the right configuration for your workload.</p>
+</div>
+<div class="grid">
+<article class="card c6">
+<h3 class="heading-lg">1U or 2U?</h3>
+<div class="split">
+<div class="copy">
+<p>1U servers (<span data-nsl="54" style="display:contents"></span>, <span data-nsl="55" style="display:contents"></span>, <span data-nsl="56" style="display:contents"></span>) pack more compute per rack unit.</p>
+<p>2U servers (<span data-nsl="57" style="display:contents"></span>, <span data-nsl="58" style="display:contents"></span>) fit more drives, more PCIe slots and full-size GPUs, and are easier to cool.</p>
+</div>
+<div class="art art--tall" aria-hidden="true"></div>
+</div>
+<div class="strip">
+<div class="bi"><span class="bi__icon"><span data-nsl="59" style="display:contents"></span></span><div><b>1U — higher density</b><span>More compute per rack unit</span></div></div>
+<div class="bi"><span class="bi__icon"><span data-nsl="60" style="display:contents"></span></span><div><b>2U — more expansion</b><span>More drives, PCIe slots and GPU support</span></div></div>
+</div>
+</article>
+<article class="card c6">
+<h3 class="heading-lg">How much storage and which drives?</h3>
+<p>Start by counting the drive bays. Common layouts are 8 SFF, 16 SFF, 24 SFF or 12 LFF. Then choose the drive type.</p>
+<div class="drives">
+<div class="drive"><div class="art" aria-hidden="true"></div><span data-nsl="61" style="display:contents"></span><p>SFF bays suit SSD and NVMe, where speed matters most.</p></div>
+<div class="drive"><div class="art" aria-hidden="true"></div><span data-nsl="62" style="display:contents"></span><p>LFF bays give the cheapest bulk capacity on large hard drives.</p></div>
+<div class="types">
+<div class="bi"><span class="bi__icon"><span data-nsl="63" style="display:contents"></span></span><div><b>NVMe</b><span>The pick for databases, virtualization and anything latency-sensitive</span></div></div>
+<div class="bi"><span class="bi__icon"><span data-nsl="64" style="display:contents"></span></span><div><b>SAS</b><span>Fits most workloads</span></div></div>
+<div class="bi"><span class="bi__icon"><span data-nsl="65" style="display:contents"></span></span><div><b>SATA</b><span>Keeps the cost down</span></div></div>
+</div>
+</div>
+<div class="layouts"><b>Common drive bay layouts</b><span data-nsl="66" style="display:contents"></span><span data-nsl="67" style="display:contents"></span><span data-nsl="68" style="display:contents"></span><span data-nsl="69" style="display:contents"></span></div>
+<span data-nsl="70" style="display:contents"></span>
+</article>
+<article class="card c5">
+<h3 class="heading-lg">Do you need GPUs?</h3>
+<div class="split" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+<div class="copy">
+<p>In the 14G generation the <span data-nsl="71" style="display:contents"></span> is the usual GPU-capable choice. The 1U <span data-nsl="72" style="display:contents"></span> is not the right platform for full-size GPUs.</p>
+<div><span data-nsl="73" style="display:contents"></span></div>
+</div>
+<div class="art" aria-hidden="true"></div>
+</div>
+</article>
+<article class="card c7">
+<h3 class="heading-lg">Intel or AMD?</h3>
+<div class="split" style="grid-template-columns:minmax(0,5fr) minmax(0,6fr)">
+<div class="copy">
+<p><strong>AMD EPYC</strong> servers (<span data-nsl="74" style="display:contents"></span>, <span data-nsl="75" style="display:contents"></span>, <span data-nsl="76" style="display:contents"></span>) offer high core counts and NVMe bandwidth, which suits virtualization.</p>
+<p><strong>Intel Xeon</strong> servers (<span data-nsl="77" style="display:contents"></span>, <span data-nsl="78" style="display:contents"></span>, <span data-nsl="79" style="display:contents"></span>, <span data-nsl="80" style="display:contents"></span>) fit workloads tuned for Intel and per-core licensing.</p>
+</div>
+<div class="cpus">
+<div class="cpu"><div class="art" aria-hidden="true"></div><span data-nsl="81" style="display:contents"></span></div>
+<div class="cpu"><div class="art" aria-hidden="true"></div><span data-nsl="82" style="display:contents"></span></div>
+</div>
+</div>
+</article>
+</div>
+</section>
+</div>
+</div>
+</div>
+<div class="shopsec" style="padding:var(--space-80) 0"><div class="nsl-container">
+<section aria-labelledby="shop-req"><div class="shophead"><h2 id="shop-req" class="heading-2xl">Shop Dell servers by requirement</h2><p>Already know what you need? Jump straight to servers built for it.</p></div><div class="shopgrid g3"><a class="shop" href="https://newserverlife.com/rack-servers/"><span class="shop__icon"><span data-nsl="83" style="display:contents"></span></span><span class="shop__body"><span class="shop__title">Rackmount Servers</span><span class="shop__text">All rack form factors across brands.</span></span><span class="shop__arrow"><span data-nsl="84" style="display:contents"></span></span></a><a class="shop" href="https://newserverlife.com/gpu-servers/"><span class="shop__icon"><span data-nsl="85" style="display:contents"></span></span><span class="shop__body"><span class="shop__title">GPU Servers</span><span class="shop__text">For AI/ML, rendering and compute-heavy workloads.</span></span><span class="shop__arrow"><span data-nsl="86" style="display:contents"></span></span></a><a class="shop" href="https://newserverlife.com/nvme-servers/"><span class="shop__icon"><span data-nsl="87" style="display:contents"></span></span><span class="shop__body"><span class="shop__title">NVMe Servers</span><span class="shop__text">Low-latency flash storage for databases, virtualization and caching.</span></span><span class="shop__arrow"><span data-nsl="88" style="display:contents"></span></span></a><a class="shop" href="https://newserverlife.com/amd-based-servers/"><span class="shop__icon"><span data-nsl="89" style="display:contents"></span></span><span class="shop__body"><span class="shop__title">AMD Servers</span><span class="shop__text">EPYC-based platforms for high core counts and memory bandwidth.</span></span><span class="shop__arrow"><span data-nsl="90" style="display:contents"></span></span></a><a class="shop" href="https://newserverlife.com/tower-servers/"><span class="shop__icon"><span data-nsl="91" style="display:contents"></span></span><span class="shop__body"><span class="shop__title">Tower Servers</span><span class="shop__text">Quiet, rack-free servers for small offices, branch locations and remote sites.</span></span><span class="shop__arrow"><span data-nsl="92" style="display:contents"></span></span></a><a class="shop" href="https://newserverlife.com/blade-servers/"><span class="shop__icon"><span data-nsl="93" style="display:contents"></span></span><span class="shop__body"><span class="shop__title">Blade Servers</span><span class="shop__text">Compute-dense systems for larger deployments, where many nodes share power, cooling and networking in a single enclosure.</span></span><span class="shop__arrow"><span data-nsl="94" style="display:contents"></span></span></a></div></section>
+</div></div>
+<div class="chassis" id="chassis"><div class="nsl-container">
+<section aria-labelledby="popular-chassis">
+<div class="chead"><h2 id="popular-chassis" class="heading-2xl">Popular chassis / configurations</h2>
+<p>The chassis (drive-bay layout) determines what you can store and how fast. These are the most requested Dell configurations:</p></div>
+<div class="cgrid4">
+
+<span data-nsl="95" style="display:contents"></span>
+
+<span data-nsl="96" style="display:contents"></span>
+
+<span data-nsl="97" style="display:contents"></span>
+
+<span data-nsl="98" style="display:contents"></span>
+
+<span data-nsl="99" style="display:contents"></span>
+
+<span data-nsl="100" style="display:contents"></span>
+
+
+<div class="blog-v"><span data-nsl="101" style="display:contents"></span><span data-nsl="102" style="display:contents"></span></div>
+</div>
+</section>
+</div></div>
+<div class="why"><div class="nsl-container">
+<section class="why__grid" aria-labelledby="why-refurb">
+<div class="why__lead">
+<h2 id="why-refurb" class="heading-2xl">Why buy refurbished Dell servers</h2>
+<div class="why__stat" style="width: 307px">
+<span class="why__num">70–90%</span>
+<h3 class="heading-sm">Lower cost</h3>
+<p>Save 70–90% vs. new. You get the same PowerEdge hardware that data centers run, without new-server pricing or lead times.</p>
+</div>
+</div>
+<div class="why__items"><div class="why__item"><span class="why__icon"><span data-nsl="103" style="display:contents"></span></span><h3 class="heading-sm">Proven platform</h3><p>PowerEdge has a long track record, broad driver and firmware support, and a large knowledge base. Parts are widely available.</p></div><div class="why__item"><span class="why__icon"><span data-nsl="104" style="display:contents"></span></span><h3 class="heading-sm">Tested before shipping</h3><p>Every server is stress-tested before it leaves our facility: BIOS configuration, CPU and memory load testing, disk diagnostics and thermal checks.</p></div><div class="why__item"><span class="why__icon"><span data-nsl="105" style="display:contents"></span></span><h3 class="heading-sm">Built to your spec</h3><p>Choose CPUs, memory, drives, RAID controllers, NICs and GPUs. We build and test the exact configuration you ordered.</p></div><div class="why__item"><span class="why__icon"><span data-nsl="106" style="display:contents"></span></span><h3 class="heading-sm">Warranty and support</h3><p>Up to 3 years of free warranty and extended technical support.</p></div><div class="why__item"><span class="why__icon"><span data-nsl="107" style="display:contents"></span></span><h3 class="heading-sm">Fits real workloads</h3><p>Refurbished PowerEdge servers handle virtualization, databases, storage, hosting and backup without trouble. Most business workloads don't need the newest silicon, so you get the performance you need at a fraction of the price.</p></div><div class="why__item"><span class="why__icon"><span data-nsl="108" style="display:contents"></span></span><h3 class="heading-sm">Less e-waste</h3><p>Reusing hardware extends its life.</p></div></div>
+</section>
+</div></div>
+<div class="uses"><div class="nsl-container">
+<section aria-labelledby="use-cases">
+<div class="uses__head"><h2 id="use-cases" class="heading-2xl">Use cases</h2>
+<p>The right PowerEdge model depends on the workload. Here is where each platform fits best.</p></div>
+<div class="uses__grid"><article class="uses__card"><span class="uses__icon"><span data-nsl="109" style="display:contents"></span></span><h3 class="heading-sm">Virtualization (VMware, Proxmox, Hyper-V)</h3><p>Dual-socket servers with plenty of RAM and fast storage consolidate many virtual machines onto fewer hosts. Popular choices: <span data-nsl="110" style="display:contents"></span> for density, <span data-nsl="111" style="display:contents"></span> for more drive bays and expansion, and <span data-nsl="112" style="display:contents"></span> or <span data-nsl="113" style="display:contents"></span> for newer platforms.</p><div class="uses__more"><span data-nsl="114" style="display:contents"></span></div></article><article class="uses__card"><span class="uses__icon"><span data-nsl="115" style="display:contents"></span></span><h3 class="heading-sm">Database servers</h3><p>Databases need fast storage and memory bandwidth. NVMe chassis such as the R640 with 10SFF NVMe, the <span data-nsl="116" style="display:contents"></span> with up to 24 NVMe drives, or the <span data-nsl="117" style="display:contents"></span> (AMD EPYC) keep latency low under heavy load.</p><div class="uses__more"><span data-nsl="118" style="display:contents"></span></div></article><article class="uses__card"><span class="uses__icon"><span data-nsl="119" style="display:contents"></span></span><h3 class="heading-sm">File, backup and archive storage</h3><p>For capacity rather than speed, choose large-form-factor chassis: the R740xd with 12LFF, the R740 with 8LFF, or the R640 with 4LFF for smaller archives.</p><div class="uses__more"><span data-nsl="120" style="display:contents"></span></div></article><article class="uses__card"><span class="uses__icon"><span data-nsl="121" style="display:contents"></span></span><h3 class="heading-sm">AI and GPU workloads</h3><p>GPU-capable platforms for AI/ML inference, rendering and compute, including the PowerEdge R750xa and R7525.</p><div class="uses__more"><span data-nsl="122" style="display:contents"></span></div></article><article class="uses__card"><span class="uses__icon"><span data-nsl="123" style="display:contents"></span></span><h3 class="heading-sm">VDI and remote desktop (RDP)</h3><p>High core counts and large memory support many concurrent user sessions. The R640, R660 and R7525 are common choices.</p><div class="uses__more"><span data-nsl="124" style="display:contents"></span></div></article><article class="uses__card"><span class="uses__icon"><span data-nsl="125" style="display:contents"></span></span><h3 class="heading-sm">Video surveillance (CCTV) storage</h3><p>Continuous recording needs a lot of disk capacity. Chassis such as the R740xd 12LFF and R740 8LFF are built for it.</p><div class="uses__more"><span data-nsl="126" style="display:contents"></span></div></article><article class="uses__card"><span class="uses__icon"><span data-nsl="127" style="display:contents"></span></span><h3 class="heading-sm">Small business and office servers</h3><p>A compact, reliable server for file sharing, line-of-business applications and small virtualization hosts. The R640 and R650 with 4LFF, or the R660 with 8 or 10 SFF, fit most offices.</p><div class="uses__more"><span data-nsl="128" style="display:contents"></span></div></article><div class="uses__blog"><span data-nsl="129" style="display:contents"></span></div></div>
+<p class="uses__foot"><b>Not sure where to start?</b> <span data-nsl="130" style="display:contents"></span> and we will suggest a configuration.</p>
+</section>
+</div></div>
+<div class="faqsec"><div class="nsl-container">
+<section aria-labelledby="faq"><div class="faqb__head"><h2 id="faq" class="heading-2xl">FAQ</h2></div><div class="faqb__grid"><article class="faqb__card s4"><h3 class="faqb__q">Are refurbished Dell servers reliable?</h3><p><span class="faqb__yes">Yes.</span> PowerEdge servers are built for 24/7 data center duty, and each refurbished unit is tested component by component before shipping.</p></article><article class="faqb__card s8"><h3 class="faqb__q">Which Dell PowerEdge generation should I buy?</h3><p>For most production workloads, 14G (R640, R740) offers the best price and performance. Choose 13G for tight budgets and non-critical use, 15G for PCIe 4.0 and faster memory, 16G for DDR5 and PCIe 5.0, and 17G (R670, R770) when you want the newest Intel Xeon 6 platform.</p><div class="faqb__gens"><span class="faqb__gen"><b>13G</b>tight budgets, non-critical use</span><span class="faqb__gen"><b>14G</b>best price and performance</span><span class="faqb__gen"><b>15G</b>PCIe 4.0, faster memory</span><span class="faqb__gen"><b>16G</b>DDR5, PCIe 5.0</span><span class="faqb__gen"><b>17G</b>newest Intel Xeon 6</span></div></article><article class="faqb__card s4"><h3 class="faqb__q">What is the difference between Dell R640 and R740?</h3><p>Both are 14th Gen with dual Xeon Scalable CPUs. The R640 is 1U and optimized for density. The R740 is 2U, with more drive bays, more PCIe slots and GPU support.</p></article><article class="faqb__card s4"><h3 class="faqb__q">Can I customize CPU, RAM and storage?</h3><p><span class="faqb__yes">Yes.</span> Every server is built to order in our configurator, or our team can spec a build for you.</p></article><article class="faqb__card s4"><h3 class="faqb__q">Do the servers include iDRAC?</h3><p><span class="faqb__yes">Yes.</span> Every PowerEdge server ships with iDRAC Enterprise included at no extra charge, so you can manage it remotely from day one.</p></article><article class="faqb__card s5"><h3 class="faqb__q">Do refurbished Dell servers come with a warranty?</h3><p><span class="faqb__yes">Yes.</span> Every server includes a free hardware warranty of 1 to 3 years, depending on order value. Extended coverage is available at checkout. <span data-nsl="131" style="display:contents"></span>.</p></article><article class="faqb__card s7"><h3 class="faqb__q">Do you ship across the US?</h3><p><span class="faqb__yes">Yes.</span> Shipping is free across the continental USA and Canada with UPS, FedEx or DHL, and delivery takes 2–3 business days. Each server is built and tested to order first. It ships as soon as it's ready, and you get a tracking number by email. Free shipping doesn't cover customs duties, import taxes or brokerage fees. See <span data-nsl="132" style="display:contents"></span>.</p></article></div></section>
+</div></div>
+<span data-nsl="133" style="display:contents"></span>
+</div>
+
+<script src="vendor/react.production.min.js"></script>
+<script src="vendor/react-dom.production.min.js"></script>
+<script src="ds/nsl/components/bundle.js"></script>
+<script>
+{
+const REG = [{"c": "Header", "p": {"cartCount": 0}, "ch": []}, {"c": "Breadcrumbs", "p": {"items": [{"label": "Home", "href": "#"}, {"label": "Servers", "href": "#"}, {"label": "Rackmount", "href": "#"}, {"label": "Dell PowerEdge"}]}, "ch": []}, {"c": "Button", "p": {"variant": "primary", "size": "lg"}, "ch": ["Browse Dell Models"]}, {"c": "Button", "p": {"variant": "ghost", "size": "lg"}, "ch": ["Talk to an Expert"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "subtle"}, "ch": ["Tested before shipping"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "subtle"}, "ch": ["Up to 3-year warranty"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "subtle"}, "ch": ["iDRAC Enterprise included"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "subtle"}, "ch": ["Built to order"]}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R640", "href": "https://newserverlife.com/server-models/dell-poweredge-r640/", "badges": ["in-stock", "hot"], "specs": [{"icon": "layers", "text": "14th Gen"}, {"icon": "form", "text": "1U Rackmount"}, {"icon": "cpu", "text": "2 CPUs"}], "specVariant": "icons", "price": "One of our most requested 1U servers. High compute density for virtualization, databases and NVMe-based builds.", "pricePrefix": "", "ctaType": "configure", "cta": "View configurations", "showImage": true}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R740xd", "href": "https://newserverlife.com/server-models/dell-poweredge-r740xd/", "badges": ["in-stock"], "specs": [{"icon": "layers", "text": "14th Gen"}, {"icon": "form", "text": "2U Rackmount"}, {"icon": "cpu", "text": "2 CPUs"}], "specVariant": "icons", "price": "Storage-focused 2U server with up to 24 front 2.5\" bays, including NVMe configurations. Built for software-defined storage, backup and high-capacity arrays.", "pricePrefix": "", "ctaType": "configure", "cta": "View configurations", "showImage": true}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R740", "href": "https://newserverlife.com/server-models/dell-poweredge-r740/", "badges": ["in-stock"], "discount": "-20%", "specs": [{"icon": "layers", "text": "14th Gen"}, {"icon": "form", "text": "2U Rackmount"}, {"icon": "cpu", "text": "2 CPUs"}], "specVariant": "icons", "price": "Balanced 2U platform with extra PCIe slots and GPU support. A good all-round choice if you need more expansion than the R640 offers.", "pricePrefix": "", "ctaType": "configure", "cta": "View configurations", "showImage": true}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R750", "href": "https://newserverlife.com/server-models/dell-poweredge-r750/", "badges": ["in-stock"], "specs": [{"icon": "layers", "text": "15th Gen"}, {"icon": "form", "text": "2U Rackmount"}, {"icon": "cpu", "text": "2 CPUs"}], "specVariant": "icons", "price": "3rd Gen Xeon Scalable with PCIe 4.0 and DDR4-3200. A flexible 2U platform with 8, 16 and 24 SFF NVMe options.", "pricePrefix": "", "ctaType": "configure", "cta": "View configurations", "showImage": true}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R7525", "href": "https://newserverlife.com/server-models/dell-poweredge-r7525/", "badges": ["in-stock"], "specs": [{"icon": "layers", "text": "15th Gen"}, {"icon": "form", "text": "2U Rackmount"}, {"icon": "cpu", "text": "2 AMD EPYC CPUs"}], "specVariant": "icons", "price": "High core counts and memory bandwidth, with up to 24 NVMe drives. Suited to dense virtualization and analytics.", "pricePrefix": "", "ctaType": "configure", "cta": "View configurations", "showImage": true}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R650", "href": "https://newserverlife.com/server-models/dell-poweredge-r650/", "badges": ["in-stock"], "specs": [{"icon": "layers", "text": "15th Gen"}, {"icon": "form", "text": "1U Rackmount"}, {"icon": "cpu", "text": "2 CPUs"}], "specVariant": "icons", "price": "Dense 1U with PCIe 4.0 and 8 or 10 SFF NVMe configurations.", "pricePrefix": "", "ctaType": "configure", "cta": "View configurations", "showImage": true}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R660", "href": "https://newserverlife.com/server-models/dell-poweredge-r660/", "badges": ["new"], "specs": [{"icon": "layers", "text": "16th Gen"}, {"icon": "form", "text": "1U Rackmount"}, {"icon": "cpu", "text": "2 CPUs"}], "specVariant": "icons", "price": "DDR5 and PCIe 5.0 in a 1U chassis, with 8 and 10 NVMe configurations.", "pricePrefix": "", "ctaType": "configure", "cta": "View configurations", "showImage": true}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R760", "href": "https://newserverlife.com/server-models/dell-poweredge-r760/", "badges": ["new", "on-request"], "specs": [{"icon": "layers", "text": "16th Gen"}, {"icon": "form", "text": "2U Rackmount"}, {"icon": "cpu", "text": "2 CPUs"}], "specVariant": "icons", "price": "Current generation with DDR5 and PCIe 5.0 for demanding virtualization, data and AI workloads.", "pricePrefix": "", "ctaType": "configure", "cta": "View configurations", "showImage": true}, "ch": []}, {"c": "Notification", "p": {"type": "default", "title": "On a tight budget?"}, "ch": ["Previous-generation 13G servers such as the ", {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r630/"}, "ch": ["R630"]}, ", ", {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r730/"}, "ch": ["R730"]}, " and ", {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r730xd/"}, "ch": ["R730xd"]}, " are available for labs and non-critical workloads."]}, {"c": "Notification", "p": {"type": "info", "title": "Newest generation"}, "ch": [{"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r670/"}, "ch": ["Dell PowerEdge R670"]}, " (1U) and ", {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r770/"}, "ch": ["R770"]}, " (2U) with up to two Intel Xeon 6 processors and up to 8 TB of DDR5 memory. ", {"c": "Link", "p": {"href": "https://newserverlife.com/configure/dell/rackmount/17th-gen-dell/"}, "ch": ["Browse 17th-generation Dell servers →"]}]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r640/"}, "ch": ["Dell PowerEdge R640"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["8SFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["10SFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["10SFF+2SFF"]}, {"c": "Tag", "p": {"color": "secondary", "variant": "subtle", "size": "sm"}, "ch": ["10SFF NVMe (4/8/10)"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["4LFF"]}, {"c": "Button", "p": {"variant": "primary-subtle", "size": "md", "href": "https://newserverlife.com/server-models/dell-poweredge-r640/"}, "ch": ["Configure"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r740/"}, "ch": ["Dell PowerEdge R740"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["8SFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["16SFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["8LFF"]}, {"c": "Tag", "p": {"color": "success", "variant": "subtle", "size": "sm"}, "ch": ["Up to 3"]}, {"c": "Button", "p": {"variant": "primary-subtle", "size": "md", "href": "https://newserverlife.com/server-models/dell-poweredge-r740/"}, "ch": ["Configure"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r740xd/"}, "ch": ["Dell PowerEdge R740xd"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["24SFF"]}, {"c": "Tag", "p": {"color": "secondary", "variant": "subtle", "size": "sm"}, "ch": ["24SFF NVMe (4/8/12/24)"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["12LFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["12LFF + rear/mid bays"]}, {"c": "Button", "p": {"variant": "primary-subtle", "size": "md", "href": "https://newserverlife.com/server-models/dell-poweredge-r740xd/"}, "ch": ["Configure"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r650/"}, "ch": ["Dell PowerEdge R650"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["8SFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["10SFF"]}, {"c": "Tag", "p": {"color": "secondary", "variant": "subtle", "size": "sm"}, "ch": ["8SFF NVMe"]}, {"c": "Tag", "p": {"color": "secondary", "variant": "subtle", "size": "sm"}, "ch": ["10SFF NVMe"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["4LFF"]}, {"c": "Button", "p": {"variant": "primary-subtle", "size": "md", "href": "https://newserverlife.com/server-models/dell-poweredge-r650/"}, "ch": ["Configure"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r7525/"}, "ch": ["Dell PowerEdge R7525"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["8/16/24SFF"]}, {"c": "Tag", "p": {"color": "secondary", "variant": "subtle", "size": "sm"}, "ch": ["8/16/24SFF NVMe"]}, {"c": "Tag", "p": {"color": "secondary", "variant": "subtle", "size": "sm"}, "ch": ["24SFF + 8NVMe"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["8LFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "sm"}, "ch": ["12LFF"]}, {"c": "Tag", "p": {"color": "success", "variant": "subtle", "size": "sm"}, "ch": ["Up to 3"]}, {"c": "Button", "p": {"variant": "primary-subtle", "size": "md", "href": "https://newserverlife.com/server-models/dell-poweredge-r7525/"}, "ch": ["Configure"]}, {"c": "Tag", "p": {"color": "secondary", "variant": "subtle", "size": "sm"}, "ch": ["NVMe"]}, {"c": "Tag", "p": {"color": "success", "variant": "subtle", "size": "sm"}, "ch": ["Up to 3"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r640/"}, "ch": ["R640"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r650/"}, "ch": ["R650"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r630/"}, "ch": ["R630"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r740xd/"}, "ch": ["R740xd"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r7525/"}, "ch": ["R7525"]}, {"c": "Icon", "p": {"name": "server", "size": 20}, "ch": []}, {"c": "Icon", "p": {"name": "layers", "size": 20}, "ch": []}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "md"}, "ch": ["2.5\" (SFF)"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "md"}, "ch": ["3.5\" (LFF)"]}, {"c": "Icon", "p": {"name": "zap", "size": 20}, "ch": []}, {"c": "Icon", "p": {"name": "database", "size": 20}, "ch": []}, {"c": "Icon", "p": {"name": "hard-drive", "size": 20}, "ch": []}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "md"}, "ch": ["8 SFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "md"}, "ch": ["16 SFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "md"}, "ch": ["24 SFF"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "md"}, "ch": ["12 LFF"]}, {"c": "Notification", "p": {"type": "default", "icon": "database", "title": "“xd” models"}, "ch": ["Storage-optimized: they hold more drives in the same 2U chassis. ", {"c": "Link", "p": {"href": "#chassis"}, "ch": ["See which models offer each bay layout"]}]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r740/"}, "ch": ["R740"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r640/"}, "ch": ["R640"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "md", "icon": "cpu"}, "ch": ["GPU support typically in 2U"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r7525/"}, "ch": ["R7525"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r6525/"}, "ch": ["R6525"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r7515/"}, "ch": ["R7515"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r640/"}, "ch": ["R640"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r740/"}, "ch": ["R740"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r750/"}, "ch": ["R750"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r760/"}, "ch": ["R760"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "md"}, "ch": ["Intel Xeon"]}, {"c": "Tag", "p": {"color": "neutral", "variant": "outline", "size": "md"}, "ch": ["AMD EPYC"]}, {"c": "Icon", "p": {"name": "server", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "arrow-right", "size": 20}, "ch": []}, {"c": "Icon", "p": {"name": "cpu", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "arrow-right", "size": 20}, "ch": []}, {"c": "Icon", "p": {"name": "zap", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "arrow-right", "size": 20}, "ch": []}, {"c": "Icon", "p": {"name": "ph-cpu", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "arrow-right", "size": 20}, "ch": []}, {"c": "Icon", "p": {"name": "home", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "arrow-right", "size": 20}, "ch": []}, {"c": "Icon", "p": {"name": "layers", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "arrow-right", "size": 20}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R640 10SFF", "href": "https://newserverlife.com/configure/dell_poweredge_r640_10sff/", "badges": ["hot"], "specs": [{"icon": "form", "text": "1U (rackmount)"}, {"icon": "cpu", "text": "up to 2 Xeon Scalable"}, {"icon": "ram", "text": "up to 2048GB (24 x DDR4)"}, {"icon": "storage", "text": "10SFF Bay 2.5\" (Hot Swap)"}, {"icon": "zap", "text": "2 x PSU (Hot Plug)"}], "specVariant": "icons", "price": "$219", "oldPrice": "$259", "ctaType": "configure"}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R740 16SFF", "href": "https://newserverlife.com/configure/dell-poweredge-r740_16sff/", "badges": ["in-stock"], "specs": [{"icon": "form", "text": "2U (rackmount)"}, {"icon": "cpu", "text": "up to 2 Xeon Scalable"}, {"icon": "ram", "text": "up to 3072GB (24 x DDR4)"}, {"icon": "storage", "text": "16SFF Bay 2.5\" (Hot Swap)"}, {"icon": "zap", "text": "2 x PSU (Hot Plug)"}], "specVariant": "icons", "price": "$419", "ctaType": "configure"}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R740xd 24SFF", "href": "https://newserverlife.com/configure/dell-poweredge-r740xd_43139/", "badges": ["hot"], "specs": [{"icon": "form", "text": "2U (rackmount)"}, {"icon": "cpu", "text": "up to 2 Xeon Scalable"}, {"icon": "ram", "text": "up to 3072GB (24 x DDR4)"}, {"icon": "storage", "text": "24SFF Bay 2.5\" (Hot Swap)"}, {"icon": "zap", "text": "2 x PSU (Hot Plug)"}], "specVariant": "icons", "price": "$370", "oldPrice": "$499", "ctaType": "configure"}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R650 10SFF", "href": "https://newserverlife.com/configure/dell-poweredge-r650_10sff/", "badges": ["hot"], "specs": [{"icon": "form", "text": "1U (rackmount)"}, {"icon": "cpu", "text": "up to 2 Xeon Scalable"}, {"icon": "ram", "text": "up to 2048GB (32 x DDR4)"}, {"icon": "storage", "text": "10SFF Bay 2.5\" (Hot Swap)"}, {"icon": "zap", "text": "2 x PSU (Hot Plug)"}], "specVariant": "icons", "price": "$3,499", "oldPrice": "$4,299", "ctaType": "configure"}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R7525 8SFF", "href": "https://newserverlife.com/configure/dell-poweredge-r7525-8sff/", "badges": ["in-stock"], "specs": [{"icon": "form", "text": "2U (rackmount)"}, {"icon": "cpu", "text": "up to 2 AMD Epyc"}, {"icon": "ram", "text": "up to 2048GB (32 x DDR4)"}, {"icon": "storage", "text": "8SFF Bay 2.5\" (Hot Swap)"}], "specVariant": "icons", "price": "$6,199", "ctaType": "configure"}, "ch": []}, {"c": "ProductCard", "p": {"title": "Dell PowerEdge R660 10SFF", "href": "https://newserverlife.com/configure/dell-poweredge-r660-10sff/", "badges": [], "specs": [{"icon": "form", "text": "1U (rackmount)"}, {"icon": "cpu", "text": "up to 2 Xeon Scalable"}, {"icon": "storage", "text": "10SFF Bay 2.5\" (Hot Swap)"}], "specVariant": "icons", "price": "$7,999", "ctaType": "configure"}, "ch": []}, {"c": "ArticleCard", "p": {"title": "Choosing a server configuration for an enterprise", "href": "https://newserverlife.com/articles/choosing-a-server-configuration-for-an-enterprise/"}, "ch": []}, {"c": "ArticleCard", "p": {"title": "Types of server drives. How to choose the right one?", "href": "https://newserverlife.com/articles/server-storage-solutions-hdd-vs-ssd-nvme-vs-sata/"}, "ch": []}, {"c": "Icon", "p": {"name": "server", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "activity", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "sliders", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "shield", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "database", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "globe", "size": 24}, "ch": []}, {"c": "Icon", "p": {"name": "layers", "size": 24}, "ch": []}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r640/"}, "ch": ["R640"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r740/"}, "ch": ["R740"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r650/"}, "ch": ["R650"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r660/"}, "ch": ["R660"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/solution/virtualization-servers/"}, "ch": ["Explore virtualization servers →"]}, {"c": "Icon", "p": {"name": "database", "size": 24}, "ch": []}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r740xd/"}, "ch": ["R740xd"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/server-models/dell-poweredge-r7525/"}, "ch": ["R7525"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/solution/database-servers/"}, "ch": ["Explore database servers →"]}, {"c": "Icon", "p": {"name": "hard-drive", "size": 24}, "ch": []}, {"c": "Link", "p": {"href": "https://newserverlife.com/solution/file-and-archive-servers/"}, "ch": ["Explore file and archive servers →"]}, {"c": "Icon", "p": {"name": "cpu", "size": 24}, "ch": []}, {"c": "Link", "p": {"href": "https://newserverlife.com/solution/gpu-servers/"}, "ch": ["Explore GPU servers →"]}, {"c": "Icon", "p": {"name": "user", "size": 24}, "ch": []}, {"c": "Link", "p": {"href": "https://newserverlife.com/solution/vdi-and-rdp-servers/"}, "ch": ["Explore VDI and RDP servers →"]}, {"c": "Icon", "p": {"name": "eye", "size": 24}, "ch": []}, {"c": "Link", "p": {"href": "https://newserverlife.com/solution/cctv-storage-servers/"}, "ch": ["Explore CCTV storage servers →"]}, {"c": "Icon", "p": {"name": "home", "size": 24}, "ch": []}, {"c": "Link", "p": {"href": "https://newserverlife.com/solution/small-business-servers/"}, "ch": ["Explore small business servers →"]}, {"c": "ArticleCard", "p": {"title": "Refurbished Dell PowerEdge 15th Gen for AI/ML", "href": "https://newserverlife.com/articles/best-refurbished-dell-poweredge-15th-gen-servers-for-ai-ml/"}, "ch": []}, {"c": "Link", "p": {"href": "https://newserverlife.com/solution/"}, "ch": ["Describe your workload"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/warranty/"}, "ch": ["See full warranty terms"]}, {"c": "Link", "p": {"href": "https://newserverlife.com/shipping/"}, "ch": ["shipping details"]}, {"c": "Footer", "p": {"variant": "wide"}, "ch": []}];
+const h = React.createElement;
+function build(s, k) {
+  if (typeof s === 'string') return s;
+  if (s.h !== undefined) return h('span', { key: k, style: { display: 'contents' }, dangerouslySetInnerHTML: { __html: s.h } });
+  const C = NSL[s.c];
+  if (!C) { console.warn('Missing NSL component', s.c); return null; }
+  const kids = (s.ch || []).map((c, i) => build(c, i));
+  return h(C, Object.assign({ key: k }, s.p), ...(kids.length ? kids : []));
+}
+document.querySelectorAll('[data-nsl]').forEach(el => {
+  try { ReactDOM.createRoot(el).render(build(REG[+el.dataset.nsl])); } catch (e) { console.error(e); }
+});
+}
+</script>
+</body>
+</html>
