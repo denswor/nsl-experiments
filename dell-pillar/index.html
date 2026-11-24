@@ -365,14 +365,14 @@ body{margin:0;background:var(--bg-default);color:var(--text-primary);font:var(--
   .cards-all__t b{font:var(--text-heading-md)}
   .cards-all__t span{font:var(--text-body-md);color:var(--text-secondary)}
   .cards-all__go{display:flex;align-items:center;gap:var(--space-8);font:var(--text-body-md-semibold);color:var(--brand-default)}
-  /* How to choose: cards grow with content; storage card side list moves under the content, 3 in a row */
+  /* How to choose: cards grow with content */
   .guide .card{height:auto !important}
   .guide .split{height:auto !important}
-  .guide .card--st{grid-template-columns:minmax(0,1fr);padding-right:var(--space-40)}
-  .guide .st-side{border-left:0;padding:var(--space-24) 0 0;border-top:1px solid var(--border-default)}
-  .guide .types--side{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-24)}
-  .guide .types--side .bi{padding:0}
-  .guide .types--side .bi+.bi{border-top:0}
+  /* first two cards (1U or 2U?, storage) go full width; storage keeps its side list at this width */
+  .guide .grid>.card:nth-child(-n+2){grid-column:1 / -1}
+  .guide .grid>.card:first-child .split{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+  .guide .grid>.card:first-child .copy p{width:auto !important}
+  .guide .grid>.card:last-child .split{grid-template-columns:minmax(0,3fr) minmax(0,2fr) !important}
   /* Chassis: 3 in a row, the two articles side by side under them */
   .chassis .cgrid4{grid-template-columns:repeat(3,minmax(0,1fr))}
   .chassis .blog-v{display:grid;grid-column:1 / -1;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--gutter)}
