@@ -256,9 +256,10 @@ body{overflow-x:clip}
 /* ===== local navigation: fixed under the sticky header once the content sheet reaches it ===== */
 .lnav{position:fixed;left:0;right:0;top:var(--hdr-h,112px);z-index:45;background:rgba(255,255,255,.94);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--border-default);box-shadow:0 6px 16px rgba(16,24,40,.06);transform:translateY(-100%);opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.2,0,0,1),opacity .2s}
 .lnav.is-on{transform:none;opacity:1;pointer-events:auto}
-.lnav__in{display:flex;align-items:stretch;gap:var(--space-8);height:56px}
-.lnav__list{display:flex;flex:1;min-width:0;gap:var(--space-4);margin:0;padding:0;list-style:none}
-.lnav__item{flex:1 1 auto;min-width:0}
+.lnav__in{display:flex;align-items:stretch;gap:var(--space-24);height:56px}
+.lnav__list{display:flex;flex:1;min-width:0;gap:var(--space-4);margin:0;padding:0;list-style:none;overflow-x:auto;scrollbar-width:none}
+.lnav__list::-webkit-scrollbar{display:none}
+.lnav__item{flex:none}
 .lnav__link{position:relative;display:flex;align-items:center;height:100%;padding:0 var(--space-12);font:600 14px/20px var(--font-sans);color:var(--text-secondary);text-decoration:none;white-space:nowrap;border-radius:var(--radius-xs);transition:color .15s}
 .lnav__link:hover{color:var(--text-primary)}
 .lnav__link:focus-visible{outline:2px solid var(--brand-default);outline-offset:-2px}
@@ -267,7 +268,7 @@ body{overflow-x:clip}
 .lnav__bar i{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(var(--p,0));background:var(--text-tertiary,#8a8f9c)}
 .lnav__item.is-active .lnav__link{color:var(--text-primary)}
 .lnav__item.is-active .lnav__bar i{background:var(--brand-default)}
-.lnav__meta{display:flex;align-items:center;gap:var(--space-12);padding-left:var(--space-16);border-left:1px solid var(--border-default);font:12px/16px var(--font-mono);color:var(--text-secondary);white-space:nowrap}
+.lnav__meta{margin-left:auto;display:flex;align-items:center;gap:var(--space-12);padding-left:var(--space-16);border-left:1px solid var(--border-default);font:12px/16px var(--font-mono);color:var(--text-secondary);white-space:nowrap}
 .lnav__pct{min-width:4ch;text-align:right;color:var(--text-primary);font-weight:600}
 .lnav__top{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:1px solid var(--border-default);border-radius:var(--radius-full);background:var(--bg-default);color:var(--text-primary);cursor:pointer}
 .lnav__top:hover{border-color:var(--text-secondary)}
@@ -364,10 +365,9 @@ body{overflow-x:clip}
 <h3 class="heading-lg">1U or 2U?</h3>
 <div class="split" style="height: 297px">
 <div class="copy">
-<p>1U servers (<span data-nsl="59" style="display:contents"></span>, <span data-nsl="60" style="display:contents"></span>, <span data-nsl="61" style="display:contents"></span>) pack more compute per rack unit.</p>
+<p style="width: 311px">1U servers (<span data-nsl="59" style="display:contents"></span>, <span data-nsl="60" style="display:contents"></span>, <span data-nsl="61" style="display:contents"></span>) pack more compute per rack unit.</p>
 <p>2U servers (<span data-nsl="62" style="display:contents"></span>, <span data-nsl="63" style="display:contents"></span>) fit more drives, more PCIe slots and full-size GPUs, and are easier to cool.</p>
 </div>
-<div class="art art--tall" aria-hidden="true"></div>
 </div>
 <div class="strip" style="background-color: transparent; background-image: none; padding-right: 0px; padding-left: 0px">
 <div class="bi"><span class="bi__icon"><span data-nsl="64" style="display:contents"></span></span><div><b>1U — higher density</b><span>More compute per rack unit</span></div></div>
@@ -509,7 +509,7 @@ document.querySelectorAll('[data-nsl]').forEach(el => {
   var MAP={models:'section.models',compare:'section.compare',guide:'.guide',shop:'.shopsec',chassis:'#chassis',why:'.why',uses:'.uses',faq:'.faqsec'};
   var nav=document.querySelector('.lnav'), items=[].slice.call(nav.querySelectorAll('.lnav__item'));
   var secs=items.map(function(li){var el=document.querySelector(MAP[li.dataset.k]); if(el){el.id=el.id||('sec-'+li.dataset.k); li.querySelector('a').setAttribute('href','#'+el.id);} return el;});
-  var sheet=document.querySelector('.sheet'), foot=document.querySelector('.nsl-footer')||document.body.lastElementChild;
+  var sheet=document.querySelector('.sheet'), foot=document.querySelector('footer, .nsl-footer');
   var pctEl=nav.querySelector('.lnav__pct'), nEl=nav.querySelector('.lnav__n');
   function hdrH(){var h=document.querySelector('.hdr-sticky'); return h?h.getBoundingClientRect().height:112;}
   function line(){return hdrH()+56+8;}
@@ -526,7 +526,7 @@ document.querySelectorAll('[data-nsl]').forEach(el => {
       li.style.setProperty('--p',p.toFixed(4));
     });
     items.forEach(function(li,i){li.classList.toggle('is-active',i===active); var a=li.querySelector('a'); if(i===active) a.setAttribute('aria-current','location'); else a.removeAttribute('aria-current');});
-    var first=tops[0], all=Math.max(0,Math.min(1,(y-first)/Math.max(1,end-first)));
+    var max=document.documentElement.scrollHeight-window.innerHeight, all=Math.max(0,Math.min(1,window.scrollY/Math.max(1,max)));
     pctEl.textContent=Math.round(all*100)+'%'; nEl.textContent=Math.max(1,active+1);
   }
   function req(){ if(!raf) raf=requestAnimationFrame(update); }
