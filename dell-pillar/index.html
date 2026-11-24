@@ -313,19 +313,26 @@ body{margin:0;background:var(--bg-default);color:var(--text-primary);font:var(--
 .tsl__who>div>span{font:var(--text-body-sm)}
 .tsl__who b{font:var(--text-body-md-semibold);color:var(--text-primary)}
 
-/* state: which slide is active */
-#tsl-1:checked ~ .nsl-container .tsl__track{transform:translateX(0)}
-#tsl-2:checked ~ .nsl-container .tsl__track{transform:translateX(-910px)}
-#tsl-3:checked ~ .nsl-container .tsl__track{transform:translateX(-1820px)}
-#tsl-1:checked ~ .nsl-container .tsl__slide:nth-child(1),
-#tsl-2:checked ~ .nsl-container .tsl__slide:nth-child(2),
-#tsl-3:checked ~ .nsl-container .tsl__slide:nth-child(3){opacity:1}
-#tsl-1:checked ~ .nsl-container .s1,
-#tsl-2:checked ~ .nsl-container .s2,
-#tsl-3:checked ~ .nsl-container .s3{display:flex}
-#tsl-1:checked ~ .nsl-container .tsl__count .c1,
-#tsl-2:checked ~ .nsl-container .tsl__count .c2,
-#tsl-3:checked ~ .nsl-container .tsl__count .c3{display:inline}
+/* state: radios drive the slider (slide 1 is the default, no `checked` needed) */
+.tsl .tsl__slide{position:relative}
+.tsl .tsl__hit{position:absolute;inset:0;z-index:2;cursor:pointer}
+.tsl .tsl__view{cursor:grab;touch-action:pan-y}
+.tsl .tsl__view.is-drag{cursor:grabbing;user-select:none}
+.tsl .tsl__view.is-drag .tsl__track{transition:none}
+.tsl .tsl__slide:nth-child(1){opacity:1}
+.tsl .tsl__slide:nth-child(1) .tsl__hit{display:none}
+.tsl .tsl__btn.s1{display:flex}
+.tsl .tsl__count .c1{display:inline}
+.tsl:has(#tsl-2:checked) .tsl__track{transform:translateX(-910px)}
+.tsl:has(#tsl-3:checked) .tsl__track{transform:translateX(-1820px)}
+.tsl:has(#tsl-2:checked) .tsl__slide:nth-child(1),.tsl:has(#tsl-3:checked) .tsl__slide:nth-child(1){opacity:.3}
+.tsl:has(#tsl-2:checked) .tsl__slide:nth-child(1) .tsl__hit,.tsl:has(#tsl-3:checked) .tsl__slide:nth-child(1) .tsl__hit{display:block}
+.tsl:has(#tsl-2:checked) .tsl__slide:nth-child(2),.tsl:has(#tsl-3:checked) .tsl__slide:nth-child(3){opacity:1}
+.tsl:has(#tsl-2:checked) .tsl__slide:nth-child(2) .tsl__hit,.tsl:has(#tsl-3:checked) .tsl__slide:nth-child(3) .tsl__hit{display:none}
+.tsl:has(#tsl-2:checked) .tsl__btn.s1,.tsl:has(#tsl-3:checked) .tsl__btn.s1,.tsl:has(#tsl-2:checked) .tsl__count .c1,.tsl:has(#tsl-3:checked) .tsl__count .c1{display:none}
+.tsl:has(#tsl-2:checked) .tsl__btn.s2,.tsl:has(#tsl-3:checked) .tsl__btn.s3{display:flex}
+.tsl:has(#tsl-2:checked) .tsl__count .c2,.tsl:has(#tsl-3:checked) .tsl__count .c3{display:inline}
+.tsl:has(#tsl-1) .tsl__slide:has(.tsl__hit:hover){opacity:.55}
 .tsl__r:focus-visible ~ .nsl-container .tsl__nav{outline:2px solid var(--brand-default);outline-offset:4px;border-radius:32px}
 
 body{overflow-x:clip}
@@ -545,7 +552,7 @@ body{overflow-x:clip}
 </section>
 </div></div>
 <div class="tsl">
-<input class="tsl__r" type="radio" name="tsl" id="tsl-1" checked="" aria-label="Review 1">
+<input class="tsl__r" type="radio" name="tsl" id="tsl-1" aria-label="Review 1">
 <input class="tsl__r" type="radio" name="tsl" id="tsl-2" aria-label="Review 2">
 <input class="tsl__r" type="radio" name="tsl" id="tsl-3" aria-label="Review 3">
 <div class="nsl-container">
@@ -570,6 +577,7 @@ body{overflow-x:clip}
 <div class="tsl__view">
 <div class="tsl__track">
 <article class="tsl__slide" aria-roledescription="slide" aria-label="1 of 3">
+<label class="tsl__hit" for="tsl-1" aria-hidden="true"></label>
 <div class="tsl__body">
 <h3 class="heading-lg">“3 Orders in and great experience across the board”</h3>
 <div class="tsl__text">
@@ -580,6 +588,7 @@ body{overflow-x:clip}
 <div class="tsl__who"><span class="tsl__ava" aria-hidden="true">DP</span><div><b>Dave P</b><span>Review on Trustpilot</span></div><span data-nsl="138" style="display:contents"></span></div>
 </article>
 <article class="tsl__slide" aria-roledescription="slide" aria-label="2 of 3">
+<label class="tsl__hit" for="tsl-2" aria-hidden="true"></label>
 <div class="tsl__body">
 <div class="tsl__text">
 <p>We recently purchased a replacement Dell server, and the entire procurement process was seamless. The sales team was highly responsive, quickly identifying our exact requirements and streamlining the order. While we encountered a minor technical hiccup with a loose connection during setup, support stepped in immediately to help us resolve it. Overall, excellent service from start to finish.</p>
@@ -588,6 +597,7 @@ body{overflow-x:clip}
 <div class="tsl__who"><span class="tsl__ava" aria-hidden="true">CF</span><div><b>Chris Flynn</b><span>NewServerLife customer</span></div></div>
 </article>
 <article class="tsl__slide tsl__slide--wide" aria-roledescription="slide" aria-label="3 of 3">
+<label class="tsl__hit" for="tsl-3" aria-hidden="true"></label>
 <div class="tsl__body">
 <div class="tsl__cols">
 <div class="tsl__text">
@@ -681,6 +691,30 @@ document.querySelectorAll('[data-nsl]').forEach(el => {
   document.addEventListener('click',function(e){ var a=e.target.closest && e.target.closest('a[href="#popular-models"]'); if(a) toContent(e); });
   nav.querySelector('.lnav__top').addEventListener('click',function(){window.scrollTo({top:0,behavior:smooth?'smooth':'auto'});});
   setTimeout(update,300); update();
+})();
+</script><script>
+(function(){
+var V={
+tslDown: (e) => {
+  if (e.button !== 0) return;
+  const view = e.currentTarget, root = view.closest('.tsl'), track = view.querySelector('.tsl__track');
+  const radios = [...root.querySelectorAll('.tsl__r')], slides = [...track.children];
+  let idx = Math.max(0, radios.findIndex((r) => r.checked));
+  const k = view.offsetWidth / view.getBoundingClientRect().width, x0 = e.clientX, base = -slides[idx].offsetLeft;
+  let dx = 0, moved = false;
+  const mv = (ev) => { dx = (ev.clientX - x0) * k; if (!moved && Math.abs(dx) > 6) { moved = true; view.classList.add('is-drag'); }
+    if (moved) { const lim = (idx === 0 && dx > 0) || (idx === radios.length - 1 && dx < 0) ? 0.3 : 1; track.style.transform = 'translateX(' + (base + dx * lim) + 'px)'; } };
+  const up = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up);
+    view.classList.remove('is-drag'); track.style.transform = '';
+    if (moved) { let n = idx; if (dx < -80) n = Math.min(idx + 1, radios.length - 1); else if (dx > 80) n = Math.max(idx - 1, 0); radios[n].checked = true; view.dataset.dragged = '1'; setTimeout(() => { delete view.dataset.dragged; }, 60); } };
+  window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+},
+tslClick: (e) => { if (e.currentTarget.dataset.dragged) { e.preventDefault(); e.stopPropagation(); } },
+};
+document.querySelectorAll('.tsl__view').forEach(function(v){
+  v.addEventListener('pointerdown',function(e){V.tslDown({button:e.button,clientX:e.clientX,currentTarget:v});});
+  v.addEventListener('click',function(e){V.tslClick({currentTarget:v,preventDefault:function(){e.preventDefault()},stopPropagation:function(){e.stopPropagation()}});},true);
+});
 })();
 </script></body>
 </html>
