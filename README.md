@@ -39,6 +39,9 @@ black-friday/     Black Friday home hero, variant C (dark band, mark with rim li
                   dist/ + nsl-bf-landing-<version>.zip — the same pages for developers: HTML, CSS, vanilla JS, no React
 dell-pillar/      Refurbished Dell PowerEdge Servers pillar page, wide 1680 (static HTML + NSL components mounted with React 18;
                   own copy of the NSL bundle, tokens and IBM Plex fonts in ds/nsl/, React UMD in vendor/)
+  a2/            full page with Hero A2: edge lights on the hex grilles, DELL badge pass, parallax, sections over the hero
+  b1/, b2/        short pages with Hero B1 (front view, drift parallax) and B2 (angled, dolly): grille light wave, drive LEDs
+  assets/         hero photos and masks for a2, b1, b2
 header-catalog/   Header catalog menu, motion concept A (curtain), full-viewport, wide container from 1680
   index.html      light menu; #black-friday = dark Black Friday menu (React 18, real Header / CatalogMenu from the NSL bundle, motion with WAAPI)
   bf-banner.png   Black Friday banner in the brand row (both themes)
