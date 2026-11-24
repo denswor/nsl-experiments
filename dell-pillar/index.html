@@ -291,13 +291,17 @@ body{margin:0;background:var(--bg-default);color:var(--text-primary);font:var(--
 .tsl__btn:hover{background:var(--brand-default);color:var(--text-on-brand)}
 .tsl__btn.is-off{border-color:var(--border-default);color:var(--text-disabled);cursor:default;pointer-events:none}
 .tsl__view{border-top:1px solid var(--border-default);padding-top:var(--space-40);overflow:hidden}
-.tsl__track{display:flex;gap:60px;align-items:flex-start;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
-.tsl__slide{flex:0 0 880px;display:flex;flex-direction:column;gap:var(--space-32);opacity:.3;transition:opacity .4s}
+.tsl__track{display:flex;gap:160px;align-items:flex-start;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.tsl__slide{flex:0 0 750px;display:flex;flex-direction:column;gap:var(--space-32);opacity:.3;transition:opacity .4s}
 .tsl__slide--wide{flex-basis:1530px}
 .tsl__leadcol{display:flex;flex-direction:column;gap:var(--space-32)}
 .tsl__leadcol .tsl__who{padding-top:var(--space-24);border-top:1px solid var(--border-default)}
-.tsl__cols{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:60px;align-items:start}
-.tsl__cols .tsl__lead p{font:var(--text-heading-lg);color:var(--text-primary)}
+.tsl__cols{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter,30px);align-items:start}
+.tsl__cols>.tsl__text{grid-column:span 7;padding-right:30px}
+.tsl__cols>.tsl__rightcol{grid-column:span 5}
+.tsl__rightcol{display:flex;flex-direction:column;gap:var(--space-32)}
+.tsl__rightcol .tsl__who{padding-top:var(--space-24);border-top:1px solid var(--border-default)}
+.tsl__text .tsl__lead p{font:var(--text-heading-lg);color:var(--text-primary)}
 .tsl__ava{width:56px;height:56px;border-radius:50%;background:var(--bg-subtle);color:var(--text-primary);display:flex;align-items:center;justify-content:center;flex:none;font:var(--text-heading-sm)}
 .tsl__body{display:flex;flex-direction:column;gap:var(--space-24);min-width:0}
 .tsl__body+.tsl__who{padding-top:var(--space-24);border-top:1px solid var(--border-default)}
@@ -311,8 +315,8 @@ body{margin:0;background:var(--bg-default);color:var(--text-primary);font:var(--
 
 /* state: which slide is active */
 #tsl-1:checked ~ .nsl-container .tsl__track{transform:translateX(0)}
-#tsl-2:checked ~ .nsl-container .tsl__track{transform:translateX(-940px)}
-#tsl-3:checked ~ .nsl-container .tsl__track{transform:translateX(-1880px)}
+#tsl-2:checked ~ .nsl-container .tsl__track{transform:translateX(-910px)}
+#tsl-3:checked ~ .nsl-container .tsl__track{transform:translateX(-1820px)}
 #tsl-1:checked ~ .nsl-container .tsl__slide:nth-child(1),
 #tsl-2:checked ~ .nsl-container .tsl__slide:nth-child(2),
 #tsl-3:checked ~ .nsl-container .tsl__slide:nth-child(3){opacity:1}
@@ -586,15 +590,17 @@ body{overflow-x:clip}
 <article class="tsl__slide tsl__slide--wide" aria-roledescription="slide" aria-label="3 of 3">
 <div class="tsl__body">
 <div class="tsl__cols">
-<div class="tsl__leadcol">
-<div class="tsl__text tsl__lead"><p>I’ve been buying used equipment - switches, routers, and servers - for over 20 years.</p></div>
-<div class="tsl__who"><span class="tsl__ava" aria-hidden="true">C</span><div><b>Customer</b><span>Buying used equipment for 20+ years</span></div></div>
-</div>
 <div class="tsl__text">
+<div class="tsl__lead"><p>I’ve been buying used equipment - switches, routers, and servers - for over 20 years.</p></div>
 <p>By far, NewServerLife has been the easiest company I’ve worked with. The entire process was simple and straightforward. Using their website to piece together exactly what I needed was very easy, and I really appreciated how smooth the ordering process was.</p>
 <p>After I placed the order, their communication was clear and professional. First, they confirmed my shipping address. Then they set expectations on how long the build process would take. Everything they told me was fair, accurate, and exactly what happened. When the server shipped, they promptly provided the tracking number and delivery details.</p>
+</div>
+<div class="tsl__rightcol">
+<div class="tsl__text">
 <p>Their pricing was also very fair. For the equipment, configuration options, and overall buying experience, I felt the value was excellent. As long as they continue to offer competitive pricing and this level of service, they will absolutely continue to receive my business.</p>
 <p>All in all, this was one of the easiest equipment purchases I’ve ever made. I will definitely be ordering from NewServerLife again in the future.</p>
+</div>
+<div class="tsl__who"><span class="tsl__ava" aria-hidden="true">C</span><div><b>Customer</b><span>Buying used equipment for 20+ years</span></div></div>
 </div>
 </div>
 </div>
