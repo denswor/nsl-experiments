@@ -733,6 +733,7 @@ function ProductCard(p) {
     (showBadges || p.discount) && h('div', { className: 'nsl-pcard__badges' }, h('div', { className: 'nsl-pcard__badgeset' }, (p.badges || []).map(function (b) { return h(ProductBadge, { key: b, type: b }); })), p.discount && h('span', { className: 'nsl-pcard__discount' }, p.discount)),
     p.showImage !== false && h('div', { className: 'nsl-pcard__image' }, p.image ? h('img', { src: p.image, alt: '' }) : null),
     h('h3', { className: 'nsl-pcard__title' }, h('a', { href: p.href || '#' }, p.title)),
+    p.description && h('p', { className: 'nsl-pcard__desc' }, p.description),
     specs.length > 0 && h(SpecList, { items: specs, variant: p.specVariant === 'text' ? 'text' : 'icons' }),
     h('div', { className: 'nsl-pcard__foot' }, h(Price, { prefix: p.pricePrefix === undefined ? 'from' : p.pricePrefix, value: p.price, oldValue: p.oldPrice }),
       h(Button, { variant: p.ctaVariant || 'primary-subtle', size: p.compact ? 'md' : 'lg', iconLeft: p.ctaIcon || preset.icon, fullWidth: true, onClick: p.onAction || p.onAdd }, p.cta || preset.label)));

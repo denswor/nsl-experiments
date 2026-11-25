@@ -335,10 +335,11 @@ body{margin:0;background:var(--bg-default);color:var(--text-primary);font:var(--
 .tsl:has(#tsl-1) .tsl__slide:has(.tsl__hit:hover){opacity:.55}
 .tsl__r:focus-visible ~ .nsl-container .tsl__nav{outline:2px solid var(--brand-default);outline-offset:4px;border-radius:32px}
 /* Final CTA — dark, from the BF landing (no Montserrat) */
-.cta-final{position:relative;overflow:hidden;padding:96px 0 40px;background:radial-gradient(ellipse 960px 560px at 50% 40%,#0b0714 0%,#0d0819 45%,#170c2e 78%,#22113f 100%);color:#fff}
-.cta-final__img{position:absolute;left:50%;margin-left:-840px;top:-350px;width:1680px;height:560px;display:block;object-fit:contain;pointer-events:none;opacity:.55;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent 100%),radial-gradient(ellipse 60% 120% at 50% 40%,#000 35%,transparent 80%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,#000 55%,transparent 100%),radial-gradient(ellipse 60% 120% at 50% 40%,#000 35%,transparent 80%);mask-composite:intersect}
-.cta-final__mark{position:absolute;left:50%;top:84px;width:380px;height:565px;margin-left:-190px;overflow:visible;opacity:.42}
-.cta-final__in{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-24)}
+.cta-final{position:relative;overflow:hidden;min-height:786px;display:flex;flex-direction:column;background:url("assets/cta-bg.webp") center bottom / max(1920px,100%) auto no-repeat,linear-gradient(90deg,#193156 0%,#2a2953 25%,#392151 50%,#48184e 75%,#4f154d 100%);color:#fff}
+.cta-final>.nsl-container{flex:1;display:flex;flex-direction:column}
+
+
+.cta-final__in{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:var(--space-24);padding:96px 0 56px}
 .cta-final__eyebrow{margin:0;font:600 12px/16px var(--font-mono);letter-spacing:.32em;text-transform:uppercase;color:#f77fb8}
 .cta-final h2{margin:0;max-width:960px;font:var(--text-heading-display);letter-spacing:-0.02em;color:#fff}
 .cta-final__lead{margin:0;max-width:620px;font:400 18px/28px var(--font-sans);color:rgba(255,255,255,.8)}
@@ -347,7 +348,7 @@ body{margin:0;background:var(--bg-default);color:var(--text-primary);font:var(--
 .cta-final__contacts a{color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.4);text-underline-offset:4px}
 .cta-final__contacts a[href^="tel"]{text-decoration:none}
 .cta-final__dot{width:4px;height:4px;border-radius:9999px;background:rgba(255,255,255,.4)}
-.cta-final__notes{position:relative;margin:64px 0 0;padding-top:var(--space-24);border-top:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:var(--space-12);flex-wrap:wrap;font:400 12px/18px var(--font-sans);color:rgba(255,255,255,.55)}
+.cta-final__notes{position:relative;margin:0;min-height:164px;box-sizing:border-box;padding:var(--space-24) 0;display:flex;align-items:center;gap:var(--space-12);flex-wrap:wrap;font:400 12px/18px var(--font-sans);color:rgba(255,255,255,.55)}
 .cta-final__notes strong{font-weight:600;color:rgba(255,255,255,.8)}
 .cta-final__notes .sp{flex:1}
 .cta-tl{color:rgba(255,255,255,.88);text-decoration:underline;text-decoration-color:rgba(255,255,255,.4);text-underline-offset:3px;transition:color .2s ease,text-decoration-color .2s ease}
@@ -445,7 +446,6 @@ body{margin:0;background:var(--bg-default);color:var(--text-primary);font:var(--
   .cta-final__contacts{flex-direction:column;gap:var(--space-8)}
   .cta-final__dot{display:none}
   .cta-final__notes .sp{flex-basis:100%;height:0}
-  .cta-final__img{width:1200px;height:400px;margin-left:-600px;top:-250px}
 }
 /* ===== Mobile 390 (4 columns, 16 margins): carousels, lists, stacked table ===== */
 @media (max-width:719px){
@@ -518,15 +518,14 @@ body{margin:0;background:var(--bg-default);color:var(--text-primary);font:var(--
   .faqbf__acc .nsl-acc__panel{padding-right:0}
   .faqsec .faqb__gens{grid-template-columns:repeat(2,minmax(0,1fr))}
   /* final CTA */
-  .cta-final{padding-top:64px}
+  .cta-final__in{padding:64px 0 40px}
+  .cta-final{background:url("assets/cta-bg.webp") center top / auto 640px no-repeat,#100d1a}
   .cta-final h2{font:var(--text-heading-xl)}
   .cta-final__lead{font:var(--text-body-md)}
   .cta-final__btns{flex-direction:column;align-self:stretch}
   .cta-final__btns .nsl-btn{width:100%;justify-content:center}
   .cta-final__notes{flex-direction:column;align-items:flex-start;gap:var(--space-4)}
   .cta-final__notes>[aria-hidden]{display:none}
-  .cta-final__mark{width:240px;height:357px;margin-left:-120px}
-  .cta-final__img{width:720px;height:240px;margin-left:-360px;top:-140px}
   .ftr--desktop{display:none}
   .ftr--mobile{display:block}
 }
@@ -853,20 +852,6 @@ body{overflow-x:clip}
 </section>
 </div></div>
 <section class="cta-final nsl-on-dark" aria-labelledby="cta-final-title">
-<svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs>
-<path id="cf-mk" d="M21.9512 685C18.1566 685 14.374 684.016 10.9756 682.06C4.19091 678.136 0 670.901 0 663.053V433.646C0 379.924 28.1595 332.441 75.3043 306.642C122.473 280.843 177.663 282.715 222.971 311.646L261.698 336.377C293.268 356.548 331.742 357.856 364.609 339.869C397.476 321.882 417.098 288.787 417.098 251.348V59.9317L252.451 154.908V255.668C252.451 267.788 242.628 277.603 230.5 277.603C218.372 277.603 208.549 267.788 208.549 255.668V142.249C208.549 134.413 212.74 127.165 219.524 123.253L428.073 2.93389C434.87 -0.977963 443.24 -0.977963 450.024 2.93389C456.821 6.85774 461 14.0935 461 21.9292V251.336C461 305.058 432.84 352.541 385.696 378.352C338.539 404.151 283.337 402.279 238.029 373.348L199.302 348.617C167.732 328.458 129.246 327.15 96.3789 345.125C63.5121 363.1 43.8905 396.195 43.8905 433.646V625.062L208.525 530.074V429.314C208.525 417.194 218.348 407.379 230.476 407.379C242.604 407.379 252.427 417.194 252.427 429.314V542.733C252.427 550.569 248.236 557.817 241.452 561.729L32.9269 682.06C29.5405 684.016 25.7459 685 21.9512 685Z"></path>
-<lineargradient id="cf-lg" x1="230" y1="685" x2="230" y2="0" gradientunits="userSpaceOnUse"><stop stop-color="#2e67b1"></stop><stop offset="0.28" stop-color="#558fcb"></stop><stop offset="0.67" stop-color="#92278e"></stop><stop offset="1" stop-color="#cb1c68"></stop></lineargradient>
-<radialgradient id="cf-spot" cx="230" cy="340" r="210" gradientunits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff"></stop><stop offset="0.35" stop-color="#ff7be3"></stop><stop offset="1" stop-color="#7b5cff" stop-opacity="0"></stop><animate attributename="cx" values="20;440;300;20" dur="9s" repeatcount="indefinite"></animate><animate attributename="cy" values="620;80;420;620" dur="9s" repeatcount="indefinite"></animate></radialgradient>
-<filter id="cf-bl" x="-50%" y="-50%" width="200%" height="200%"><fegaussianblur stddeviation="9"></fegaussianblur></filter>
-<filter id="cf-au" x="-80%" y="-80%" width="260%" height="260%"><fegaussianblur stddeviation="50"></fegaussianblur></filter>
-</defs></svg>
-<img class="cta-final__img" src="assets/final-server.webp" alt="" aria-hidden="true">
-<svg class="cta-final__mark" aria-hidden="true" viewbox="0 0 461 685">
-<use href="#cf-mk" fill="url(#cf-lg)" opacity="0.22" filter="url(#cf-au)"></use>
-<use href="#cf-mk" fill="#0e0919" stroke="url(#cf-lg)" stroke-width="2.5" stroke-opacity="0.5"></use>
-<use href="#cf-mk" fill="none" stroke="url(#cf-spot)" stroke-width="12" filter="url(#cf-bl)"></use>
-<use href="#cf-mk" fill="none" stroke="url(#cf-spot)" stroke-width="3.5"></use>
-</svg>
 <div class="nsl-container">
 <div class="cta-final__in">
 <p class="cta-final__eyebrow">Built, tested and shipped to order</p>

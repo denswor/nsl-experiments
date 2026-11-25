@@ -1,13 +1,13 @@
 /* IBM Plex, from the font files uploaded to this system (fonts/). */
 @font-face { font-family: "IBM Plex Mono"; src: url("../fonts/IBMPlexMono-Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Mono"; src: url("/_blob/eaf53c7ed6d361324419cb717060a812") format("truetype"); font-weight: 300; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Mono"; src: url("/_blob/4804c3b734fc9df17fff78ca004b91e0") format("truetype"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Mono"; src: url("/_blob/088f4807c498f78fe0a4736369741f47") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Mono"; src: url("/_blob/edde7bfa427d86d0f2ac95ae64f707f5") format("truetype"); font-weight: 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Sans"; src: url("/_blob/ee753e68157b44eaeedb87fc775c8a03") format("truetype"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Sans"; src: url("/_blob/2e0eec487e5d5aacfa56ecca76e89b9e") format("truetype"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Sans"; src: url("/_blob/4564132fe0fe85bbe176233e47a0d791") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Sans"; src: url("/_blob/501d5691001931651d61e738dc17a5ef") format("truetype"); font-weight: 600; font-style: normal; font-display: swap; }
+
+
+
+
+
+
+
+
 
 
 /* NSL components. Every color, radius, spacing and shadow comes from tokens.css. */
@@ -1226,3 +1226,6 @@ a.nsl-navhead:focus-visible { outline: none; box-shadow: var(--shadow-focus); bo
 .nsl-mnav__tab { font-weight: 400 !important; border-bottom-width: 3px !important; }
 .nsl-mnav__tab.is-active { font-weight: 700 !important; color: var(--brand-default) !important; border-bottom-color: var(--brand-default) !important; }
 .nsl-topnav__overflow a.is-active { font-weight: 700; color: var(--brand-default); text-decoration: underline; text-decoration-color: var(--brand-default); text-decoration-thickness: 3px; text-underline-offset: 5px; }
+
+/* ProductCard description (page-level extension, not yet in the DS): body-sm, text-secondary, under the title */
+.nsl-pcard__desc{margin:0;font:var(--text-body-sm);color:var(--text-secondary)}
